@@ -82,10 +82,34 @@ const App: React.FC = () => {
       y: 10,
       width: 15,
       height: 10,
-      color: '#3b82f6'
+      color: '#3b82f6',
+      hasFill: true
     };
     setLayout([...layout, newMod]);
     setEditingModule(newMod);
+  };
+
+  const handleMapClick = (x: number, y: number) => {
+    if (isDesignMode && selectedPoint) {
+      // Reposition the selected point
+      const updatedPoints = points.map(p => 
+        p.id === selectedPoint.id 
+          ? { ...p, coordinates: { x, y } } 
+          : p
+      );
+      setPoints(updatedPoints);
+      setSelectedPoint({ ...selectedPoint, coordinates: { x, y } });
+    }
+  };
+
+  const handlePointClick = (point: MachinePoint) => {
+    if (isDesignMode) {
+      // In design mode, clicking a point selects it for potential moving
+      setSelectedPoint(point === selectedPoint ? null : point);
+    } else {
+      // In normal mode, clicking a point opens the detail view
+      setSelectedPoint(point);
+    }
   };
 
   return (
@@ -170,7 +194,7 @@ const App: React.FC = () => {
             </div>
             <div className="flex items-center gap-3 print:hidden">
                <button 
-                onClick={() => setIsDesignMode(!isDesignMode)}
+                onClick={() => { setIsDesignMode(!isDesignMode); if(!isDesignMode) setSelectedPoint(null); }}
                 className={`flex items-center gap-2 px-4 py-2 rounded-xl border font-bold text-xs uppercase transition-all ${isDesignMode ? 'bg-blue-600 text-white border-blue-400 shadow-lg shadow-blue-900/50' : 'bg-gray-800 text-gray-400 border-gray-700 hover:text-white'}`}
                >
                  <Edit3 size={16} /> {isDesignMode ? 'Designläge Aktivt' : 'Aktivera Designläge'}
@@ -191,8 +215,9 @@ const App: React.FC = () => {
                   <MachineMap 
                     points={points} 
                     layout={layout}
-                    onPointClick={!isDesignMode ? setSelectedPoint : undefined}
+                    onPointClick={handlePointClick}
                     onModuleClick={isDesignMode ? setEditingModule : undefined}
+                    onMapClick={isDesignMode ? handleMapClick : undefined}
                     selectedPointId={selectedPoint?.id}
                     customMapUrl={customMapUrl}
                     editMode={isDesignMode}
@@ -278,7 +303,7 @@ const App: React.FC = () => {
           onClose={() => setIsSettingsOpen(false)} 
         />
       )}
-      {selectedPoint && !editingPoint && (
+      {selectedPoint && !editingPoint && !isDesignMode && (
         <PointDetail 
           point={selectedPoint} 
           onUpdate={(p) => setPoints(points.map(x => x.id === p.id ? p : x))} 

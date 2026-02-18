@@ -2,7 +2,7 @@
 import React, { useRef } from 'react';
 import { MachinePoint, MachineModule, Criticality } from '../types';
 import { CRITICALITY_COLORS, DEFAULT_MACHINE_LAYOUT } from '../constants';
-import { Edit3 } from 'lucide-react';
+import { Edit3, Move } from 'lucide-react';
 
 interface MachineMapProps {
   points: MachinePoint[];
@@ -59,6 +59,11 @@ const MachineMap: React.FC<MachineMapProps> = ({
           Layout: TP-24 Tray Packer
           {editMode && <span className="text-xs bg-blue-600 text-white px-2 py-0.5 rounded-full animate-pulse flex items-center gap-1"><Edit3 size={10}/> DESIGNLÄGE</span>}
         </h2>
+        {editMode && selectedPointId && (
+          <div className="mt-2 text-[10px] bg-amber-600 text-white px-3 py-1 rounded-full font-bold flex items-center gap-1 animate-bounce">
+            <Move size={10} /> KLICKA PÅ KARTAN FÖR ATT FLYTTA PUNKTEN
+          </div>
+        )}
       </div>
 
       {customMapUrl ? (
@@ -76,7 +81,7 @@ const MachineMap: React.FC<MachineMapProps> = ({
             
             {/* Render Dynamic Modules (Rutor/Stationer) */}
             {layout.map((mod) => {
-              const showFill = mod.hasFill !== false; // Default to true
+              const showFill = mod.hasFill !== false; 
               const fillColor = editMode ? `${mod.color}22` : "#1e293b";
               
               return (
@@ -133,7 +138,7 @@ const MachineMap: React.FC<MachineMapProps> = ({
           return (
             <div 
               key={point.id}
-              className={`absolute flex items-center justify-center w-8 h-8 rounded-full border-2 border-white shadow-xl cursor-pointer pointer-events-auto transition-all hover:scale-125 z-20 ${CRITICALITY_COLORS[point.criticality]} ${isSelected ? 'ring-4 ring-blue-500 scale-125 z-30' : ''} ${editMode ? 'opacity-50' : ''}`}
+              className={`absolute flex items-center justify-center w-8 h-8 rounded-full border-2 border-white shadow-xl cursor-pointer pointer-events-auto transition-all hover:scale-125 z-20 ${CRITICALITY_COLORS[point.criticality]} ${isSelected ? 'ring-4 ring-blue-400 scale-125 z-30' : ''}`}
               style={{ left: `${point.coordinates.x}%`, top: `${point.coordinates.y}%`, transform: 'translate(-50%, -50%)' }}
               onClick={(e) => {
                 e.stopPropagation();
@@ -144,11 +149,16 @@ const MachineMap: React.FC<MachineMapProps> = ({
               {isCritical && (
                 <div className="absolute -inset-1 rounded-full border border-red-500 animate-ping opacity-75"></div>
               )}
+              {editMode && isSelected && (
+                <div className="absolute -top-1 -right-1 bg-white rounded-full p-0.5 shadow-md">
+                  <Move size={8} className="text-blue-600" />
+                </div>
+              )}
             </div>
           );
         })}
 
-        {/* Preview Point (Moving when editing) */}
+        {/* Preview Point (Moving when adding) */}
         {previewPoint && (
            <div 
               className={`absolute flex items-center justify-center w-10 h-10 rounded-full border-2 border-dashed border-white shadow-2xl z-40 animate-pulse bg-blue-600/50`}

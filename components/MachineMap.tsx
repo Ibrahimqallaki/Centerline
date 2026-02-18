@@ -2,25 +2,30 @@
 import React, { useRef } from 'react';
 import { MachinePoint, MachineModule, Criticality } from '../types';
 import { CRITICALITY_COLORS, DEFAULT_MACHINE_LAYOUT } from '../constants';
+import { Edit3 } from 'lucide-react';
 
 interface MachineMapProps {
   points: MachinePoint[];
   onPointClick?: (point: MachinePoint) => void;
   onMapClick?: (x: number, y: number) => void;
+  onModuleClick?: (module: MachineModule) => void;
   selectedPointId?: string;
   previewPoint?: MachinePoint; 
   customMapUrl?: string | null;
   layout?: MachineModule[];
+  editMode?: boolean;
 }
 
 const MachineMap: React.FC<MachineMapProps> = ({ 
   points, 
   onPointClick, 
   onMapClick,
+  onModuleClick,
   selectedPointId, 
   previewPoint, 
   customMapUrl,
-  layout = DEFAULT_MACHINE_LAYOUT
+  layout = DEFAULT_MACHINE_LAYOUT,
+  editMode = false
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const visiblePoints = points.filter(p => p.visibleOnMap !== false);
@@ -39,7 +44,7 @@ const MachineMap: React.FC<MachineMapProps> = ({
     <div 
       ref={containerRef}
       onClick={handleContainerClick}
-      className={`relative w-full aspect-[2/1] bg-gray-900 rounded-3xl border border-gray-800 overflow-hidden shadow-2xl print-map-container ${onMapClick ? 'cursor-crosshair' : ''}`}
+      className={`relative w-full aspect-[2/1] bg-gray-900 rounded-3xl border border-gray-800 overflow-hidden shadow-2xl print-map-container ${onMapClick ? 'cursor-crosshair' : ''} ${editMode ? 'ring-2 ring-blue-500/50' : ''}`}
     >
       {/* Blueprint Grid */}
       <div className="absolute inset-0 opacity-[0.05] pointer-events-none z-0" 
@@ -50,7 +55,10 @@ const MachineMap: React.FC<MachineMapProps> = ({
       </div>
 
       <div className="absolute top-6 left-8 z-10 pointer-events-none">
-        <h2 className="text-xl font-black text-blue-400 tracking-tighter uppercase italic print:text-black">Layout: TP-24 Tray Packer</h2>
+        <h2 className="text-xl font-black text-blue-400 tracking-tighter uppercase italic print:text-black flex items-center gap-2">
+          Layout: TP-24 Tray Packer
+          {editMode && <span className="text-xs bg-blue-600 text-white px-2 py-0.5 rounded-full animate-pulse flex items-center gap-1"><Edit3 size={10}/> DESIGNLÄGE</span>}
+        </h2>
       </div>
 
       {customMapUrl ? (
@@ -68,17 +76,26 @@ const MachineMap: React.FC<MachineMapProps> = ({
             
             {/* Render Dynamic Modules (Rutor/Stationer) */}
             {layout.map((mod) => (
-              <g key={mod.id}>
+              <g 
+                key={mod.id} 
+                className={`${editMode ? 'cursor-pointer group' : ''}`}
+                onClick={(e) => {
+                  if (editMode && onModuleClick) {
+                    e.stopPropagation();
+                    onModuleClick(mod);
+                  }
+                }}
+              >
                 <rect 
                   x={mod.x} 
                   y={mod.y} 
                   width={mod.width} 
                   height={mod.height} 
-                  fill="#1e293b" 
+                  fill={editMode ? `${mod.color}22` : "#1e293b"} 
                   stroke={mod.color} 
-                  strokeWidth="0.8" 
+                  strokeWidth={editMode ? "1.2" : "0.8"} 
                   rx="1" 
-                  className="print:fill-white print:stroke-black"
+                  className={`transition-all duration-200 print:fill-white print:stroke-black ${editMode ? 'group-hover:stroke-white' : ''}`}
                 />
                 <text 
                   x={mod.x + mod.width / 2} 
@@ -88,10 +105,13 @@ const MachineMap: React.FC<MachineMapProps> = ({
                   fill={mod.color} 
                   fontSize="2" 
                   fontWeight="bold"
-                  className="uppercase tracking-tighter print:fill-black"
+                  className="uppercase tracking-tighter print:fill-black pointer-events-none"
                 >
                   {mod.label}
                 </text>
+                {editMode && (
+                  <circle cx={mod.x} cy={mod.y} r="0.5" fill="white" />
+                )}
               </g>
             ))}
           </g>
@@ -107,7 +127,7 @@ const MachineMap: React.FC<MachineMapProps> = ({
           return (
             <div 
               key={point.id}
-              className={`absolute flex items-center justify-center w-8 h-8 rounded-full border-2 border-white shadow-xl cursor-pointer pointer-events-auto transition-all hover:scale-125 z-20 ${CRITICALITY_COLORS[point.criticality]} ${isSelected ? 'ring-4 ring-blue-500 scale-125 z-30' : ''}`}
+              className={`absolute flex items-center justify-center w-8 h-8 rounded-full border-2 border-white shadow-xl cursor-pointer pointer-events-auto transition-all hover:scale-125 z-20 ${CRITICALITY_COLORS[point.criticality]} ${isSelected ? 'ring-4 ring-blue-500 scale-125 z-30' : ''} ${editMode ? 'opacity-50' : ''}`}
               style={{ left: `${point.coordinates.x}%`, top: `${point.coordinates.y}%`, transform: 'translate(-50%, -50%)' }}
               onClick={(e) => {
                 e.stopPropagation();

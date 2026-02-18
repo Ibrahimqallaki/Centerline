@@ -2,11 +2,13 @@
 import { MachinePoint, Zone, Criticality, MachineModule } from './types';
 
 export const DEFAULT_MACHINE_LAYOUT: MachineModule[] = [
-  { id: 'm1', label: 'Inmatning/Separator', x: 2, y: 15, width: 25, height: 10, color: '#3b82f6' },
-  { id: 'm2', label: 'Kartongmagasin', x: 32, y: 30, width: 15, height: 15, color: '#eab308' },
-  { id: 'm3', label: 'Formverktyg (Brickor)', x: 50, y: 5, width: 20, height: 35, color: '#f97316' },
-  { id: 'm4', label: 'Kniv & Filmspole', x: 72, y: 10, width: 15, height: 25, color: '#ec4899' },
-  { id: 'm5', label: 'Utmatning', x: 90, y: 15, width: 8, height: 10, color: '#a855f7' }
+  { id: 'm1', label: 'Inmatning (1-2)', x: 0, y: 15, width: 20, height: 12, color: '#3b82f6' },
+  { id: 'm2', label: 'Separator (3-4)', x: 20, y: 15, width: 15, height: 12, color: '#6366f1' },
+  { id: 'm3', label: 'Magasin (13)', x: 35, y: 32, width: 12, height: 15, color: '#eab308' },
+  { id: 'm4', label: 'Formning (5-6)', x: 37, y: 5, width: 25, height: 22, color: '#f97316' },
+  { id: 'm5', label: 'Filmlindning (9-10)', x: 62, y: 8, width: 18, height: 18, color: '#ec4899' },
+  { id: 'm7', label: 'Filmspole (18)', x: 64, y: 30, width: 14, height: 12, color: '#f472b6' },
+  { id: 'm6', label: 'Utmatning (8)', x: 80, y: 15, width: 20, height: 12, color: '#a855f7' }
 ];
 
 export const MACHINE_POINTS: MachinePoint[] = [
@@ -20,22 +22,8 @@ export const MACHINE_POINTS: MachinePoint[] = [
     tolerance: '+/- 0.5',
     measureMethod: 'Mekanisk mätare B1',
     criticality: Criticality.MEDIUM,
-    imagePlaceholder: 'https://picsum.photos/400/300?random=1',
-    coordinates: { x: 8, y: 50 },
-    visibleOnMap: true
-  },
-  {
-    id: 'LSK-F1',
-    number: 4,
-    name: 'Filmspole Position',
-    zone: Zone.FILM_UNIT,
-    description: 'Sidledsjustering av filmspolen på spindeln. Se manual fig 7.2.4.',
-    targetValue: 'Mätare F1 = 215',
-    tolerance: '+/- 1.0',
-    measureMethod: 'Siko-mätare F1',
-    criticality: Criticality.MEDIUM,
-    imagePlaceholder: 'https://picsum.photos/400/300?random=2',
-    coordinates: { x: 78, y: 35 },
+    imagePlaceholder: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=400',
+    coordinates: { x: 10, y: 21 },
     visibleOnMap: true
   },
   {
@@ -48,8 +36,8 @@ export const MACHINE_POINTS: MachinePoint[] = [
     tolerance: '+/- 0.2',
     measureMethod: 'Siko-mätare I1',
     criticality: Criticality.HIGH,
-    imagePlaceholder: 'https://picsum.photos/400/300?random=3',
-    coordinates: { x: 38, y: 75 },
+    imagePlaceholder: 'https://images.unsplash.com/photo-1565608411386-35f922754972?auto=format&fit=crop&q=80&w=400',
+    coordinates: { x: 38, y: 40 },
     visibleOnMap: true
   },
   {
@@ -62,8 +50,8 @@ export const MACHINE_POINTS: MachinePoint[] = [
     tolerance: '+/- 0.5',
     measureMethod: 'Siko-mätare L1',
     criticality: Criticality.MEDIUM,
-    imagePlaceholder: 'https://picsum.photos/400/300?random=4',
-    coordinates: { x: 42, y: 75 },
+    imagePlaceholder: 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&q=80&w=400',
+    coordinates: { x: 44, y: 40 },
     visibleOnMap: true
   },
   {
@@ -76,8 +64,8 @@ export const MACHINE_POINTS: MachinePoint[] = [
     tolerance: '+/- 0.5',
     measureMethod: 'Mekanisk mätare M1',
     criticality: Criticality.HIGH,
-    imagePlaceholder: 'https://picsum.photos/400/300?random=5',
-    coordinates: { x: 55, y: 25 },
+    imagePlaceholder: 'https://images.unsplash.com/photo-1537462715879-360eeb61a0ad?auto=format&fit=crop&q=80&w=400',
+    coordinates: { x: 50, y: 16 },
     visibleOnMap: true
   },
   {
@@ -90,8 +78,8 @@ export const MACHINE_POINTS: MachinePoint[] = [
     tolerance: '+/- 0.05',
     measureMethod: 'Bladmått',
     criticality: Criticality.CRITICAL,
-    imagePlaceholder: 'https://picsum.photos/400/300?random=6',
-    coordinates: { x: 62, y: 30 },
+    imagePlaceholder: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&q=80&w=400',
+    coordinates: { x: 55, y: 12 },
     visibleOnMap: true
   },
   {
@@ -104,8 +92,22 @@ export const MACHINE_POINTS: MachinePoint[] = [
     tolerance: '+/- 0.05',
     measureMethod: 'Bladmått',
     criticality: Criticality.CRITICAL,
-    imagePlaceholder: 'https://picsum.photos/400/300?random=7',
-    coordinates: { x: 62, y: 40 },
+    imagePlaceholder: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&q=80&w=400',
+    coordinates: { x: 55, y: 20 },
+    visibleOnMap: true
+  },
+  {
+    id: 'LSK-F1',
+    number: 4,
+    name: 'Filmspole Position',
+    zone: Zone.FILM_UNIT,
+    description: 'Sidledsjustering av filmspolen på spindeln (placerad under maskinen). Se manual fig 7.2.4.',
+    targetValue: 'Mätare F1 = 215',
+    tolerance: '+/- 1.0',
+    measureMethod: 'Siko-mätare F1',
+    criticality: Criticality.MEDIUM,
+    imagePlaceholder: 'https://images.unsplash.com/photo-1590247813693-5541d1c609fd?auto=format&fit=crop&q=80&w=400',
+    coordinates: { x: 71, y: 36 },
     visibleOnMap: true
   },
   {
@@ -113,13 +115,13 @@ export const MACHINE_POINTS: MachinePoint[] = [
     number: 40,
     name: 'Knivstoppläge CB-2',
     zone: Zone.FILM_UNIT,
-    description: 'Minsta tillåtna regleringsgrad för styrlagrets stoppläge. Se manual kap 8.4.',
+    description: 'Minsta tillåtna regleringsgrad för styrlagrets stoppläge i lindningsenheten. Se manual kap 8.4.',
     targetValue: '2.8°',
     tolerance: '+/- 0.1°',
     measureMethod: 'Encoder-position',
     criticality: Criticality.CRITICAL,
-    imagePlaceholder: 'https://picsum.photos/400/300?random=8',
-    coordinates: { x: 75, y: 15 },
+    imagePlaceholder: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80&w=400',
+    coordinates: { x: 71, y: 15 },
     phaseAngle: 2.8,
     visibleOnMap: true
   },
@@ -128,13 +130,13 @@ export const MACHINE_POINTS: MachinePoint[] = [
     number: 55,
     name: 'Filmspänning (Regulator 4)',
     zone: Zone.FILM_UNIT,
-    description: 'Tryckinställning för filmbroms/spänning. Punkt 4 i fig 8.7.2.',
+    description: 'Tryckinställning för filmbroms/spänning vid spolen under maskinen. Punkt 4 i fig 8.7.2.',
     targetValue: '2.5 Bar',
     tolerance: '+/- 0.2',
     measureMethod: 'Manometer punkt 4',
     criticality: Criticality.HIGH,
-    imagePlaceholder: 'https://picsum.photos/400/300?random=9',
-    coordinates: { x: 82, y: 20 },
+    imagePlaceholder: 'https://images.unsplash.com/photo-1530315592271-bfc71333ef34?auto=format&fit=crop&q=80&w=400',
+    coordinates: { x: 73, y: 34 },
     visibleOnMap: true
   }
 ];

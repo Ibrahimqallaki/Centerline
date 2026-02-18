@@ -1,3 +1,4 @@
+
 export enum Zone {
   INFEED = 'Inmatning',
   SEPARATION = 'Separering',
@@ -15,20 +16,30 @@ export enum Criticality {
   CRITICAL = 'Kritisk (Kraschrisk)'
 }
 
+export interface MachineModule {
+  id: string;
+  label: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  color: string;
+}
+
 export interface MachinePoint {
-  id: string; // e.g., "P-01"
+  id: string;
   number: number;
   name: string;
   zone: Zone;
   description: string;
-  targetValue: string; // e.g., "115°", "25mm"
-  tolerance: string; // e.g., "+/- 2°"
-  measureMethod: string; // e.g., "Siko", "Digital", "Linjal", "Ögonmått"
+  targetValue: string;
+  tolerance: string;
+  measureMethod: string;
   criticality: Criticality;
-  imagePlaceholder: string; // URL for placeholder
-  coordinates: { x: number; y: number }; // Percentage on map
-  visibleOnMap: boolean; // Toggle for map visibility
-  phaseAngle?: number; // If applicable to 360 cycle
+  imagePlaceholder: string;
+  coordinates: { x: number; y: number };
+  visibleOnMap: boolean;
+  phaseAngle?: number;
   lastChecked?: string;
 }
 

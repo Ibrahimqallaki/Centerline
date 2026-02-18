@@ -1,23 +1,48 @@
 
-import React from 'react';
-import { MachinePoint } from '../types';
-import { CRITICALITY_COLORS } from '../constants';
+import React, { useRef } from 'react';
+import { MachinePoint, MachineModule, Criticality } from '../types';
+import { CRITICALITY_COLORS, DEFAULT_MACHINE_LAYOUT } from '../constants';
 
 interface MachineMapProps {
   points: MachinePoint[];
-  onPointClick: (point: MachinePoint) => void;
+  onPointClick?: (point: MachinePoint) => void;
+  onMapClick?: (x: number, y: number) => void;
   selectedPointId?: string;
   previewPoint?: MachinePoint; 
   customMapUrl?: string | null;
+  layout?: MachineModule[];
 }
 
-const MachineMap: React.FC<MachineMapProps> = ({ points, onPointClick, selectedPointId, previewPoint, customMapUrl }) => {
+const MachineMap: React.FC<MachineMapProps> = ({ 
+  points, 
+  onPointClick, 
+  onMapClick,
+  selectedPointId, 
+  previewPoint, 
+  customMapUrl,
+  layout = DEFAULT_MACHINE_LAYOUT
+}) => {
+  const containerRef = useRef<HTMLDivElement>(null);
   const visiblePoints = points.filter(p => p.visibleOnMap !== false);
 
+  const handleContainerClick = (e: React.MouseEvent) => {
+    if (!onMapClick || !containerRef.current) return;
+    
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    
+    onMapClick(x, y);
+  };
+
   return (
-    <div className="relative w-full aspect-[2/1] bg-gray-900 rounded-t-3xl border-b-4 border-gray-800 overflow-hidden shadow-2xl print-map-container">
-      {/* Blueprint Grid background - Mer synlig */}
-      <div className="absolute inset-0 opacity-[0.1] pointer-events-none z-0" 
+    <div 
+      ref={containerRef}
+      onClick={handleContainerClick}
+      className={`relative w-full aspect-[2/1] bg-gray-900 rounded-3xl border border-gray-800 overflow-hidden shadow-2xl print-map-container ${onMapClick ? 'cursor-crosshair' : ''}`}
+    >
+      {/* Blueprint Grid */}
+      <div className="absolute inset-0 opacity-[0.05] pointer-events-none z-0" 
            style={{ 
              backgroundImage: `linear-gradient(#3b82f6 1px, transparent 1px), linear-gradient(90deg, #3b82f6 1px, transparent 1px)`,
              backgroundSize: '40px 40px' 
@@ -25,11 +50,7 @@ const MachineMap: React.FC<MachineMapProps> = ({ points, onPointClick, selectedP
       </div>
 
       <div className="absolute top-6 left-8 z-10 pointer-events-none">
-        <h2 className="text-2xl font-black text-blue-400 tracking-tighter uppercase italic">Maskinlayout TP-24</h2>
-        <div className="flex items-center gap-2 mt-1">
-          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-          <p className="text-[10px] font-mono text-gray-500 uppercase tracking-widest font-bold">Live Visualizer // Active</p>
-        </div>
+        <h2 className="text-xl font-black text-blue-400 tracking-tighter uppercase italic print:text-black">Layout: TP-24 Tray Packer</h2>
       </div>
 
       {customMapUrl ? (
@@ -39,69 +60,80 @@ const MachineMap: React.FC<MachineMapProps> = ({ points, onPointClick, selectedP
           className="absolute inset-0 w-full h-full object-contain p-4"
         />
       ) : (
-        /* High-Visibility Machine Schematic - Ingen filter, bara ren vektor */
+        /* Dynamic SVG Machine Schematic */
         <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 50" preserveAspectRatio="xMidYMid meet">
-          <g transform="translate(5, 5) scale(0.9)">
-            {/* Main Conveyor Line - Strong Blue */}
-            <line x1="0" y1="20" x2="100" y2="20" stroke="#3b82f6" strokeWidth="1" strokeDasharray="3 2" opacity="0.4" />
+          <g transform="translate(0, 0)">
+            {/* Conveyor Line */}
+            <line x1="0" y1="20" x2="100" y2="20" stroke="#3b82f6" strokeWidth="0.5" strokeDasharray="2 2" opacity="0.3" />
             
-            {/* Infeed Module */}
-            <rect x="0" y="15" width="12" height="10" fill="#1e293b" stroke="#3b82f6" strokeWidth="1" rx="1" />
-            <text x="6" y="13" fill="#60a5fa" fontSize="2" textAnchor="middle" fontWeight="black" className="uppercase italic">Inmatning</text>
-
-            {/* Separation Module */}
-            <rect x="18" y="15" width="12" height="10" fill="#1e293b" stroke="#6366f1" strokeWidth="1" rx="1" />
-            <text x="24" y="13" fill="#818cf8" fontSize="2" textAnchor="middle" fontWeight="black" className="uppercase italic">Separering</text>
-
-            {/* Cardboard Unit */}
-            <rect x="35" y="28" width="15" height="10" fill="#1e293b" stroke="#eab308" strokeWidth="1" rx="1" />
-            <text x="42.5" y="41" fill="#fbbf24" fontSize="2" textAnchor="middle" fontWeight="black" className="uppercase italic">Kartong</text>
-
-            {/* Forming Tool */}
-            <rect x="42" y="5" width="20" height="30" fill="#1e293b" stroke="#f97316" strokeWidth="1.5" rx="1" />
-            <text x="52" y="3" fill="#fb923c" fontSize="2" textAnchor="middle" fontWeight="black" className="uppercase italic">Formverktyg</text>
-
-            {/* Shrink / Film */}
-            <rect x="68" y="10" width="16" height="20" fill="#1e293b" stroke="#ec4899" strokeWidth="1" rx="1" />
-            <text x="76" y="8" fill="#f472b6" fontSize="2" textAnchor="middle" fontWeight="black" className="uppercase italic">Film/Krymp</text>
-
-            {/* Discharge */}
-            <rect x="88" y="15" width="12" height="10" fill="#1e293b" stroke="#a855f7" strokeWidth="1" rx="1" />
-            <text x="94" y="13" fill="#c084fc" fontSize="2" textAnchor="middle" fontWeight="black" className="uppercase italic">Utmatning</text>
+            {/* Render Dynamic Modules (Rutor/Stationer) */}
+            {layout.map((mod) => (
+              <g key={mod.id}>
+                <rect 
+                  x={mod.x} 
+                  y={mod.y} 
+                  width={mod.width} 
+                  height={mod.height} 
+                  fill="#1e293b" 
+                  stroke={mod.color} 
+                  strokeWidth="0.8" 
+                  rx="1" 
+                  className="print:fill-white print:stroke-black"
+                />
+                <text 
+                  x={mod.x + mod.width / 2} 
+                  y={mod.y + mod.height / 2} 
+                  textAnchor="middle" 
+                  dominantBaseline="middle" 
+                  fill={mod.color} 
+                  fontSize="2" 
+                  fontWeight="bold"
+                  className="uppercase tracking-tighter print:fill-black"
+                >
+                  {mod.label}
+                </text>
+              </g>
+            ))}
           </g>
         </svg>
       )}
 
-      {/* Interactive Points */}
-      {visiblePoints.map((point) => (
-        <button
-          key={point.id}
-          onClick={() => onPointClick(point)}
-          className={`absolute transform -translate-x-1/2 -translate-y-1/2 w-10 h-10 rounded-2xl flex items-center justify-center text-xs font-black text-white transition-all duration-200 hover:scale-125 z-20 shadow-2xl
-            ${point.id === selectedPointId ? 'ring-4 ring-white scale-125 z-30' : 'ring-2 ring-white/10'}
-            ${CRITICALITY_COLORS[point.criticality]}
-          `}
-          style={{ left: `${point.coordinates.x}%`, top: `${point.coordinates.y}%` }}
-        >
-          {point.number}
-        </button>
-      ))}
-      
-      {/* Preview Point (When adding/editing) */}
-      {previewPoint && previewPoint.visibleOnMap && (
-        <div 
-          className="absolute transform -translate-x-1/2 -translate-y-1/2 w-12 h-12 rounded-2xl flex items-center justify-center text-xs font-black text-white z-40 shadow-2xl ring-4 ring-white animate-pulse bg-blue-500"
-          style={{ left: `${previewPoint.coordinates.x}%`, top: `${previewPoint.coordinates.y}%` }}
-        >
-          {previewPoint.number}
-        </div>
-      )}
+      {/* Render Points (Numbers) */}
+      <div className="absolute inset-0 pointer-events-none">
+        {visiblePoints.map((point) => {
+          const isSelected = point.id === selectedPointId;
+          const isCritical = point.criticality === Criticality.CRITICAL;
+          
+          return (
+            <div 
+              key={point.id}
+              className={`absolute flex items-center justify-center w-8 h-8 rounded-full border-2 border-white shadow-xl cursor-pointer pointer-events-auto transition-all hover:scale-125 z-20 ${CRITICALITY_COLORS[point.criticality]} ${isSelected ? 'ring-4 ring-blue-500 scale-125 z-30' : ''}`}
+              style={{ left: `${point.coordinates.x}%`, top: `${point.coordinates.y}%`, transform: 'translate(-50%, -50%)' }}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onPointClick) onPointClick(point);
+              }}
+            >
+              <span className="text-xs font-black text-white italic">{point.number}</span>
+              {isCritical && (
+                <div className="absolute -inset-1 rounded-full border border-red-500 animate-ping opacity-75"></div>
+              )}
+            </div>
+          );
+        })}
 
-      {/* Simplified Legend */}
-      <div className="absolute bottom-6 left-8 bg-black/80 px-4 py-2 rounded-xl border border-gray-700 text-[10px] font-black flex gap-4 pointer-events-none uppercase tracking-widest text-gray-400 shadow-xl">
-        <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 bg-yellow-600 rounded-sm"></span> Medium</div>
-        <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 bg-orange-600 rounded-sm"></span> Hög</div>
-        <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 bg-red-600 rounded-sm"></span> Kraschrisk</div>
+        {/* Preview Point (Moving when editing) */}
+        {previewPoint && (
+           <div 
+              className={`absolute flex items-center justify-center w-10 h-10 rounded-full border-2 border-dashed border-white shadow-2xl z-40 animate-pulse bg-blue-600/50`}
+              style={{ left: `${previewPoint.coordinates.x}%`, top: `${previewPoint.coordinates.y}%`, transform: 'translate(-50%, -50%)' }}
+            >
+              <span className="text-sm font-black text-white">{previewPoint.number}</span>
+              <div className="absolute -bottom-8 bg-blue-600 text-[10px] text-white px-2 py-0.5 rounded font-mono">
+                X:{Math.round(previewPoint.coordinates.x)} Y:{Math.round(previewPoint.coordinates.y)}
+              </div>
+            </div>
+        )}
       </div>
     </div>
   );

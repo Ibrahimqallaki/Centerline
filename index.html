@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="sv" class="h-full">
   <head>
@@ -38,44 +37,72 @@
       }
 
       @media print {
-        .print-hidden, aside, button, nav, header .flex-items-center-gap-2 { 
+        /* Hide UI elements */
+        .print-hidden, 
+        aside, 
+        button, 
+        nav, 
+        .fixed,
+        .absolute.inset-0.z-40,
+        header .flex-items-center-gap-3 { 
           display: none !important; 
         }
+
+        /* Reset colors for printing */
         body { 
           background: white !important; 
           color: black !important; 
           overflow: visible !important; 
           height: auto !important; 
         }
+
         #root { 
           display: block !important; 
           height: auto !important; 
         }
+
         main {
           padding: 0 !important;
           margin: 0 !important;
-        }
-        .bg-gray-950, .bg-gray-900, .bg-black {
           background: white !important;
-          border-color: #eee !important;
-        }
-        .text-gray-100, .text-gray-200, .text-gray-400 {
           color: black !important;
         }
-        .text-blue-500, .text-green-500, .text-cyan-400 {
+
+        .bg-gray-950, .bg-gray-900, .bg-black, .bg-blue-900\/20, .bg-black\/40 {
+          background: white !important;
+          border-color: #ddd !important;
+          color: black !important;
+        }
+
+        .text-gray-100, .text-gray-200, .text-gray-400, .text-gray-500, .text-white {
+          color: black !important;
+        }
+
+        .text-blue-500, .text-green-500, .text-cyan-400, .text-blue-400 {
           color: #000 !important;
           font-weight: bold !important;
         }
-        .shadow-2xl, .shadow-lg {
-          shadow: none !important;
-        }
+
+        /* Optimize Map for Print */
         .print-map-container {
-          aspect-ratio: 2/1 !important;
+          aspect-ratio: 16/9 !important;
           border: 1px solid #000 !important;
           margin-bottom: 2rem !important;
+          background: #f9f9f9 !important;
         }
+
+        /* Table Optimization */
         .divide-y > * {
-          border-bottom: 1px solid #eee !important;
+          border-bottom: 1px solid #ddd !important;
+        }
+        
+        .shadow-2xl, .shadow-lg, .shadow-xl {
+          box-shadow: none !important;
+        }
+
+        h1, h2, h3 {
+          color: black !important;
+          font-style: normal !important;
         }
       }
     </style>

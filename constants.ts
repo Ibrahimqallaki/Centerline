@@ -1,7 +1,16 @@
-import { MachinePoint, Zone, Criticality } from './types';
+
+import { MachinePoint, Zone, Criticality, MachineModule } from './types';
+
+export const DEFAULT_MACHINE_LAYOUT: MachineModule[] = [
+  { id: 'm1', label: 'Inmatning', x: 2, y: 15, width: 12, height: 10, color: '#3b82f6' },
+  { id: 'm2', label: 'Separering', x: 18, y: 15, width: 12, height: 10, color: '#6366f1' },
+  { id: 'm3', label: 'Kartong', x: 35, y: 28, width: 15, height: 10, color: '#eab308' },
+  { id: 'm4', label: 'Formverktyg', x: 42, y: 5, width: 22, height: 32, color: '#f97316' },
+  { id: 'm5', label: 'Film/Krymp', x: 68, y: 10, width: 16, height: 20, color: '#ec4899' },
+  { id: 'm6', label: 'Utmatning', x: 88, y: 15, width: 10, height: 10, color: '#a855f7' }
+];
 
 export const MACHINE_POINTS: MachinePoint[] = [
-  // 1. Inmatning
   {
     id: 'P-01',
     number: 1,
@@ -17,7 +26,6 @@ export const MACHINE_POINTS: MachinePoint[] = [
     phaseAngle: 0,
     visibleOnMap: true
   },
-  // 2. Separering
   {
     id: 'P-12',
     number: 12,
@@ -33,39 +41,6 @@ export const MACHINE_POINTS: MachinePoint[] = [
     phaseAngle: 210,
     visibleOnMap: true
   },
-  // 3. Gejdrar (Guides)
-  {
-    id: 'P-15',
-    number: 15,
-    name: 'Sido-gejder Inlopp',
-    zone: Zone.GUIDES,
-    description: 'Breddinställning för inkommande produkt.',
-    targetValue: '185mm',
-    tolerance: '+/- 1mm',
-    measureMethod: 'Linjal / Skala',
-    criticality: Criticality.LOW,
-    imagePlaceholder: 'https://picsum.photos/400/300?random=8',
-    coordinates: { x: 30, y: 35 },
-    phaseAngle: undefined,
-    visibleOnMap: true
-  },
-  // 4. Kartongmatning
-  {
-    id: 'P-18',
-    number: 18,
-    name: 'Magasin Vakuumarm',
-    zone: Zone.CARDBOARD,
-    description: 'Vinkel för hämtning av platt kartong.',
-    targetValue: '45°',
-    tolerance: '+/- 2°',
-    measureMethod: 'Gradskiva',
-    criticality: Criticality.MEDIUM,
-    imagePlaceholder: 'https://picsum.photos/400/300?random=9',
-    coordinates: { x: 40, y: 70 },
-    phaseAngle: 45,
-    visibleOnMap: true
-  },
-  // 5. Formverktyg
   {
     id: 'P-24',
     number: 24,
@@ -94,53 +69,6 @@ export const MACHINE_POINTS: MachinePoint[] = [
     imagePlaceholder: 'https://picsum.photos/400/300?random=4',
     coordinates: { x: 55, y: 50 },
     phaseAngle: 95,
-    visibleOnMap: true
-  },
-  // 6. Krympfilm Matning
-  {
-    id: 'P-32',
-    number: 32,
-    name: 'Filmkniv Utlösning',
-    zone: Zone.SHRINK_FILM,
-    description: 'Exakt punkt där kniven klipper filmen.',
-    targetValue: '340°',
-    tolerance: '+/- 5°',
-    measureMethod: 'Elektronisk Kam',
-    criticality: Criticality.HIGH,
-    imagePlaceholder: 'https://picsum.photos/400/300?random=5',
-    coordinates: { x: 70, y: 60 },
-    phaseAngle: 340,
-    visibleOnMap: true
-  },
-  {
-    id: 'P-35',
-    number: 35,
-    name: 'Filmbana Spänning',
-    zone: Zone.SHRINK_FILM,
-    description: 'Dansvalsspänning för filmen.',
-    targetValue: '3.5 Bar',
-    tolerance: '+/- 0.2 Bar',
-    measureMethod: 'Manometer',
-    criticality: Criticality.LOW,
-    imagePlaceholder: 'https://picsum.photos/400/300?random=6',
-    coordinates: { x: 75, y: 20 },
-    phaseAngle: undefined,
-    visibleOnMap: true
-  },
-  // 7. Utmatning
-  {
-    id: 'P-48',
-    number: 48,
-    name: 'Utmatningsband Hastighet',
-    zone: Zone.DISCHARGE,
-    description: 'Differenshastighet mot ugnen.',
-    targetValue: '+5%',
-    tolerance: '+/- 1%',
-    measureMethod: 'HMI',
-    criticality: Criticality.MEDIUM,
-    imagePlaceholder: 'https://picsum.photos/400/300?random=7',
-    coordinates: { x: 90, y: 50 },
-    phaseAngle: undefined,
     visibleOnMap: true
   }
 ];

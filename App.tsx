@@ -9,10 +9,11 @@ import PhasingGauge from './components/PhasingGauge';
 import AddPointForm from './components/AddPointForm';
 import SettingsModal from './components/SettingsModal';
 import ModuleEditor from './components/ModuleEditor';
-import { Map, List, Settings, Activity, Printer, ChevronLeft, ChevronRight, Plus, Edit3 } from 'lucide-react';
+import Guide from './components/Guide';
+import { Map, List, Settings, Activity, Printer, ChevronLeft, ChevronRight, Plus, Edit3, BookOpen } from 'lucide-react';
 
 const App: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'overview' | 'table' | 'phasing'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'table' | 'phasing' | 'guide'>('overview');
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => localStorage.getItem('sidebar_collapsed') === 'true');
   const [isDesignMode, setIsDesignMode] = useState(false);
   
@@ -131,7 +132,8 @@ const App: React.FC = () => {
             {[
               { id: 'overview', icon: Map, label: 'Karta' },
               { id: 'table', icon: List, label: 'Lista' },
-              { id: 'phasing', icon: Activity, label: 'Synk' }
+              { id: 'phasing', icon: Activity, label: 'Synk' },
+              { id: 'guide', icon: BookOpen, label: 'Guide' }
             ].map((tab) => (
               <button 
                 key={tab.id}
@@ -164,12 +166,14 @@ const App: React.FC = () => {
             </div>
             
             <div className="flex items-center gap-3 print:hidden">
-               <button 
-                onClick={() => { setIsDesignMode(!isDesignMode); setSelectedPoint(null); }}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl border font-black text-[10px] uppercase tracking-widest transition-all ${isDesignMode ? 'bg-amber-600 text-black border-amber-400' : 'bg-gray-800 text-gray-400 border-gray-700 hover:text-white'}`}
-               >
-                 <Edit3 size={14} /> {isDesignMode ? 'Lås Layout' : 'Redigera Layout'}
-               </button>
+               {activeTab === 'overview' && (
+                 <button 
+                  onClick={() => { setIsDesignMode(!isDesignMode); setSelectedPoint(null); }}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl border font-black text-[10px] uppercase tracking-widest transition-all ${isDesignMode ? 'bg-amber-600 text-black border-amber-400' : 'bg-gray-800 text-gray-400 border-gray-700 hover:text-white'}`}
+                 >
+                   <Edit3 size={14} /> {isDesignMode ? 'Lås Layout' : 'Redigera Layout'}
+                 </button>
+               )}
                <button 
                 onClick={handlePrint} 
                 className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg border border-blue-400 font-black text-xs uppercase tracking-widest shadow-xl transition-all"
@@ -201,7 +205,7 @@ const App: React.FC = () => {
             </section>
                 
             {/* CHECKLISTA - Visas alltid vid utskrift oavsett flik */}
-            <section className={`${activeTab !== 'phasing' ? 'block' : 'print:block hidden'} print:mt-10`}>
+            <section className={`${(activeTab !== 'phasing' && activeTab !== 'guide') ? 'block' : 'print:block hidden'} print:mt-10`}>
               <div className="bg-gray-900 rounded-[2rem] border border-gray-800 overflow-hidden print:border-2 print:border-black print:rounded-none print:bg-white">
                 <div className="grid grid-cols-12 px-8 py-5 bg-black/40 text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] border-b border-gray-800 print:bg-gray-100 print:text-black print:border-black">
                   <div className="col-span-1">#</div>
@@ -244,6 +248,7 @@ const App: React.FC = () => {
             <div className="print:hidden">
               {activeTab === 'table' && <ParameterTable points={points} onPointSelect={setSelectedPoint} getQrUrl={getQrCodeUrl} />}
               {activeTab === 'phasing' && <PhasingGauge currentDegree={0} points={points} />}
+              {activeTab === 'guide' && <Guide />}
             </div>
           </div>
 

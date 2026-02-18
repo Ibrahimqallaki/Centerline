@@ -7,149 +7,117 @@
     <title>Centerline Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-      /* Industrial scrollbar */
-      ::-webkit-scrollbar {
-        width: 6px;
-        height: 6px;
-      }
-      ::-webkit-scrollbar-track {
-        background: #030712; 
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #1f2937; 
-        border-radius: 10px;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #374151; 
-      }
+      /* Industriell scrollbar för skärm */
+      ::-webkit-scrollbar { width: 6px; height: 6px; }
+      ::-webkit-scrollbar-track { background: #030712; }
+      ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 10px; }
 
       body {
         background-color: #030712;
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        width: 100%;
+        margin: 0; padding: 0;
+        height: 100%; width: 100%;
       }
 
-      #root {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-      }
+      #root { height: 100%; display: flex; flex-direction: column; }
 
+      /* UTSKRIFTSOPTIMERING */
       @media print {
-        /* A3 Landscape Optimization */
         @page {
           size: A3 landscape;
-          margin: 10mm;
+          margin: 15mm;
+        }
+
+        /* Tvinga vit bakgrund på ALLA element, även djupt i DOM:en */
+        * {
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+          background-color: transparent !important;
+          color: black !important;
+          box-shadow: none !important;
+          border-color: #000 !important;
         }
 
         html, body {
-          background: white !important;
-          color: black !important;
+          background-color: white !important;
           height: auto !important;
-          width: 100% !important;
           overflow: visible !important;
         }
 
-        /* Hide interactive UI components */
+        #root, main, div, section {
+          background-color: white !important;
+          height: auto !important;
+          min-height: 0 !important;
+          overflow: visible !important;
+          position: static !important;
+          display: block !important;
+        }
+
+        /* Göm navigerings-element */
         .print-hidden, 
         aside, 
-        button, 
         nav, 
-        .fixed,
-        .absolute.inset-0.z-40,
-        .absolute.top-6.left-8 span, /* Design mode label */
-        header .flex { 
-          display: none !important; 
+        button, 
+        .fixed, 
+        .absolute.top-6.left-8 span,
+        [role="slider"] {
+          display: none !important;
         }
 
-        /* Show the main header specifically for print */
-        header {
-          display: block !important;
-          margin-bottom: 10mm !important;
-          border-bottom: 2px solid #000 !important;
-          padding-bottom: 5mm !important;
-        }
-
+        /* Layout-fix för flöde */
         main {
           padding: 0 !important;
           margin: 0 !important;
-          background: white !important;
-          display: block !important;
+          width: 100% !important;
         }
 
         .max-w-6xl {
           max-width: 100% !important;
         }
 
-        /* Force high quality printing of colors and images */
-        * {
-          -webkit-print-color-adjust: exact !important;
-          print-color-adjust: exact !important;
+        /* Rubriker */
+        header {
+          display: flex !important;
+          justify-content: space-between !important;
+          border-bottom: 2pt solid black !important;
+          margin-bottom: 10mm !important;
+          padding-bottom: 5mm !important;
         }
 
-        /* Machine Map Print Styles */
+        header h1 {
+          font-size: 24pt !important;
+        }
+
+        /* Karta */
         .print-map-container {
-          width: 100% !important;
-          height: auto !important;
-          aspect-ratio: 2/1 !important;
-          border: 2px solid #000 !important;
-          margin-bottom: 15mm !important;
-          background: #fdfdfd !important;
+          border: 1.5pt solid black !important;
           border-radius: 0 !important;
-          box-shadow: none !important;
-        }
-
-        /* Make map numbers and lines stand out on paper */
-        .bg-gray-950 { background: #fdfdfd !important; }
-        .text-blue-400 { color: #000 !important; }
-        
-        /* Table Optimization for A3 */
-        .grid-cols-12 {
-          display: grid !important;
-          grid-template-cols: repeat(12, minmax(0, 1fr)) !important;
+          margin-bottom: 10mm !important;
           page-break-inside: avoid;
         }
 
+        /* Tabeller / Punktlistor */
+        .grid {
+          display: grid !important;
+        }
+
         .divide-y > * {
-          border-bottom: 1px solid #ccc !important;
+          border-bottom: 1pt solid #000 !important;
         }
 
-        .bg-gray-900, .bg-black, .bg-black\/40 {
-          background: transparent !important;
-          border-color: #ccc !important;
-        }
+        /* Textstorlekar för läsbarhet på A3 */
+        .text-2xl { font-size: 18pt !important; }
+        .text-lg { font-size: 14pt !important; }
+        .text-sm { font-size: 10pt !important; }
+        .text-xs { font-size: 8pt !important; }
 
-        .text-gray-100, .text-gray-200, .text-gray-400, .text-gray-500, .text-gray-600, .text-white {
-          color: black !important;
-        }
-
-        .text-green-500 {
-          color: #059669 !important; /* Darker green for print */
-        }
-
-        /* Ensure QR codes are visible and sharp */
-        img[alt="QR"] {
-          width: 40px !important;
-          height: 40px !important;
-          filter: grayscale(100%);
-        }
-
-        /* Footer for signatures and date */
-        .print-footer {
-          display: block !important;
-          margin-top: 20mm;
-          border-top: 1px solid #000;
-          padding-top: 5mm;
-          font-size: 10pt;
+        /* Tvinga vita sidor 2 och 3 */
+        .bg-gray-900, .bg-gray-950, .bg-black {
+          background-color: white !important;
         }
       }
 
-      /* Hidden print footer for screen */
-      .print-footer {
-        display: none;
-      }
+      .print-only { display: none; }
+      @media print { .print-only { display: block !important; } }
     </style>
   <script type="importmap">
 {

@@ -1,6 +1,7 @@
+
 import React from 'react';
 import { MachinePoint, Zone } from '../types';
-import { QrCode, Search, AlertTriangle } from 'lucide-react';
+import { Search, AlertTriangle } from 'lucide-react';
 import { ZONE_COLORS } from '../constants';
 
 interface ParameterTableProps {
@@ -47,9 +48,8 @@ const ParameterTable: React.FC<ParameterTableProps> = ({ points, onPointSelect, 
         <div className="col-span-1">Nr</div>
         <div className="col-span-4">Parameter</div>
         <div className="col-span-2">Zon</div>
-        <div className="col-span-2 text-right">Målvärde</div>
-        <div className="col-span-2 text-center">Metod</div>
-        <div className="col-span-1 text-center">QR</div>
+        <div className="col-span-3 text-right">Värde & Tol.</div>
+        <div className="col-span-2 text-center">QR</div>
       </div>
 
       <div className="overflow-y-auto flex-1 divide-y divide-gray-700">
@@ -61,23 +61,21 @@ const ParameterTable: React.FC<ParameterTableProps> = ({ points, onPointSelect, 
           >
             <div className="col-span-1 font-mono text-gray-500 group-hover:text-white font-bold">{point.number}</div>
             <div className="col-span-4">
-              <div className="font-bold text-gray-200 group-hover:text-blue-300 transition-colors">{point.name}</div>
-              {point.phaseAngle !== undefined && (
-                <div className="text-[10px] text-cyan-400 font-mono flex items-center gap-1">
-                  <AlertTriangle size={10} /> Fasning: {point.phaseAngle}°
-                </div>
-              )}
+              <div className="font-bold text-gray-200 group-hover:text-blue-300 transition-colors leading-tight">{point.name}</div>
+              <div className="text-[10px] text-gray-500 italic mt-0.5">{point.measureMethod}</div>
             </div>
             <div className="col-span-2">
-               <span className={`text-[10px] px-2 py-0.5 rounded border border-opacity-30 font-bold ${ZONE_COLORS[point.zone]}`}>
+               <span className={`text-[9px] px-2 py-0.5 rounded border border-opacity-30 font-bold whitespace-nowrap ${ZONE_COLORS[point.zone]}`}>
                  {point.zone}
                </span>
             </div>
-            <div className="col-span-2 font-mono text-green-400 font-black text-xl text-right">{point.targetValue}</div>
-            <div className="col-span-2 text-center text-xs text-gray-500 italic">{point.measureMethod}</div>
-            <div className="col-span-1 flex justify-center">
-               <div className="bg-white p-2 rounded shadow-2xl group-hover:scale-[3] transition-transform origin-right z-20">
-                 <img src={getQrUrl(point.id, 120)} alt="QR" className="w-10 h-10 block" />
+            <div className="col-span-3 text-right">
+              <div className="font-mono text-green-400 font-black text-xl leading-none">{point.targetValue}</div>
+              <div className="text-[10px] text-gray-500 font-bold italic">Tol: {point.tolerance}</div>
+            </div>
+            <div className="col-span-2 flex justify-center">
+               <div className="bg-white p-2 rounded shadow-2xl group-hover:scale-[2.5] transition-transform origin-right z-20">
+                 <img src={getQrUrl(point.id, 120)} alt="QR" className="w-8 h-8 block" />
                </div>
             </div>
           </div>

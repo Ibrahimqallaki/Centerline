@@ -9,21 +9,19 @@ import PhasingGauge from './components/PhasingGauge';
 import AddPointForm from './components/AddPointForm';
 import SettingsModal from './components/SettingsModal';
 import ModuleEditor from './components/ModuleEditor';
-import { Map, List, Settings, Activity, Cloud, Printer, ChevronLeft, ChevronRight, Plus, Edit3, BoxSelect, FileText } from 'lucide-react';
+import { Map, List, Settings, Activity, Printer, ChevronLeft, ChevronRight, Plus, Edit3 } from 'lucide-react';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'table' | 'phasing'>('overview');
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => localStorage.getItem('sidebar_collapsed') === 'true');
   const [isDesignMode, setIsDesignMode] = useState(false);
   
-  // Modals & States
   const [isAddingPoint, setIsAddingPoint] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [editingPoint, setEditingPoint] = useState<MachinePoint | null>(null);
   const [selectedPoint, setSelectedPoint] = useState<MachinePoint | null>(null);
   const [editingModule, setEditingModule] = useState<MachineModule | null>(null);
   
-  // Storage logic
   const [points, setPoints] = useState<MachinePoint[]>(() => {
     try {
       const saved = localStorage.getItem('centerline_points');
@@ -43,7 +41,6 @@ const App: React.FC = () => {
   const [customMapUrl, setCustomMapUrl] = useState<string | null>(() => localStorage.getItem('centerline_map_url'));
   const [publicBaseUrl, setPublicBaseUrl] = useState<string>(() => localStorage.getItem('centerline_public_url') || '');
 
-  // Sync state with localStorage
   useEffect(() => {
     localStorage.setItem('centerline_points', JSON.stringify(points));
     localStorage.setItem('centerline_layout', JSON.stringify(layout));
@@ -73,29 +70,10 @@ const App: React.FC = () => {
     }
   };
 
-  const addNewModule = () => {
-    const newId = `m${layout.length + 1}_${Date.now()}`;
-    const newMod: MachineModule = {
-      id: newId,
-      label: 'NY ENHET',
-      x: 10,
-      y: 10,
-      width: 15,
-      height: 10,
-      color: '#3b82f6',
-      hasFill: false
-    };
-    setLayout([...layout, newMod]);
-    setEditingModule(newMod);
-  };
-
   const handleMapClick = (x: number, y: number) => {
     if (isDesignMode && selectedPoint) {
-      // Reposition the selected point
       const updatedPoints = points.map(p => 
-        p.id === selectedPoint.id 
-          ? { ...p, coordinates: { x, y } } 
-          : p
+        p.id === selectedPoint.id ? { ...p, coordinates: { x, y } } : p
       );
       setPoints(updatedPoints);
       setSelectedPoint({ ...selectedPoint, coordinates: { x, y } });
@@ -104,7 +82,6 @@ const App: React.FC = () => {
 
   const handlePointClick = (point: MachinePoint) => {
     if (isDesignMode) {
-      // Toggle selection for moving
       setSelectedPoint(point.id === selectedPoint?.id ? null : point);
     } else {
       setSelectedPoint(point);
@@ -114,25 +91,23 @@ const App: React.FC = () => {
   const currentPrintDate = new Date().toLocaleString('sv-SE', { dateStyle: 'long', timeStyle: 'short' });
 
   return (
-    <div className="flex flex-row w-full h-full bg-gray-950 text-gray-100 overflow-hidden font-sans">
+    <div className="flex flex-row w-full h-full bg-gray-950 text-gray-100 overflow-hidden font-sans print:bg-white print:text-black print:overflow-visible">
       
       {/* Sidebar */}
       <aside className={`${isSidebarCollapsed ? 'w-20' : 'w-64'} bg-black border-r border-gray-900 flex-shrink-0 flex flex-col justify-between transition-all duration-300 print:hidden shadow-2xl z-30 relative`}>
         <div>
           <div className={`h-20 flex items-center px-5 border-b border-gray-900 ${isSidebarCollapsed ? 'justify-center' : 'justify-between'}`}>
              <div className="flex items-center overflow-hidden">
-               <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center font-black text-2xl italic shadow-lg shrink-0">C</div>
-               {!isSidebarCollapsed && <span className="ml-3 font-black text-xl italic uppercase tracking-tighter whitespace-nowrap">Centerline</span>}
+               <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center font-black text-2xl italic shadow-lg shrink-0 text-white">C</div>
+               {!isSidebarCollapsed && <span className="ml-3 font-black text-xl italic uppercase tracking-tighter text-white">Centerline</span>}
              </div>
              
-             {/* Snyggare och mer diskret toggle-knapp */}
              <button 
                 onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)} 
                 className={`flex items-center justify-center transition-all duration-300 z-40
                   ${isSidebarCollapsed 
                     ? 'absolute -right-3 top-7 w-6 h-6 bg-gray-800 text-gray-400 hover:text-white rounded-full border border-gray-700 shadow-xl' 
                     : 'p-2 text-gray-500 hover:text-white'}`}
-                title={isSidebarCollapsed ? "Expandera" : "Fäll in"}
               >
                {isSidebarCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={18} />}
              </button>
@@ -147,42 +122,17 @@ const App: React.FC = () => {
               <button 
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)} 
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === tab.id ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/40' : 'text-gray-500 hover:bg-gray-900'}`}
-                title={isSidebarCollapsed ? tab.label : ''}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === tab.id ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-500 hover:bg-gray-900'}`}
               >
                 <tab.icon size={20} className="shrink-0" />
                 {!isSidebarCollapsed && <span className="font-bold">{tab.label}</span>}
               </button>
             ))}
-            
-            <div className="pt-4 border-t border-gray-800 mt-4 space-y-2">
-              <button 
-                onClick={() => setIsAddingPoint(true)} 
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-gray-900 text-gray-300 hover:text-white border border-gray-800 transition-all overflow-hidden group"
-              >
-                <Plus size={20} className="shrink-0 group-hover:rotate-90 transition-transform" />
-                {!isSidebarCollapsed && <span className="font-bold text-sm uppercase whitespace-nowrap">Ny Punkt</span>}
-              </button>
-
-              {isDesignMode && (
-                <button 
-                  onClick={addNewModule} 
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-blue-900/20 text-blue-300 hover:text-white border border-blue-800/50 transition-all overflow-hidden group"
-                >
-                  <BoxSelect size={20} className="shrink-0" />
-                  {!isSidebarCollapsed && <span className="font-bold text-sm uppercase whitespace-nowrap">Ny Modul</span>}
-                </button>
-              )}
-            </div>
           </nav>
         </div>
 
         <div className="p-3 border-t border-gray-800">
-           <button 
-            onClick={() => setIsSettingsOpen(true)} 
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-500 hover:text-white transition-colors"
-            title={isSidebarCollapsed ? "Inställningar" : ""}
-           >
+           <button onClick={() => setIsSettingsOpen(true)} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-500 hover:text-white transition-colors">
               <Settings size={20} className="shrink-0" />
               {!isSidebarCollapsed && <span className="font-bold">Inställningar</span>}
            </button>
@@ -190,116 +140,121 @@ const App: React.FC = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col min-w-0 bg-gray-950 overflow-y-auto relative">
+      <main className="flex-1 flex flex-col min-w-0 bg-gray-950 overflow-y-auto relative print:bg-white print:overflow-visible">
         <div className="max-w-6xl mx-auto w-full p-6 lg:p-10 space-y-8 print:max-w-none print:p-0">
           
-          <header className="flex justify-between items-center print:border-b-2 print:border-black print:mb-8 print:pb-4">
+          <header className="flex justify-between items-end border-b border-gray-800 pb-6 print:border-black print:mb-10">
             <div>
-              <h1 className="text-3xl font-black uppercase italic tracking-tighter text-white print:text-black print:text-4xl">CENTERLINE RAPPORT: TP-24</h1>
-              <p className="text-gray-500 text-[10px] font-black uppercase tracking-[0.3em] mt-1 print:text-black print:text-sm">Optimering & Fas-Synkronisering | SMI LSK Series</p>
+              <h1 className="text-3xl font-black uppercase italic tracking-tighter text-white print:text-black print:text-4xl">CENTERLINE: TP-24</h1>
+              <p className="text-gray-500 text-[10px] font-black uppercase tracking-[0.3em] mt-1 print:text-black print:text-xs italic">Systemdokumentation för optimerad produktion</p>
             </div>
+            
             <div className="flex items-center gap-3 print:hidden">
                <button 
                 onClick={() => { setIsDesignMode(!isDesignMode); setSelectedPoint(null); }}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl border font-black text-[10px] uppercase tracking-widest transition-all ${isDesignMode ? 'bg-amber-600 text-black border-amber-400 shadow-lg shadow-amber-900/50' : 'bg-gray-800 text-gray-400 border-gray-700 hover:text-white'}`}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl border font-black text-[10px] uppercase tracking-widest transition-all ${isDesignMode ? 'bg-amber-600 text-black border-amber-400' : 'bg-gray-800 text-gray-400 border-gray-700 hover:text-white'}`}
                >
-                 <Edit3 size={14} /> {isDesignMode ? 'Avsluta Designläge' : 'Aktivera Designläge'}
+                 <Edit3 size={14} /> {isDesignMode ? 'Lås Layout' : 'Redigera Layout'}
                </button>
                <button 
                 onClick={handlePrint} 
-                className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl border border-blue-400 font-black text-xs uppercase tracking-widest transition-all shadow-xl shadow-blue-900/40"
+                className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg border border-blue-400 font-black text-xs uppercase tracking-widest shadow-xl transition-all"
                >
-                 <Printer size={16} /> Skriv ut A3 / PDF
+                 <Printer size={16} /> Skriv ut
                </button>
             </div>
+
             <div className="hidden print:block text-right">
-              <p className="text-xs font-bold uppercase text-black">Utskrivet den</p>
-              <p className="text-sm font-black text-black">{currentPrintDate}</p>
+              <p className="text-sm font-black text-black uppercase tracking-widest">{currentPrintDate}</p>
             </div>
           </header>
 
-          <div className="space-y-10">
-            {/* Overview / Map (Alltid med vid utskrift) */}
-            <section className={`${activeTab === 'overview' ? 'block' : 'print:block hidden'} space-y-4`}>
-                <div className="bg-gray-900 rounded-[2.5rem] p-2 border border-gray-800 shadow-2xl print:shadow-none print:border-2 print:border-black print:p-0 print:rounded-none relative overflow-hidden">
-                  <MachineMap 
-                    points={points} 
-                    layout={layout}
-                    onPointClick={handlePointClick}
-                    onModuleClick={isDesignMode ? setEditingModule : undefined}
-                    onMapClick={isDesignMode ? handleMapClick : undefined}
-                    selectedPointId={selectedPoint?.id}
-                    customMapUrl={customMapUrl}
-                    editMode={isDesignMode}
-                  />
-                </div>
+          <div className="space-y-12 print:space-y-10">
+            {/* MASKINSKISS */}
+            <section className={`${activeTab === 'overview' ? 'block' : 'print:block hidden'} print:break-inside-avoid`}>
+              <div className="bg-gray-900 rounded-[2.5rem] p-2 border border-gray-800 shadow-2xl print:border-2 print:border-black print:p-0 print:rounded-none relative overflow-hidden print:bg-white">
+                <MachineMap 
+                  points={points} 
+                  layout={layout}
+                  onPointClick={handlePointClick}
+                  onModuleClick={isDesignMode ? setEditingModule : undefined}
+                  onMapClick={isDesignMode ? handleMapClick : undefined}
+                  selectedPointId={selectedPoint?.id}
+                  customMapUrl={customMapUrl}
+                  editMode={isDesignMode}
+                />
+              </div>
+            </section>
                 
-                {!isDesignMode && (
-                   <div className="bg-gray-900 rounded-[2rem] border border-gray-800 overflow-hidden print:border-2 print:border-black print:rounded-none">
-                    <div className="grid grid-cols-12 px-8 py-5 bg-black/40 text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] border-b border-gray-800 print:bg-gray-100 print:text-black print:border-black">
-                      <div className="col-span-1">#</div>
-                      <div className="col-span-7">Kontrollpunkt</div>
-                      <div className="col-span-2 text-right">Centerline</div>
-                      <div className="col-span-2 text-center print:hidden">System</div>
-                      <div className="hidden print:block col-span-2 text-right italic font-normal">Kontroll / Signatur</div>
-                    </div>
-                    <div className="divide-y divide-gray-800/50 print:divide-black">
-                      {points.sort((a,b) => a.number - b.number).map((point) => (
-                        <div 
-                          key={point.id} 
-                          onClick={() => setSelectedPoint(point)} 
-                          className="grid grid-cols-12 px-8 py-6 items-center hover:bg-blue-600/5 cursor-pointer transition-all print:text-black print:hover:bg-transparent group"
-                        >
-                          <div className="col-span-1 font-black italic text-xl text-gray-700 group-hover:text-blue-500 transition-colors print:text-black">{point.number}</div>
-                          <div className="col-span-7">
-                            <div className="font-bold text-gray-200 text-lg group-hover:text-white print:text-black">{point.name}</div>
-                            <div className="text-[10px] text-gray-600 font-bold uppercase tracking-widest print:text-gray-400">{point.zone}</div>
-                          </div>
-                          <div className="col-span-2 font-mono text-2xl font-black text-green-500 text-right print:text-black">{point.targetValue}</div>
-                          <div className="col-span-2 flex justify-center print:hidden">
-                            <div className="bg-white p-1 rounded-lg shadow-md group-hover:scale-110 transition-transform">
-                              <img src={getQrCodeUrl(point.id, 60)} alt="QR" className="w-8 h-8" />
-                            </div>
-                          </div>
-                          <div className="hidden print:block col-span-2 border-l border-gray-300 h-8 ml-4"></div>
+            {/* CHECKLISTA - Visas alltid vid utskrift oavsett flik */}
+            <section className={`${activeTab !== 'phasing' ? 'block' : 'print:block hidden'} print:mt-10`}>
+              <div className="bg-gray-900 rounded-[2rem] border border-gray-800 overflow-hidden print:border-2 print:border-black print:rounded-none print:bg-white">
+                <div className="grid grid-cols-12 px-8 py-5 bg-black/40 text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] border-b border-gray-800 print:bg-gray-100 print:text-black print:border-black">
+                  <div className="col-span-1">#</div>
+                  <div className="col-span-5">Beskrivning</div>
+                  <div className="col-span-4 text-right">Målvärde & Tolerans</div>
+                  <div className="col-span-2 text-right italic font-normal print:block hidden">Signatur</div>
+                  <div className="col-span-2 text-center print:hidden">System</div>
+                </div>
+                <div className="divide-y divide-gray-800/50 print:divide-black">
+                  {points.sort((a,b) => a.number - b.number).map((point) => (
+                    <div 
+                      key={point.id} 
+                      onClick={() => setSelectedPoint(point)} 
+                      className="grid grid-cols-12 px-8 py-6 items-center hover:bg-blue-600/5 cursor-pointer transition-all print:text-black print:py-5 print:break-inside-avoid"
+                    >
+                      <div className="col-span-1 font-black italic text-xl text-gray-700 print:text-black">{point.number}</div>
+                      <div className="col-span-5">
+                        <div className="font-bold text-gray-200 text-lg print:text-black leading-tight">{point.name}</div>
+                        <div className="text-[10px] text-gray-600 font-bold uppercase tracking-widest print:text-gray-500">{point.measureMethod}</div>
+                      </div>
+                      <div className="col-span-4 text-right">
+                        <span className="font-mono text-2xl font-black text-green-500 print:text-black">{point.targetValue}</span>
+                        <span className="block text-[10px] text-gray-500 font-bold print:text-gray-700 italic">Tol: {point.tolerance}</span>
+                      </div>
+                      
+                      <div className="col-span-2 flex justify-center print:hidden">
+                        <div className="bg-white p-1 rounded shadow-md group-hover:scale-110 transition-transform">
+                          <img src={getQrCodeUrl(point.id, 60)} alt="QR" className="w-8 h-8" />
                         </div>
-                      ))}
+                      </div>
+
+                      <div className="hidden print:block col-span-2 border-b border-gray-300 h-8 ml-6"></div>
                     </div>
-                  </div>
-                )}
+                  ))}
+                </div>
+              </div>
             </section>
 
-            {activeTab === 'table' && !isDesignMode && (
-              <ParameterTable points={points} onPointSelect={setSelectedPoint} getQrUrl={getQrCodeUrl} />
-            )}
-
-            {activeTab === 'phasing' && !isDesignMode && (
-              <PhasingGauge currentDegree={0} points={points} />
-            )}
+            {/* Skärm-specifika flikar */}
+            <div className="print:hidden">
+              {activeTab === 'table' && <ParameterTable points={points} onPointSelect={setSelectedPoint} getQrUrl={getQrCodeUrl} />}
+              {activeTab === 'phasing' && <PhasingGauge currentDegree={0} points={points} />}
+            </div>
           </div>
 
-          {/* Rapport-fot för utskrift */}
-          <footer className="print-footer space-y-6">
+          {/* SIGNATURFÄLT - Hamnar alltid i slutet av dokumentet vid utskrift */}
+          <footer className="print-only mt-20 pt-10 border-t-2 border-black">
             <div className="grid grid-cols-2 gap-20">
-              <div className="border-t border-black pt-2">
-                <p className="text-[10pt] font-bold">Utförd av:</p>
-                <div className="h-12"></div>
-                <p className="text-[8pt] text-gray-600 italic">Namnförtydligande</p>
+              <div>
+                <p className="text-sm font-bold uppercase mb-12">Utförd av (Operatör):</p>
+                <div className="border-b-2 border-black w-full h-px"></div>
+                <p className="mt-2 text-[8pt] italic text-gray-500">Namnförtydligande & Datum</p>
               </div>
-              <div className="border-t border-black pt-2">
-                <p className="text-[10pt] font-bold">Godkänd av (Team Leader):</p>
-                <div className="h-12"></div>
-                <p className="text-[8pt] text-gray-600 italic">Signatur & Datum</p>
+              <div>
+                <p className="text-sm font-bold uppercase mb-12">Godkänd av (Team Leader):</p>
+                <div className="border-b-2 border-black w-full h-px"></div>
+                <p className="mt-2 text-[8pt] italic text-gray-500">Namnförtydligande & Datum</p>
               </div>
             </div>
-            <p className="text-[8pt] text-center text-gray-500 pt-10">
-              Centerline Pro System - Genererad Rapport - Sida 1 av 1
+            <p className="mt-16 text-center text-[7pt] text-gray-400 uppercase tracking-widest">
+              Centerline Pro System - Sida 1 av 1
             </p>
           </footer>
         </div>
       </main>
 
-      {/* Overlays */}
+      {/* Modaler & Overlays */}
       {isAddingPoint && (
         <AddPointForm 
           existingPoints={points} 

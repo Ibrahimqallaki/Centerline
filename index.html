@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="sv">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Centerline Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* Custom scrollbar for industrial feel */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #1f2937; 
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #4b5563; 
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #6b7280; 
+      }
+
+      /* PRINT STYLES - ROBUST RESET */
+      @media print {
+        @page {
+          size: A3 portrait;
+          margin: 10mm;
+        }
+
+        /* 1. Reset Root Constraints */
+        html, body, #root {
+          height: auto !important;
+          min-height: 0 !important;
+          overflow: visible !important;
+          background-color: white !important;
+          color: black !important;
+          display: block !important;
+          position: relative !important;
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+
+        /* 2. Hide Scrollbars & UI clutter */
+        ::-webkit-scrollbar {
+          display: none;
+        }
+
+        /* 3. Ensure Colors Print */
+        * {
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+        }
+
+        /* 4. Handle Page Breaks */
+        table {
+          width: 100% !important;
+          border-collapse: collapse !important;
+        }
+        
+        thead {
+          display: table-header-group; /* Repeats header on new pages */
+        }
+        
+        tr {
+          break-inside: avoid;
+          page-break-inside: avoid;
+        }
+
+        /* 5. Map Container Specifics */
+        .print-map-container {
+          break-inside: avoid;
+          page-break-inside: avoid;
+          width: 100% !important;
+          border: 1px solid #000 !important;
+        }
+        
+        /* 6. Text Legibility */
+        p, h1, h2, h3, span, div {
+          color: #000 !important;
+          text-shadow: none !important;
+        }
+        
+        /* Exception for white text on specific markers if needed */
+        .text-white {
+          color: #fff !important;
+        }
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "@google/genai": "https://esm.sh/@google/genai@^1.41.0",
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "react": "https://esm.sh/react@^19.2.4",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "lucide-react": "https://esm.sh/lucide-react@^0.574.0"
+  }
+}
+</script>
+</head>
+  <body class="bg-gray-900 text-gray-100 antialiased overflow-hidden selection:bg-blue-500 selection:text-white">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>

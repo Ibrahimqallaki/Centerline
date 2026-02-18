@@ -83,7 +83,7 @@ const App: React.FC = () => {
       width: 15,
       height: 10,
       color: '#3b82f6',
-      hasFill: true
+      hasFill: false // Ändrat till false som standard
     };
     setLayout([...layout, newMod]);
     setEditingModule(newMod);

@@ -2,13 +2,13 @@
 import { MachinePoint, Zone, Criticality, MachineModule } from './types';
 
 export const DEFAULT_MACHINE_LAYOUT: MachineModule[] = [
-  { id: 'm1', label: 'Inmatning (1-2)', x: 0, y: 15, width: 20, height: 12, color: '#3b82f6' },
-  { id: 'm2', label: 'Separator (3-4)', x: 20, y: 15, width: 15, height: 12, color: '#6366f1' },
-  { id: 'm3', label: 'Magasin (13)', x: 35, y: 32, width: 12, height: 15, color: '#eab308' },
-  { id: 'm4', label: 'Formning (5-6)', x: 37, y: 5, width: 25, height: 22, color: '#f97316' },
-  { id: 'm5', label: 'Filmlindning (9-10)', x: 62, y: 8, width: 18, height: 18, color: '#ec4899' },
-  { id: 'm7', label: 'Filmspole (18)', x: 64, y: 30, width: 14, height: 12, color: '#f472b6' },
-  { id: 'm6', label: 'Utmatning (8)', x: 80, y: 15, width: 20, height: 12, color: '#a855f7' }
+  { id: 'm1', label: 'Inmatning (1-2)', x: 0, y: 15, width: 20, height: 12, color: '#3b82f6', hasFill: false },
+  { id: 'm2', label: 'Separator (3-4)', x: 20, y: 15, width: 15, height: 12, color: '#6366f1', hasFill: false },
+  { id: 'm3', label: 'Magasin (13)', x: 35, y: 32, width: 12, height: 15, color: '#eab308', hasFill: false },
+  { id: 'm4', label: 'Formning (5-6)', x: 37, y: 5, width: 25, height: 22, color: '#f97316', hasFill: false },
+  { id: 'm5', label: 'Filmlindning (9-10)', x: 62, y: 8, width: 18, height: 18, color: '#ec4899', hasFill: false },
+  { id: 'm7', label: 'Filmspole (18)', x: 64, y: 30, width: 14, height: 12, color: '#f472b6', hasFill: false },
+  { id: 'm6', label: 'Utmatning (8)', x: 80, y: 15, width: 20, height: 12, color: '#a855f7', hasFill: false }
 ];
 
 export const MACHINE_POINTS: MachinePoint[] = [

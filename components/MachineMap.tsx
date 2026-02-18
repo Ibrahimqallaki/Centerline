@@ -80,7 +80,7 @@ const MachineMap: React.FC<MachineMapProps> = ({
             
             {/* Render Dynamic Modules */}
             {layout.map((mod) => {
-              const showFill = mod.hasFill !== false; 
+              const showFill = mod.hasFill === true; // Default nu till false om ej specificerat som true
               const fillColor = editMode ? `${mod.color}15` : `${mod.color}08`;
               
               return (
@@ -101,8 +101,8 @@ const MachineMap: React.FC<MachineMapProps> = ({
                     height={mod.height} 
                     fill={showFill ? fillColor : "none"} 
                     stroke={mod.color} 
-                    strokeWidth={editMode ? "0.6" : "0.3"} 
-                    strokeDasharray={showFill ? "" : "1 1"}
+                    strokeWidth={editMode ? "0.8" : "0.5"} 
+                    strokeDasharray={showFill ? "" : "1 0.5"} // Subtilare streckning för genomskinliga rutor
                     rx="0.5" 
                     className={`transition-all duration-300 print:fill-white print:stroke-black ${editMode ? 'group-hover:stroke-white group-hover:stroke-[1px]' : ''}`}
                   />
@@ -112,9 +112,13 @@ const MachineMap: React.FC<MachineMapProps> = ({
                     textAnchor="middle" 
                     dominantBaseline="middle" 
                     fill={mod.color} 
-                    fontSize="1.8" 
+                    fontSize="2" 
                     fontWeight="900"
-                    className="uppercase tracking-widest print:fill-black pointer-events-none opacity-40 italic"
+                    className="uppercase tracking-[0.15em] print:fill-black pointer-events-none italic"
+                    style={{ 
+                      opacity: editMode ? 0.8 : 0.5,
+                      textShadow: showFill ? 'none' : '0 1px 3px rgba(0,0,0,0.9)' // Extra skugga för text utan bakgrund
+                    }}
                   >
                     {mod.label}
                   </text>

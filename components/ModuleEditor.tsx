@@ -12,7 +12,7 @@ interface ModuleEditorProps {
 
 const ModuleEditor: React.FC<ModuleEditorProps> = ({ module, onSave, onDelete, onClose }) => {
   const [formData, setFormData] = React.useState<MachineModule>({
-    hasFill: true, // Default to true if undefined
+    hasFill: false, // Ändrat till false som standard
     ...module
   });
 

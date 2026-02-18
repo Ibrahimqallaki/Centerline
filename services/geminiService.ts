@@ -1,9 +1,14 @@
 import { GoogleGenAI } from "@google/genai";
 import { MachinePoint } from '../types';
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
+/**
+ * Service to generate Standard Operating Procedures (SOP) for machine points using Gemini.
+ */
 export const generateSOPContent = async (point: MachinePoint): Promise<string> => {
+  // Always create a new GoogleGenAI instance right before the API call to ensure the latest API key is used
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  
+  // 'gemini-3-flash-preview' is the recommended model for basic text generation tasks like SOP creation
   const modelId = 'gemini-3-flash-preview';
   
   const prompt = `
@@ -33,6 +38,8 @@ export const generateSOPContent = async (point: MachinePoint): Promise<string> =
       model: modelId,
       contents: prompt,
     });
+    
+    // Access the .text property directly (as a getter, not a method)
     return response.text || "Kunde inte generera SOP. Kontrollera anslutningen.";
   } catch (error) {
     console.error("Gemini API Error:", error);

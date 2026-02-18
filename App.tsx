@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { MACHINE_POINTS, ZONE_COLORS } from './constants';
+import { MACHINE_POINTS } from './constants';
 import { MachinePoint } from './types';
 import MachineMap from './components/MachineMap';
 import ParameterTable from './components/ParameterTable';
@@ -13,10 +13,11 @@ import { Map, List, Settings, Activity, Globe, ArrowRight, Cloud } from 'lucide-
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'table' | 'phasing'>('overview');
   
-  // Modals
+  // Modals & States
   const [isAddingPoint, setIsAddingPoint] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [editingPoint, setEditingPoint] = useState<MachinePoint | null>(null);
+  const [selectedPoint, setSelectedPoint] = useState<MachinePoint | null>(null);
   
   // Points logic
   const [points, setPoints] = useState<MachinePoint[]>(() => {
@@ -30,46 +31,42 @@ const App: React.FC = () => {
     return MACHINE_POINTS.map(p => ({ ...p, visibleOnMap: true }));
   });
 
-  // Settings logic
   const [customMapUrl, setCustomMapUrl] = useState<string | null>(() => localStorage.getItem('centerline_map_url'));
   const [publicBaseUrl, setPublicBaseUrl] = useState<string>(() => localStorage.getItem('centerline_public_url') || '');
-  const [selectedPoint, setSelectedPoint] = useState<MachinePoint | null>(null);
 
   // Environment detection
-  const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-  const isCloudDeployment = !isLocalhost;
-  
+  const isCloudDeployment = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
   const effectiveBaseUrl = isCloudDeployment ? window.location.origin : (publicBaseUrl || window.location.origin);
-  const showSetupWizard = isLocalhost && (!publicBaseUrl || publicBaseUrl.includes('localhost'));
+  const showSetupWizard = !isCloudDeployment && (!publicBaseUrl || publicBaseUrl.includes('localhost'));
 
   /**
    * Generates a QR code for mobile users.
    */
-  const getQrCodeUrl = useCallback((pointId: string, size: number = 400) => {
+  const getQrCodeUrl = useCallback((pointId: string, size: number = 200) => {
     try {
       const base = effectiveBaseUrl.replace(/\/$/, "");
       const targetUrl = `${base}/?p=${pointId}`;
-      return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(targetUrl)}&margin=8&ecc=H&format=svg`;
+      return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(targetUrl)}&margin=4&ecc=M&format=svg`;
     } catch (e) {
       return '';
     }
   }, [effectiveBaseUrl]);
 
-  // Deep Link handler
+  // Handle URL Parameters (Deep Linking)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const pointId = params.get('p') || params.get('point');
-    
     if (pointId) {
       const found = points.find(p => p.id === pointId || p.number.toString() === pointId);
       if (found) {
         setSelectedPoint(found);
+        // Clear query param but stay on current URL
         window.history.replaceState({}, '', window.location.pathname);
       }
     }
   }, [points]);
 
-  // Persistence
+  // LocalStorage Sync
   useEffect(() => {
     localStorage.setItem('centerline_points', JSON.stringify(points));
     if (customMapUrl) localStorage.setItem('centerline_map_url', customMapUrl);
@@ -77,12 +74,12 @@ const App: React.FC = () => {
   }, [points, customMapUrl, publicBaseUrl]);
 
   return (
-    <div className="flex h-screen bg-gray-950 text-gray-100 overflow-hidden font-sans print:hidden">
+    <div className="flex flex-row w-full h-full bg-gray-950 text-gray-100 overflow-hidden font-sans print:bg-white print:text-black">
       
-      {/* Sidebar */}
-      <aside className="w-16 lg:w-64 bg-black border-r border-gray-900 flex-shrink-0 flex flex-col justify-between z-20">
+      {/* Sidebar - Always visible on desktop */}
+      <aside className="w-16 lg:w-64 bg-black border-r border-gray-900 flex-shrink-0 flex flex-col justify-between z-30 print:hidden">
         <div>
-          <div className="h-20 flex items-center justify-center lg:justify-start lg:px-6 border-b border-gray-900">
+          <div className="h-16 lg:h-20 flex items-center justify-center lg:justify-start lg:px-6 border-b border-gray-900">
              <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center font-black text-2xl text-white italic shadow-lg">C</div>
              <span className="ml-3 font-black text-xl hidden lg:block tracking-tighter uppercase italic">Centerline</span>
           </div>
@@ -100,105 +97,104 @@ const App: React.FC = () => {
           </nav>
         </div>
 
-        <div className="p-3 border-t border-gray-800 space-y-2">
-           <button onClick={() => setIsSettingsOpen(true)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all relative ${showSetupWizard ? 'bg-red-900/20 text-red-400 border border-red-900/50' : 'text-gray-500 hover:text-white'}`}>
-              <Settings size={20} /> <span className="hidden lg:block font-bold">Inställningar</span>
-              {showSetupWizard && <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-black animate-pulse"></span>}
+        <div className="p-3 border-t border-gray-800">
+           <button onClick={() => setIsSettingsOpen(true)} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-500 hover:text-white transition-colors relative">
+              <Settings size={20} /> 
+              <span className="hidden lg:block font-bold">Inställningar</span>
+              {showSetupWizard && <span className="absolute top-3 right-3 lg:right-auto lg:left-[190px] w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>}
            </button>
         </div>
       </aside>
 
-      {/* Main Content */}
-      <main className="flex-1 flex flex-col bg-gray-950 overflow-hidden relative">
+      {/* Main Content Area */}
+      <main className="flex-1 flex flex-col min-w-0 bg-gray-950 overflow-hidden relative">
         
-        {/* SETUP WIZARD (Localhost only) */}
+        {/* Setup Wizard Overlay (Local only) */}
         {showSetupWizard && (
-          <div className="absolute inset-0 z-40 flex items-center justify-center p-6 bg-black/80 backdrop-blur-xl">
-            <div className="max-w-xl w-full bg-gray-900 border border-gray-700 rounded-[2.5rem] p-12 shadow-2xl text-center space-y-8">
-              <div className="w-24 h-24 bg-blue-600/20 rounded-3xl flex items-center justify-center mx-auto border border-blue-500/30">
-                <Globe size={48} className="text-blue-500" />
+          <div className="absolute inset-0 z-40 flex items-center justify-center p-6 bg-black/90 backdrop-blur-md">
+            <div className="max-w-md w-full bg-gray-900 border border-gray-800 rounded-3xl p-10 text-center space-y-6">
+              <div className="w-20 h-20 bg-blue-600/20 rounded-2xl flex items-center justify-center mx-auto border border-blue-500/30">
+                <Globe size={40} className="text-blue-500" />
               </div>
-              <div className="space-y-4">
-                <h2 className="text-3xl font-black text-white uppercase italic tracking-tighter">Lokal Konfiguration</h2>
-                <p className="text-gray-400 text-base leading-relaxed">
-                  Ange din IP-adress för att aktivera QR-koderna lokalt.
-                </p>
-              </div>
-              <button 
-                onClick={() => setIsSettingsOpen(true)}
-                className="w-full py-5 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black uppercase tracking-[0.2em] shadow-xl shadow-blue-900/40 flex items-center justify-center gap-3"
-              >
-                Gå till inställningar <ArrowRight size={20} />
+              <h2 className="text-2xl font-black uppercase tracking-tighter">Konfigurera IP</h2>
+              <p className="text-gray-400 text-sm">För att kunna använda mobiler lokalt måste du ange din dators IP-adress i inställningarna.</p>
+              <button onClick={() => setIsSettingsOpen(true)} className="w-full py-4 bg-blue-600 text-white rounded-xl font-bold uppercase tracking-widest flex items-center justify-center gap-2">
+                Inställningar <ArrowRight size={18} />
               </button>
             </div>
           </div>
         )}
 
-        <div className="flex-1 overflow-y-auto p-4 lg:p-10">
-          <div className="max-w-6xl mx-auto space-y-10">
+        {/* Content Scroll Area */}
+        <div className="flex-1 overflow-y-auto p-4 lg:p-8">
+          <div className="max-w-6xl mx-auto space-y-8">
             
-            <div className="flex justify-between items-center">
-              <h2 className="text-3xl font-black uppercase italic tracking-tighter">Centerline TP-24</h2>
-              <div className="flex items-center gap-3">
-                {isCloudDeployment ? (
-                  <div className="flex items-center gap-2 px-4 py-2 bg-blue-900/30 border border-blue-500/50 text-blue-400 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl">
-                    <Cloud size={14} className="animate-pulse" />
-                    System Online
-                  </div>
-                ) : (
-                  !showSetupWizard && (
-                    <div className="flex items-center gap-2 px-3 py-1 bg-green-900/20 border border-green-800 text-green-400 rounded-full text-[10px] font-black uppercase">
-                      Lokal IP: {publicBaseUrl}
-                    </div>
-                  )
-                )}
+            <header className="flex justify-between items-center">
+              <h2 className="text-2xl lg:text-3xl font-black uppercase italic tracking-tighter">Centerline TP-24</h2>
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-900 rounded-xl border border-gray-800">
+                 <Cloud size={14} className={isCloudDeployment ? 'text-blue-500 animate-pulse' : 'text-gray-600'} />
+                 <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                   {isCloudDeployment ? 'Vercel Online' : 'Local Node'}
+                 </span>
               </div>
-            </div>
+            </header>
 
-            {activeTab === 'overview' && (
-              <div className="space-y-10">
-                <MachineMap 
-                  points={points} 
-                  onPointClick={setSelectedPoint}
-                  selectedPointId={selectedPoint?.id}
-                  customMapUrl={customMapUrl}
-                />
-                
-                <div className="bg-gray-900 rounded-[2rem] border border-gray-800 shadow-2xl overflow-hidden">
-                  <div className="grid grid-cols-12 gap-4 px-10 py-5 bg-black/40 text-[10px] font-black text-gray-500 uppercase tracking-widest border-b border-gray-800">
-                    <div className="col-span-1">Nr</div>
-                    <div className="col-span-6">Beskrivning</div>
-                    <div className="col-span-3 text-right">Målvärde</div>
-                    <div className="col-span-2 text-center">QR</div>
-                  </div>
-                  <div className="divide-y divide-gray-800/50">
-                    {points.sort((a,b) => a.number - b.number).map((point) => (
-                      <div key={point.id} onClick={() => setSelectedPoint(point)} className="grid grid-cols-12 gap-4 px-10 py-8 items-center hover:bg-blue-600/5 cursor-pointer group transition-all border-l-4 border-l-transparent hover:border-l-blue-600">
-                        <div className="col-span-1 font-black text-gray-600 group-hover:text-blue-400 italic text-2xl">{point.number}</div>
-                        <div className="col-span-6">
-                          <div className="font-bold text-lg text-gray-200 group-hover:text-white">{point.name}</div>
-                          <div className="text-[10px] text-gray-500 uppercase font-black tracking-widest mt-1">{point.zone}</div>
-                        </div>
-                        <div className="col-span-3 font-mono text-3xl font-black text-green-500 text-right">{point.targetValue}</div>
-                        <div className="col-span-2 flex justify-center">
-                          <div className="p-2 bg-white rounded-xl shadow-2xl group-hover:scale-[3.5] group-hover:-translate-x-16 transition-transform z-30 origin-center border border-gray-200">
-                            <img src={getQrCodeUrl(point.id, 100)} alt="QR" className="w-10 h-10 block" />
+            {/* TAB CONTENT */}
+            <div className="min-h-0">
+              {activeTab === 'overview' && (
+                <div className="space-y-8">
+                  <MachineMap 
+                    points={points} 
+                    onPointClick={setSelectedPoint}
+                    selectedPointId={selectedPoint?.id}
+                    customMapUrl={customMapUrl}
+                  />
+                  
+                  <div className="bg-gray-900 rounded-3xl border border-gray-800 shadow-2xl overflow-hidden">
+                    <div className="grid grid-cols-12 gap-4 px-6 py-4 bg-black/40 text-[10px] font-black text-gray-500 uppercase tracking-widest border-b border-gray-800">
+                      <div className="col-span-1">Nr</div>
+                      <div className="col-span-7">Beskrivning</div>
+                      <div className="col-span-2 text-right">Mål</div>
+                      <div className="col-span-2 text-center">QR</div>
+                    </div>
+                    <div className="divide-y divide-gray-800/50">
+                      {points.sort((a,b) => a.number - b.number).map((point) => (
+                        <div 
+                          key={point.id} 
+                          onClick={() => setSelectedPoint(point)} 
+                          className="grid grid-cols-12 gap-4 px-6 py-5 items-center hover:bg-blue-600/5 cursor-pointer group transition-colors border-l-4 border-l-transparent hover:border-l-blue-600"
+                        >
+                          <div className="col-span-1 font-black text-gray-600 group-hover:text-blue-400 italic text-xl">{point.number}</div>
+                          <div className="col-span-7">
+                            <div className="font-bold text-gray-200 group-hover:text-white">{point.name}</div>
+                            <div className="text-[9px] text-gray-500 uppercase font-black tracking-widest">{point.zone}</div>
+                          </div>
+                          <div className="col-span-2 font-mono text-xl font-black text-green-500 text-right">{point.targetValue}</div>
+                          <div className="col-span-2 flex justify-center">
+                            <div className="p-1 bg-white rounded shadow-lg group-hover:scale-[4] transition-transform origin-right z-20">
+                              <img src={getQrCodeUrl(point.id, 100)} alt="QR" className="w-8 h-8 block" />
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {activeTab === 'table' && <ParameterTable points={points} onPointSelect={setSelectedPoint} getQrUrl={getQrCodeUrl} />}
-            {activeTab === 'phasing' && <PhasingGauge currentDegree={0} points={points} />}
+              {activeTab === 'table' && (
+                <ParameterTable points={points} onPointSelect={setSelectedPoint} getQrUrl={getQrCodeUrl} />
+              )}
+
+              {activeTab === 'phasing' && (
+                <PhasingGauge currentDegree={0} points={points} />
+              )}
+            </div>
           </div>
         </div>
       </main>
 
-      {/* Modals */}
+      {/* Modals & Overlays */}
       {isAddingPoint && <AddPointForm existingPoints={points} onSave={(p) => { setPoints([...points, p]); setIsAddingPoint(false); }} onCancel={() => setIsAddingPoint(false)} />}
       {editingPoint && <AddPointForm existingPoints={points} initialData={editingPoint} onSave={(p) => { setPoints(points.map(x => x.id === p.id ? p : x)); setEditingPoint(null); setSelectedPoint(p); }} onCancel={() => { setEditingPoint(null); setSelectedPoint(editingPoint); }} />}
       {isSettingsOpen && (

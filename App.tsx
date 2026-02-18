@@ -8,10 +8,11 @@ import PointDetail from './components/PointDetail';
 import PhasingGauge from './components/PhasingGauge';
 import AddPointForm from './components/AddPointForm';
 import SettingsModal from './components/SettingsModal';
-import { Map, List, Settings, Activity, Globe, ArrowRight, Cloud } from 'lucide-react';
+import { Map, List, Settings, Activity, Globe, ArrowRight, Cloud, Printer, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'table' | 'phasing'>('overview');
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   
   // Modals & States
   const [isAddingPoint, setIsAddingPoint] = useState(false);
@@ -60,7 +61,6 @@ const App: React.FC = () => {
       const found = points.find(p => p.id === pointId || p.number.toString() === pointId);
       if (found) {
         setSelectedPoint(found);
-        // Clear query param but stay on current URL
         window.history.replaceState({}, '', window.location.pathname);
       }
     }
@@ -73,35 +73,58 @@ const App: React.FC = () => {
     if (publicBaseUrl) localStorage.setItem('centerline_public_url', publicBaseUrl);
   }, [points, customMapUrl, publicBaseUrl]);
 
+  const handlePrint = () => {
+    window.print();
+  };
+
   return (
-    <div className="flex flex-row w-full h-full bg-gray-950 text-gray-100 overflow-hidden font-sans print:bg-white print:text-black">
+    <div className="flex flex-row w-full h-full bg-gray-950 text-gray-100 overflow-hidden font-sans">
       
-      {/* Sidebar - Always visible on desktop */}
-      <aside className="w-16 lg:w-64 bg-black border-r border-gray-900 flex-shrink-0 flex flex-col justify-between z-30 print:hidden">
+      {/* Sidebar - Collapsible */}
+      <aside 
+        className={`${isSidebarCollapsed ? 'w-20' : 'w-64'} bg-black border-r border-gray-900 flex-shrink-0 flex flex-col justify-between z-30 transition-all duration-300 print:hidden shadow-2xl`}
+      >
         <div>
-          <div className="h-16 lg:h-20 flex items-center justify-center lg:justify-start lg:px-6 border-b border-gray-900">
-             <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center font-black text-2xl text-white italic shadow-lg">C</div>
-             <span className="ml-3 font-black text-xl hidden lg:block tracking-tighter uppercase italic">Centerline</span>
+          <div className={`h-20 flex items-center border-b border-gray-900 px-5 ${isSidebarCollapsed ? 'justify-center' : 'justify-between'}`}>
+             <div className="flex items-center">
+               <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center font-black text-2xl text-white italic shadow-lg shrink-0">C</div>
+               {!isSidebarCollapsed && <span className="ml-3 font-black text-xl tracking-tighter uppercase italic">Centerline</span>}
+             </div>
+             <button 
+              onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+              className="p-2 hover:bg-gray-800 rounded-lg text-gray-500 hover:text-white transition-colors"
+             >
+               {isSidebarCollapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
+             </button>
           </div>
           
           <nav className="p-3 space-y-2">
             <button onClick={() => setActiveTab('overview')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'overview' ? 'bg-blue-600 text-white shadow-xl' : 'text-gray-500 hover:bg-gray-900'}`}>
-              <Map size={20} /> <span className="hidden lg:block font-bold">Översikt</span>
+              <Map size={20} className="shrink-0" /> {!isSidebarCollapsed && <span className="font-bold">Översikt</span>}
             </button>
             <button onClick={() => setActiveTab('table')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'table' ? 'bg-blue-600 text-white shadow-xl' : 'text-gray-500 hover:bg-gray-900'}`}>
-              <List size={20} /> <span className="hidden lg:block font-bold">Punktlista</span>
+              <List size={20} className="shrink-0" /> {!isSidebarCollapsed && <span className="font-bold">Punktlista</span>}
             </button>
             <button onClick={() => setActiveTab('phasing')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'phasing' ? 'bg-blue-600 text-white shadow-xl' : 'text-gray-500 hover:bg-gray-900'}`}>
-              <Activity size={20} /> <span className="hidden lg:block font-bold">Synk</span>
+              <Activity size={20} className="shrink-0" /> {!isSidebarCollapsed && <span className="font-bold">Synk</span>}
             </button>
+            
+            <div className="pt-4 border-t border-gray-800 mt-4">
+              <button 
+                onClick={() => setIsAddingPoint(true)} 
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-gray-900 text-gray-300 hover:text-white border border-gray-800 hover:border-gray-600 transition-all`}
+              >
+                <Plus size={20} className="shrink-0" /> {!isSidebarCollapsed && <span className="font-bold">Ny Punkt</span>}
+              </button>
+            </div>
           </nav>
         </div>
 
         <div className="p-3 border-t border-gray-800">
            <button onClick={() => setIsSettingsOpen(true)} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-500 hover:text-white transition-colors relative">
-              <Settings size={20} /> 
-              <span className="hidden lg:block font-bold">Inställningar</span>
-              {showSetupWizard && <span className="absolute top-3 right-3 lg:right-auto lg:left-[190px] w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>}
+              <Settings size={20} className="shrink-0" /> 
+              {!isSidebarCollapsed && <span className="font-bold">Inställningar</span>}
+              {showSetupWizard && <span className={`absolute top-3 ${isSidebarCollapsed ? 'right-3' : 'right-12'} w-2 h-2 bg-red-500 rounded-full animate-pulse`}></span>}
            </button>
         </div>
       </aside>
@@ -109,7 +132,7 @@ const App: React.FC = () => {
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col min-w-0 bg-gray-950 overflow-hidden relative">
         
-        {/* Setup Wizard Overlay (Local only) */}
+        {/* Setup Wizard Overlay */}
         {showSetupWizard && (
           <div className="absolute inset-0 z-40 flex items-center justify-center p-6 bg-black/90 backdrop-blur-md">
             <div className="max-w-md w-full bg-gray-900 border border-gray-800 rounded-3xl p-10 text-center space-y-6">
@@ -129,13 +152,21 @@ const App: React.FC = () => {
         <div className="flex-1 overflow-y-auto p-4 lg:p-8">
           <div className="max-w-6xl mx-auto space-y-8">
             
-            <header className="flex justify-between items-center">
-              <h2 className="text-2xl lg:text-3xl font-black uppercase italic tracking-tighter">Centerline TP-24</h2>
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-900 rounded-xl border border-gray-800">
-                 <Cloud size={14} className={isCloudDeployment ? 'text-blue-500 animate-pulse' : 'text-gray-600'} />
-                 <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">
-                   {isCloudDeployment ? 'Vercel Online' : 'Local Node'}
-                 </span>
+            <header className="flex justify-between items-center print:border-b print:pb-4 print:border-gray-200">
+              <h2 className="text-2xl lg:text-3xl font-black uppercase italic tracking-tighter text-white">Centerline TP-24</h2>
+              <div className="flex items-center gap-3 print:hidden">
+                 <button 
+                  onClick={handlePrint}
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl border border-gray-700 transition-colors font-bold text-xs uppercase"
+                 >
+                   <Printer size={16} /> Skriv ut
+                 </button>
+                 <div className="flex items-center gap-2 px-3 py-1.5 bg-blue-900/20 rounded-xl border border-blue-800/50">
+                    <Cloud size={14} className={isCloudDeployment ? 'text-blue-500 animate-pulse' : 'text-gray-600'} />
+                    <span className="text-[10px] font-black uppercase tracking-widest text-blue-400">
+                      {isCloudDeployment ? 'Vercel Online' : 'Local Node'}
+                    </span>
+                 </div>
               </div>
             </header>
 
@@ -150,27 +181,27 @@ const App: React.FC = () => {
                     customMapUrl={customMapUrl}
                   />
                   
-                  <div className="bg-gray-900 rounded-3xl border border-gray-800 shadow-2xl overflow-hidden">
-                    <div className="grid grid-cols-12 gap-4 px-6 py-4 bg-black/40 text-[10px] font-black text-gray-500 uppercase tracking-widest border-b border-gray-800">
+                  <div className="bg-gray-900 rounded-3xl border border-gray-800 shadow-2xl overflow-hidden print:shadow-none print:border-none">
+                    <div className="grid grid-cols-12 gap-4 px-6 py-4 bg-black/40 text-[10px] font-black text-gray-500 uppercase tracking-widest border-b border-gray-800 print:bg-gray-50 print:text-black">
                       <div className="col-span-1">Nr</div>
                       <div className="col-span-7">Beskrivning</div>
                       <div className="col-span-2 text-right">Mål</div>
-                      <div className="col-span-2 text-center">QR</div>
+                      <div className="col-span-2 text-center print:hidden">QR</div>
                     </div>
-                    <div className="divide-y divide-gray-800/50">
+                    <div className="divide-y divide-gray-800/50 print:divide-gray-200">
                       {points.sort((a,b) => a.number - b.number).map((point) => (
                         <div 
                           key={point.id} 
                           onClick={() => setSelectedPoint(point)} 
-                          className="grid grid-cols-12 gap-4 px-6 py-5 items-center hover:bg-blue-600/5 cursor-pointer group transition-colors border-l-4 border-l-transparent hover:border-l-blue-600"
+                          className="grid grid-cols-12 gap-4 px-6 py-5 items-center hover:bg-blue-600/5 cursor-pointer group transition-colors border-l-4 border-l-transparent hover:border-l-blue-600 print:border-none print:hover:bg-transparent"
                         >
-                          <div className="col-span-1 font-black text-gray-600 group-hover:text-blue-400 italic text-xl">{point.number}</div>
+                          <div className="col-span-1 font-black text-gray-600 group-hover:text-blue-400 italic text-xl print:text-black">{point.number}</div>
                           <div className="col-span-7">
-                            <div className="font-bold text-gray-200 group-hover:text-white">{point.name}</div>
-                            <div className="text-[9px] text-gray-500 uppercase font-black tracking-widest">{point.zone}</div>
+                            <div className="font-bold text-gray-200 group-hover:text-white print:text-black">{point.name}</div>
+                            <div className="text-[9px] text-gray-500 uppercase font-black tracking-widest print:text-gray-400">{point.zone}</div>
                           </div>
-                          <div className="col-span-2 font-mono text-xl font-black text-green-500 text-right">{point.targetValue}</div>
-                          <div className="col-span-2 flex justify-center">
+                          <div className="col-span-2 font-mono text-xl font-black text-green-500 text-right print:text-black">{point.targetValue}</div>
+                          <div className="col-span-2 flex justify-center print:hidden">
                             <div className="p-1 bg-white rounded shadow-lg group-hover:scale-[4] transition-transform origin-right z-20">
                               <img src={getQrCodeUrl(point.id, 100)} alt="QR" className="w-8 h-8 block" />
                             </div>

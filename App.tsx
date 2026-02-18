@@ -41,6 +41,20 @@ const App: React.FC = () => {
   const [customMapUrl, setCustomMapUrl] = useState<string | null>(() => localStorage.getItem('centerline_map_url'));
   const [publicBaseUrl, setPublicBaseUrl] = useState<string>(() => localStorage.getItem('centerline_public_url') || '');
 
+  // Handle deep-linking via QR codes (?p=ID)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const pointId = params.get('p');
+    if (pointId && points.length > 0) {
+      const point = points.find(p => p.id === pointId);
+      if (point) {
+        setSelectedPoint(point);
+        // Clean up URL without reloading to keep it tidy
+        window.history.replaceState({}, '', window.location.pathname);
+      }
+    }
+  }, [points]);
+
   useEffect(() => {
     localStorage.setItem('centerline_points', JSON.stringify(points));
     localStorage.setItem('centerline_layout', JSON.stringify(layout));

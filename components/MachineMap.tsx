@@ -2,7 +2,7 @@
 import React, { useRef } from 'react';
 import { MachinePoint, MachineModule, Criticality } from '../types';
 import { CRITICALITY_COLORS, DEFAULT_MACHINE_LAYOUT } from '../constants';
-import { Edit3, Move } from 'lucide-react';
+import { Edit3, Move, Crosshair } from 'lucide-react';
 
 interface MachineMapProps {
   points: MachinePoint[];
@@ -44,24 +44,24 @@ const MachineMap: React.FC<MachineMapProps> = ({
     <div 
       ref={containerRef}
       onClick={handleContainerClick}
-      className={`relative w-full aspect-[2/1] bg-gray-900 rounded-3xl border border-gray-800 overflow-hidden shadow-2xl print-map-container ${onMapClick ? 'cursor-crosshair' : ''} ${editMode ? 'ring-2 ring-blue-500/50' : ''}`}
+      className={`relative w-full aspect-[2/1] bg-gray-950 rounded-[2rem] border border-gray-800 overflow-hidden shadow-2xl print-map-container ${onMapClick ? 'cursor-crosshair' : ''} ${editMode ? 'ring-2 ring-blue-500 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}
     >
       {/* Blueprint Grid */}
-      <div className="absolute inset-0 opacity-[0.05] pointer-events-none z-0" 
+      <div className="absolute inset-0 opacity-[0.03] pointer-events-none z-0" 
            style={{ 
              backgroundImage: `linear-gradient(#3b82f6 1px, transparent 1px), linear-gradient(90deg, #3b82f6 1px, transparent 1px)`,
-             backgroundSize: '40px 40px' 
+             backgroundSize: '30px 30px' 
            }}>
       </div>
 
       <div className="absolute top-6 left-8 z-10 pointer-events-none">
         <h2 className="text-xl font-black text-blue-400 tracking-tighter uppercase italic print:text-black flex items-center gap-2">
           Layout: TP-24 Tray Packer
-          {editMode && <span className="text-xs bg-blue-600 text-white px-2 py-0.5 rounded-full animate-pulse flex items-center gap-1"><Edit3 size={10}/> DESIGNLÄGE</span>}
+          {editMode && <span className="text-[10px] bg-blue-600 text-white px-2 py-0.5 rounded-full animate-pulse flex items-center gap-1"><Edit3 size={10}/> DESIGNLÄGE</span>}
         </h2>
         {editMode && selectedPointId && (
-          <div className="mt-2 text-[10px] bg-amber-600 text-white px-3 py-1 rounded-full font-bold flex items-center gap-1 animate-bounce">
-            <Move size={10} /> KLICKA PÅ KARTAN FÖR ATT FLYTTA PUNKTEN
+          <div className="mt-2 text-[10px] bg-amber-500 text-black px-3 py-1 rounded-full font-black flex items-center gap-1 border border-amber-400 shadow-lg">
+            <Crosshair size={12} className="animate-spin-slow" /> KLICKA PÅ KARTAN FÖR ATT FLYTTA PUNKTEN
           </div>
         )}
       </div>
@@ -73,16 +73,15 @@ const MachineMap: React.FC<MachineMapProps> = ({
           className="absolute inset-0 w-full h-full object-contain p-4"
         />
       ) : (
-        /* Dynamic SVG Machine Schematic */
         <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 50" preserveAspectRatio="xMidYMid meet">
           <g transform="translate(0, 0)">
-            {/* Conveyor Line */}
-            <line x1="0" y1="20" x2="100" y2="20" stroke="#3b82f6" strokeWidth="0.5" strokeDasharray="2 2" opacity="0.3" />
+            {/* Main Axis Line */}
+            <line x1="0" y1="20" x2="100" y2="20" stroke="#1e293b" strokeWidth="0.2" />
             
-            {/* Render Dynamic Modules (Rutor/Stationer) */}
+            {/* Render Dynamic Modules */}
             {layout.map((mod) => {
               const showFill = mod.hasFill !== false; 
-              const fillColor = editMode ? `${mod.color}22` : "#1e293b";
+              const fillColor = editMode ? `${mod.color}15` : `${mod.color}08`;
               
               return (
                 <g 
@@ -102,9 +101,10 @@ const MachineMap: React.FC<MachineMapProps> = ({
                     height={mod.height} 
                     fill={showFill ? fillColor : "none"} 
                     stroke={mod.color} 
-                    strokeWidth={editMode ? "1.2" : "0.8"} 
-                    rx="1" 
-                    className={`transition-all duration-200 print:fill-white print:stroke-black ${editMode ? 'group-hover:stroke-white' : ''}`}
+                    strokeWidth={editMode ? "0.6" : "0.3"} 
+                    strokeDasharray={showFill ? "" : "1 1"}
+                    rx="0.5" 
+                    className={`transition-all duration-300 print:fill-white print:stroke-black ${editMode ? 'group-hover:stroke-white group-hover:stroke-[1px]' : ''}`}
                   />
                   <text 
                     x={mod.x + mod.width / 2} 
@@ -112,16 +112,12 @@ const MachineMap: React.FC<MachineMapProps> = ({
                     textAnchor="middle" 
                     dominantBaseline="middle" 
                     fill={mod.color} 
-                    fontSize="2" 
-                    fontWeight="bold"
-                    className="uppercase tracking-tighter print:fill-black pointer-events-none"
-                    style={{ textShadow: showFill ? 'none' : '0 1px 2px rgba(0,0,0,0.8)' }}
+                    fontSize="1.8" 
+                    fontWeight="900"
+                    className="uppercase tracking-widest print:fill-black pointer-events-none opacity-40 italic"
                   >
                     {mod.label}
                   </text>
-                  {editMode && (
-                    <circle cx={mod.x} cy={mod.y} r="0.5" fill="white" />
-                  )}
                 </g>
               );
             })}
@@ -129,7 +125,7 @@ const MachineMap: React.FC<MachineMapProps> = ({
         </svg>
       )}
 
-      {/* Render Points (Numbers) */}
+      {/* Render Points */}
       <div className="absolute inset-0 pointer-events-none">
         {visiblePoints.map((point) => {
           const isSelected = point.id === selectedPointId;
@@ -138,35 +134,43 @@ const MachineMap: React.FC<MachineMapProps> = ({
           return (
             <div 
               key={point.id}
-              className={`absolute flex items-center justify-center w-8 h-8 rounded-full border-2 border-white shadow-xl cursor-pointer pointer-events-auto transition-all hover:scale-125 z-20 ${CRITICALITY_COLORS[point.criticality]} ${isSelected ? 'ring-4 ring-blue-400 scale-125 z-30' : ''}`}
-              style={{ left: `${point.coordinates.x}%`, top: `${point.coordinates.y}%`, transform: 'translate(-50%, -50%)' }}
+              className={`absolute flex items-center justify-center w-8 h-8 rounded-full border-2 border-white shadow-xl cursor-pointer pointer-events-auto transition-all duration-200 z-20 
+                ${CRITICALITY_COLORS[point.criticality]} 
+                ${isSelected ? 'scale-125 z-40 ring-[6px] ring-blue-500/30 border-blue-400' : 'hover:scale-110'} 
+                ${editMode && !isSelected ? 'opacity-40 hover:opacity-100' : ''}`}
+              style={{ 
+                left: `${point.coordinates.x}%`, 
+                top: `${point.coordinates.y}%`, 
+                transform: 'translate(-50%, -50%)',
+                boxShadow: isSelected ? '0 0 20px rgba(59,130,246,0.6)' : '0 4px 10px rgba(0,0,0,0.5)'
+              }}
               onClick={(e) => {
                 e.stopPropagation();
                 if (onPointClick) onPointClick(point);
               }}
             >
-              <span className="text-xs font-black text-white italic">{point.number}</span>
+              <span className="text-xs font-black text-white italic drop-shadow-md">{point.number}</span>
               {isCritical && (
-                <div className="absolute -inset-1 rounded-full border border-red-500 animate-ping opacity-75"></div>
+                <div className="absolute -inset-1.5 rounded-full border-2 border-red-500/50 animate-ping pointer-events-none"></div>
               )}
               {editMode && isSelected && (
-                <div className="absolute -top-1 -right-1 bg-white rounded-full p-0.5 shadow-md">
-                  <Move size={8} className="text-blue-600" />
+                <div className="absolute -top-3 -right-3 bg-blue-500 text-white rounded-full p-1 shadow-lg border border-white/20">
+                  <Move size={10} />
                 </div>
               )}
             </div>
           );
         })}
 
-        {/* Preview Point (Moving when adding) */}
+        {/* Add/Preview Point Marker */}
         {previewPoint && (
            <div 
-              className={`absolute flex items-center justify-center w-10 h-10 rounded-full border-2 border-dashed border-white shadow-2xl z-40 animate-pulse bg-blue-600/50`}
+              className={`absolute flex items-center justify-center w-10 h-10 rounded-full border-2 border-dashed border-blue-400 shadow-2xl z-50 animate-pulse bg-blue-900/40`}
               style={{ left: `${previewPoint.coordinates.x}%`, top: `${previewPoint.coordinates.y}%`, transform: 'translate(-50%, -50%)' }}
             >
-              <span className="text-sm font-black text-white">{previewPoint.number}</span>
-              <div className="absolute -bottom-8 bg-blue-600 text-[10px] text-white px-2 py-0.5 rounded font-mono">
-                X:{Math.round(previewPoint.coordinates.x)} Y:{Math.round(previewPoint.coordinates.y)}
+              <Crosshair size={20} className="text-blue-300" />
+              <div className="absolute -bottom-8 bg-blue-600 text-[10px] text-white px-2 py-0.5 rounded-full font-black border border-blue-400 whitespace-nowrap">
+                PLACERA: {Math.round(previewPoint.coordinates.x)}% / {Math.round(previewPoint.coordinates.y)}%
               </div>
             </div>
         )}

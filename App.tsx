@@ -104,10 +104,9 @@ const App: React.FC = () => {
 
   const handlePointClick = (point: MachinePoint) => {
     if (isDesignMode) {
-      // In design mode, clicking a point selects it for potential moving
-      setSelectedPoint(point === selectedPoint ? null : point);
+      // Toggle selection for moving
+      setSelectedPoint(point.id === selectedPoint?.id ? null : point);
     } else {
-      // In normal mode, clicking a point opens the detail view
       setSelectedPoint(point);
     }
   };
@@ -115,7 +114,7 @@ const App: React.FC = () => {
   return (
     <div className="flex flex-row w-full h-full bg-gray-950 text-gray-100 overflow-hidden font-sans">
       
-      {/* Sidebar - Collapsible */}
+      {/* Sidebar */}
       <aside className={`${isSidebarCollapsed ? 'w-20' : 'w-64'} bg-black border-r border-gray-900 flex-shrink-0 flex flex-col justify-between transition-all duration-300 print:hidden shadow-2xl z-30`}>
         <div>
           <div className={`h-20 flex items-center px-5 border-b border-gray-900 ${isSidebarCollapsed ? 'justify-center' : 'justify-between'}`}>
@@ -141,7 +140,7 @@ const App: React.FC = () => {
               <button 
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)} 
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === tab.id ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-500 hover:bg-gray-900'}`}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === tab.id ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/40' : 'text-gray-500 hover:bg-gray-900'}`}
                 title={isSidebarCollapsed ? tab.label : ''}
               >
                 <tab.icon size={20} className="shrink-0" />
@@ -183,27 +182,27 @@ const App: React.FC = () => {
         </div>
       </aside>
 
-      {/* Main Content Area */}
+      {/* Main Content */}
       <main className="flex-1 flex flex-col min-w-0 bg-gray-950 overflow-y-auto relative">
         <div className="max-w-6xl mx-auto w-full p-6 lg:p-10 space-y-8">
           
           <header className="flex justify-between items-center print:border-b print:pb-4 print:border-gray-300">
             <div>
               <h1 className="text-3xl font-black uppercase italic tracking-tighter text-white">Centerline TP-24</h1>
-              <p className="text-gray-500 text-xs font-bold uppercase tracking-widest mt-1 print:text-black">Optimering & Kraschprevention</p>
+              <p className="text-gray-500 text-[10px] font-black uppercase tracking-[0.3em] mt-1 print:text-black">Optimering & Fas-Synkronisering</p>
             </div>
             <div className="flex items-center gap-3 print:hidden">
                <button 
-                onClick={() => { setIsDesignMode(!isDesignMode); if(!isDesignMode) setSelectedPoint(null); }}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl border font-bold text-xs uppercase transition-all ${isDesignMode ? 'bg-blue-600 text-white border-blue-400 shadow-lg shadow-blue-900/50' : 'bg-gray-800 text-gray-400 border-gray-700 hover:text-white'}`}
+                onClick={() => { setIsDesignMode(!isDesignMode); setSelectedPoint(null); }}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl border font-black text-[10px] uppercase tracking-widest transition-all ${isDesignMode ? 'bg-amber-600 text-black border-amber-400 shadow-lg shadow-amber-900/50' : 'bg-gray-800 text-gray-400 border-gray-700 hover:text-white'}`}
                >
-                 <Edit3 size={16} /> {isDesignMode ? 'Designläge Aktivt' : 'Aktivera Designläge'}
+                 <Edit3 size={14} /> {isDesignMode ? 'Avsluta Designläge' : 'Aktivera Designläge'}
                </button>
                <button 
                 onClick={handlePrint} 
-                className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl border border-gray-700 font-bold text-xs uppercase transition-all"
+                className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl border border-gray-700 font-black text-[10px] uppercase tracking-widest transition-all"
                >
-                 <Printer size={16} /> Skriv ut rapport
+                 <Printer size={14} /> PDF Rapport
                </button>
             </div>
           </header>
@@ -211,7 +210,7 @@ const App: React.FC = () => {
           <div className="space-y-10">
             {activeTab === 'overview' && (
               <>
-                <div className="bg-gray-900 rounded-[2.5rem] p-2 border border-gray-800 shadow-2xl print:shadow-none print:border-none print:p-0">
+                <div className="bg-gray-900 rounded-[2.5rem] p-2 border border-gray-800 shadow-2xl print:shadow-none print:border-none print:p-0 relative">
                   <MachineMap 
                     points={points} 
                     layout={layout}
@@ -226,27 +225,27 @@ const App: React.FC = () => {
                 
                 {!isDesignMode && (
                    <div className="bg-gray-900 rounded-[2rem] border border-gray-800 overflow-hidden print:border-gray-200">
-                    <div className="grid grid-cols-12 px-8 py-5 bg-black/40 text-[10px] font-black text-gray-500 uppercase tracking-widest border-b border-gray-800 print:bg-gray-100 print:text-black">
+                    <div className="grid grid-cols-12 px-8 py-5 bg-black/40 text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] border-b border-gray-800 print:bg-gray-100 print:text-black">
                       <div className="col-span-1">#</div>
-                      <div className="col-span-7">Beskrivning</div>
-                      <div className="col-span-2 text-right">Målvärde</div>
-                      <div className="col-span-2 text-center print:hidden">QR</div>
+                      <div className="col-span-7">Kontrollpunkt</div>
+                      <div className="col-span-2 text-right">Centerline</div>
+                      <div className="col-span-2 text-center print:hidden">System</div>
                     </div>
                     <div className="divide-y divide-gray-800/50 print:divide-gray-200">
                       {points.sort((a,b) => a.number - b.number).map((point) => (
                         <div 
                           key={point.id} 
                           onClick={() => setSelectedPoint(point)} 
-                          className="grid grid-cols-12 px-8 py-6 items-center hover:bg-blue-600/5 cursor-pointer transition-colors print:text-black print:hover:bg-transparent"
+                          className="grid grid-cols-12 px-8 py-6 items-center hover:bg-blue-600/5 cursor-pointer transition-all print:text-black print:hover:bg-transparent group"
                         >
-                          <div className="col-span-1 font-black italic text-xl text-gray-600 print:text-black">{point.number}</div>
+                          <div className="col-span-1 font-black italic text-xl text-gray-700 group-hover:text-blue-500 transition-colors print:text-black">{point.number}</div>
                           <div className="col-span-7">
-                            <div className="font-bold text-gray-200 text-lg print:text-black">{point.name}</div>
-                            <div className="text-[10px] text-gray-500 font-bold uppercase tracking-widest print:text-gray-400">{point.zone}</div>
+                            <div className="font-bold text-gray-200 text-lg group-hover:text-white print:text-black">{point.name}</div>
+                            <div className="text-[10px] text-gray-600 font-bold uppercase tracking-widest print:text-gray-400">{point.zone}</div>
                           </div>
                           <div className="col-span-2 font-mono text-2xl font-black text-green-500 text-right print:text-black">{point.targetValue}</div>
                           <div className="col-span-2 flex justify-center print:hidden">
-                            <div className="bg-white p-1 rounded shadow-md">
+                            <div className="bg-white p-1 rounded-lg shadow-md group-hover:scale-110 transition-transform">
                               <img src={getQrCodeUrl(point.id, 60)} alt="QR" className="w-8 h-8" />
                             </div>
                           </div>

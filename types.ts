@@ -1,12 +1,11 @@
 
 export enum Zone {
-  INFEED = 'Inmatning',
-  SEPARATION = 'Separering',
-  GUIDES = 'Gejdrar',
-  CARDBOARD = 'Kartongmatning',
-  FORMING = 'Formverktyg',
-  SHRINK_FILM = 'Krympfilm Matning',
-  DISCHARGE = 'Utmatning'
+  INFEED = 'Inmatning (Enhet 1-2)',
+  SEPARATION = 'Separering (Enhet 3)',
+  CARDBOARD = 'Kartongmagasin (Enhet 11-13)',
+  FORMING = 'Brickformning (Enhet 5, 20)',
+  FILM_UNIT = 'Filmlindning/Kniv (Enhet 9-10, 18)',
+  DISCHARGE = 'Utmatning (Enhet 8)'
 }
 
 export enum Criticality {

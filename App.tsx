@@ -55,7 +55,7 @@ const App: React.FC = () => {
     }
   }, [effectiveBaseUrl]);
 
-  // Deep Link handler - High Priority
+  // Deep Link handler
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const pointId = params.get('p') || params.get('point');
@@ -64,7 +64,6 @@ const App: React.FC = () => {
       const found = points.find(p => p.id === pointId || p.number.toString() === pointId);
       if (found) {
         setSelectedPoint(found);
-        // Clear URL but keep state
         window.history.replaceState({}, '', window.location.pathname);
       }
     }
@@ -89,13 +88,13 @@ const App: React.FC = () => {
           </div>
           
           <nav className="p-3 space-y-2">
-            <button onClick={() => setActiveTab('overview')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'overview' ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/40' : 'text-gray-500 hover:bg-gray-900'}`}>
+            <button onClick={() => setActiveTab('overview')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'overview' ? 'bg-blue-600 text-white shadow-xl' : 'text-gray-500 hover:bg-gray-900'}`}>
               <Map size={20} /> <span className="hidden lg:block font-bold">Översikt</span>
             </button>
-            <button onClick={() => setActiveTab('table')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'table' ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/40' : 'text-gray-500 hover:bg-gray-900'}`}>
+            <button onClick={() => setActiveTab('table')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'table' ? 'bg-blue-600 text-white shadow-xl' : 'text-gray-500 hover:bg-gray-900'}`}>
               <List size={20} /> <span className="hidden lg:block font-bold">Punktlista</span>
             </button>
-            <button onClick={() => setActiveTab('phasing')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'phasing' ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/40' : 'text-gray-500 hover:bg-gray-900'}`}>
+            <button onClick={() => setActiveTab('phasing')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'phasing' ? 'bg-blue-600 text-white shadow-xl' : 'text-gray-500 hover:bg-gray-900'}`}>
               <Activity size={20} /> <span className="hidden lg:block font-bold">Synk</span>
             </button>
           </nav>
@@ -115,7 +114,7 @@ const App: React.FC = () => {
         {/* SETUP WIZARD (Localhost only) */}
         {showSetupWizard && (
           <div className="absolute inset-0 z-40 flex items-center justify-center p-6 bg-black/80 backdrop-blur-xl">
-            <div className="max-w-xl w-full bg-gray-900 border border-gray-700 rounded-[2.5rem] p-12 shadow-2xl text-center space-y-8 animate-in zoom-in duration-300">
+            <div className="max-w-xl w-full bg-gray-900 border border-gray-700 rounded-[2.5rem] p-12 shadow-2xl text-center space-y-8">
               <div className="w-24 h-24 bg-blue-600/20 rounded-3xl flex items-center justify-center mx-auto border border-blue-500/30">
                 <Globe size={48} className="text-blue-500" />
               </div>
@@ -127,7 +126,7 @@ const App: React.FC = () => {
               </div>
               <button 
                 onClick={() => setIsSettingsOpen(true)}
-                className="w-full py-5 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black uppercase tracking-[0.2em] shadow-xl shadow-blue-900/40 transition-all active:scale-95 flex items-center justify-center gap-3"
+                className="w-full py-5 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black uppercase tracking-[0.2em] shadow-xl shadow-blue-900/40 flex items-center justify-center gap-3"
               >
                 Gå till inställningar <ArrowRight size={20} />
               </button>
@@ -142,7 +141,7 @@ const App: React.FC = () => {
               <h2 className="text-3xl font-black uppercase italic tracking-tighter">Centerline TP-24</h2>
               <div className="flex items-center gap-3">
                 {isCloudDeployment ? (
-                  <div className="flex items-center gap-2 px-4 py-2 bg-blue-900/30 border border-blue-500/50 text-blue-400 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-blue-500/10">
+                  <div className="flex items-center gap-2 px-4 py-2 bg-blue-900/30 border border-blue-500/50 text-blue-400 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl">
                     <Cloud size={14} className="animate-pulse" />
                     System Online
                   </div>
@@ -157,7 +156,7 @@ const App: React.FC = () => {
             </div>
 
             {activeTab === 'overview' && (
-              <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+              <div className="space-y-10">
                 <MachineMap 
                   points={points} 
                   onPointClick={setSelectedPoint}

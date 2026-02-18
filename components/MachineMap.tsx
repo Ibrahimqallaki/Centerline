@@ -75,45 +75,51 @@ const MachineMap: React.FC<MachineMapProps> = ({
             <line x1="0" y1="20" x2="100" y2="20" stroke="#3b82f6" strokeWidth="0.5" strokeDasharray="2 2" opacity="0.3" />
             
             {/* Render Dynamic Modules (Rutor/Stationer) */}
-            {layout.map((mod) => (
-              <g 
-                key={mod.id} 
-                className={`${editMode ? 'cursor-pointer group' : ''}`}
-                onClick={(e) => {
-                  if (editMode && onModuleClick) {
-                    e.stopPropagation();
-                    onModuleClick(mod);
-                  }
-                }}
-              >
-                <rect 
-                  x={mod.x} 
-                  y={mod.y} 
-                  width={mod.width} 
-                  height={mod.height} 
-                  fill={editMode ? `${mod.color}22` : "#1e293b"} 
-                  stroke={mod.color} 
-                  strokeWidth={editMode ? "1.2" : "0.8"} 
-                  rx="1" 
-                  className={`transition-all duration-200 print:fill-white print:stroke-black ${editMode ? 'group-hover:stroke-white' : ''}`}
-                />
-                <text 
-                  x={mod.x + mod.width / 2} 
-                  y={mod.y + mod.height / 2} 
-                  textAnchor="middle" 
-                  dominantBaseline="middle" 
-                  fill={mod.color} 
-                  fontSize="2" 
-                  fontWeight="bold"
-                  className="uppercase tracking-tighter print:fill-black pointer-events-none"
+            {layout.map((mod) => {
+              const showFill = mod.hasFill !== false; // Default to true
+              const fillColor = editMode ? `${mod.color}22` : "#1e293b";
+              
+              return (
+                <g 
+                  key={mod.id} 
+                  className={`${editMode ? 'cursor-pointer group' : ''}`}
+                  onClick={(e) => {
+                    if (editMode && onModuleClick) {
+                      e.stopPropagation();
+                      onModuleClick(mod);
+                    }
+                  }}
                 >
-                  {mod.label}
-                </text>
-                {editMode && (
-                  <circle cx={mod.x} cy={mod.y} r="0.5" fill="white" />
-                )}
-              </g>
-            ))}
+                  <rect 
+                    x={mod.x} 
+                    y={mod.y} 
+                    width={mod.width} 
+                    height={mod.height} 
+                    fill={showFill ? fillColor : "none"} 
+                    stroke={mod.color} 
+                    strokeWidth={editMode ? "1.2" : "0.8"} 
+                    rx="1" 
+                    className={`transition-all duration-200 print:fill-white print:stroke-black ${editMode ? 'group-hover:stroke-white' : ''}`}
+                  />
+                  <text 
+                    x={mod.x + mod.width / 2} 
+                    y={mod.y + mod.height / 2} 
+                    textAnchor="middle" 
+                    dominantBaseline="middle" 
+                    fill={mod.color} 
+                    fontSize="2" 
+                    fontWeight="bold"
+                    className="uppercase tracking-tighter print:fill-black pointer-events-none"
+                    style={{ textShadow: showFill ? 'none' : '0 1px 2px rgba(0,0,0,0.8)' }}
+                  >
+                    {mod.label}
+                  </text>
+                  {editMode && (
+                    <circle cx={mod.x} cy={mod.y} r="0.5" fill="white" />
+                  )}
+                </g>
+              );
+            })}
           </g>
         </svg>
       )}

@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { MachineModule } from '../types';
-import { X, Save, Trash2, Move, Maximize, Palette } from 'lucide-react';
+import { X, Save, Trash2, Move, Palette, Square, CheckSquare } from 'lucide-react';
 
 interface ModuleEditorProps {
   module: MachineModule;
@@ -11,7 +11,10 @@ interface ModuleEditorProps {
 }
 
 const ModuleEditor: React.FC<ModuleEditorProps> = ({ module, onSave, onDelete, onClose }) => {
-  const [formData, setFormData] = React.useState<MachineModule>(module);
+  const [formData, setFormData] = React.useState<MachineModule>({
+    hasFill: true, // Default to true if undefined
+    ...module
+  });
 
   const handleChange = (field: keyof MachineModule, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -23,7 +26,7 @@ const ModuleEditor: React.FC<ModuleEditorProps> = ({ module, onSave, onDelete, o
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-      <div className="bg-gray-800 w-full max-w-md rounded-2xl border border-gray-600 shadow-2xl flex flex-col">
+      <div className="bg-gray-800 w-full max-w-md rounded-2xl border border-gray-600 shadow-2xl flex flex-col animate-in zoom-in duration-200">
         <div className="flex justify-between items-center p-5 border-b border-gray-700 bg-gray-900 rounded-t-2xl">
           <h2 className="text-xl font-bold text-white flex items-center gap-2 italic">
             <Move size={18} className="text-blue-500" /> Redigera Maskindel
@@ -38,7 +41,7 @@ const ModuleEditor: React.FC<ModuleEditorProps> = ({ module, onSave, onDelete, o
               type="text" 
               value={formData.label} 
               onChange={(e) => handleChange('label', e.target.value)} 
-              className="w-full bg-gray-900 border border-gray-600 rounded p-2 text-white" 
+              className="w-full bg-gray-900 border border-gray-600 rounded p-2 text-white focus:border-blue-500 outline-none" 
             />
           </div>
 
@@ -46,13 +49,13 @@ const ModuleEditor: React.FC<ModuleEditorProps> = ({ module, onSave, onDelete, o
             <div className="space-y-4">
               <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest">Position (X / Y)</label>
               <div className="flex items-center gap-2">
-                <span className="text-xs text-gray-400 w-4">X:</span>
+                <span className="text-xs text-gray-400 w-4 font-mono">X:</span>
                 <input type="number" value={formData.x} onChange={(e) => handleChange('x', Number(e.target.value))} className="w-16 bg-gray-900 border border-gray-600 rounded p-1 text-white text-sm" />
                 <button onClick={() => adjustValue('x', -1)} className="p-1 bg-gray-700 hover:bg-gray-600 rounded text-white">-</button>
                 <button onClick={() => adjustValue('x', 1)} className="p-1 bg-gray-700 hover:bg-gray-600 rounded text-white">+</button>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-xs text-gray-400 w-4">Y:</span>
+                <span className="text-xs text-gray-400 w-4 font-mono">Y:</span>
                 <input type="number" value={formData.y} onChange={(e) => handleChange('y', Number(e.target.value))} className="w-16 bg-gray-900 border border-gray-600 rounded p-1 text-white text-sm" />
                 <button onClick={() => adjustValue('y', -1)} className="p-1 bg-gray-700 hover:bg-gray-600 rounded text-white">-</button>
                 <button onClick={() => adjustValue('y', 1)} className="p-1 bg-gray-700 hover:bg-gray-600 rounded text-white">+</button>
@@ -60,15 +63,15 @@ const ModuleEditor: React.FC<ModuleEditorProps> = ({ module, onSave, onDelete, o
             </div>
 
             <div className="space-y-4">
-              <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest italic">Storlek (B / H)</label>
+              <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest italic font-mono">Storlek (B / H)</label>
               <div className="flex items-center gap-2">
-                <span className="text-xs text-gray-400 w-4">B:</span>
+                <span className="text-xs text-gray-400 w-4 font-mono">B:</span>
                 <input type="number" value={formData.width} onChange={(e) => handleChange('width', Number(e.target.value))} className="w-16 bg-gray-900 border border-gray-600 rounded p-1 text-white text-sm" />
                 <button onClick={() => adjustValue('width', -1)} className="p-1 bg-gray-700 hover:bg-gray-600 rounded text-white">-</button>
                 <button onClick={() => adjustValue('width', 1)} className="p-1 bg-gray-700 hover:bg-gray-600 rounded text-white">+</button>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-xs text-gray-400 w-4">H:</span>
+                <span className="text-xs text-gray-400 w-4 font-mono">H:</span>
                 <input type="number" value={formData.height} onChange={(e) => handleChange('height', Number(e.target.value))} className="w-16 bg-gray-900 border border-gray-600 rounded p-1 text-white text-sm" />
                 <button onClick={() => adjustValue('height', -1)} className="p-1 bg-gray-700 hover:bg-gray-600 rounded text-white">-</button>
                 <button onClick={() => adjustValue('height', 1)} className="p-1 bg-gray-700 hover:bg-gray-600 rounded text-white">+</button>
@@ -76,10 +79,24 @@ const ModuleEditor: React.FC<ModuleEditorProps> = ({ module, onSave, onDelete, o
             </div>
           </div>
 
+          <div className="flex items-center justify-between p-3 bg-gray-900/50 rounded-xl border border-gray-700">
+            <div className="flex items-center gap-3">
+              <label className="text-sm font-bold text-gray-300">Visa fyllnadsfärg</label>
+              <p className="text-[10px] text-gray-500 uppercase tracking-tight">Gör rutan genomskinlig</p>
+            </div>
+            <button 
+              type="button"
+              onClick={() => handleChange('hasFill', !formData.hasFill)}
+              className={`p-2 rounded-lg transition-colors ${formData.hasFill ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-400'}`}
+            >
+              {formData.hasFill ? <CheckSquare size={20} /> : <Square size={20} />}
+            </button>
+          </div>
+
           <div>
             <label className="block text-[10px] font-black text-gray-500 mb-2 uppercase tracking-widest"><Palette size={10} className="inline mr-1" /> Temafärg</label>
-            <div className="flex gap-2">
-              {['#3b82f6', '#6366f1', '#eab308', '#f97316', '#ec4899', '#a855f7', '#10b981', '#ef4444'].map(c => (
+            <div className="flex flex-wrap gap-2">
+              {['#3b82f6', '#6366f1', '#eab308', '#f97316', '#ec4899', '#a855f7', '#10b981', '#ef4444', '#ffffff', '#4b5563'].map(c => (
                 <button 
                   key={c}
                   type="button"
@@ -97,8 +114,8 @@ const ModuleEditor: React.FC<ModuleEditorProps> = ({ module, onSave, onDelete, o
             <Trash2 size={16} /> Radera
           </button>
           <div className="flex gap-3">
-            <button onClick={onClose} className="px-4 py-2 text-gray-400 hover:text-white font-bold uppercase text-xs">Avbryt</button>
-            <button onClick={() => onSave(formData)} className="px-6 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-bold flex items-center gap-2 shadow-lg shadow-blue-900/40 uppercase text-xs">
+            <button onClick={onClose} className="px-4 py-2 text-gray-400 hover:text-white font-bold uppercase text-xs tracking-widest">Avbryt</button>
+            <button onClick={() => onSave(formData)} className="px-6 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-bold flex items-center gap-2 shadow-lg shadow-blue-900/40 uppercase text-xs tracking-widest transition-all active:scale-95">
               <Save size={16} /> Spara
             </button>
           </div>

@@ -23,6 +23,7 @@ export interface MachineModule {
   width: number;
   height: number;
   color: string;
+  hasFill?: boolean;
 }
 
 export interface MachinePoint {

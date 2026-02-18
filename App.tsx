@@ -117,16 +117,21 @@ const App: React.FC = () => {
     <div className="flex flex-row w-full h-full bg-gray-950 text-gray-100 overflow-hidden font-sans">
       
       {/* Sidebar */}
-      <aside className={`${isSidebarCollapsed ? 'w-20' : 'w-64'} bg-black border-r border-gray-900 flex-shrink-0 flex flex-col justify-between transition-all duration-300 print:hidden shadow-2xl z-30`}>
+      <aside className={`${isSidebarCollapsed ? 'w-20' : 'w-64'} bg-black border-r border-gray-900 flex-shrink-0 flex flex-col justify-between transition-all duration-300 print:hidden shadow-2xl z-30 relative`}>
         <div>
           <div className={`h-20 flex items-center px-5 border-b border-gray-900 ${isSidebarCollapsed ? 'justify-center' : 'justify-between'}`}>
              <div className="flex items-center overflow-hidden">
                <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center font-black text-2xl italic shadow-lg shrink-0">C</div>
                {!isSidebarCollapsed && <span className="ml-3 font-black text-xl italic uppercase tracking-tighter whitespace-nowrap">Centerline</span>}
              </div>
+             
+             {/* Snyggare och mer diskret toggle-knapp */}
              <button 
                 onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)} 
-                className={`p-2 text-gray-500 hover:text-white transition-colors ${isSidebarCollapsed ? 'absolute -right-3 top-7 bg-blue-600 text-white rounded-full border border-blue-400 shadow-lg p-1' : ''}`}
+                className={`flex items-center justify-center transition-all duration-300 z-40
+                  ${isSidebarCollapsed 
+                    ? 'absolute -right-3 top-7 w-6 h-6 bg-gray-800 text-gray-400 hover:text-white rounded-full border border-gray-700 shadow-xl' 
+                    : 'p-2 text-gray-500 hover:text-white'}`}
                 title={isSidebarCollapsed ? "Expandera" : "Fäll in"}
               >
                {isSidebarCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={18} />}

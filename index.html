@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="sv" class="h-full">
   <head>
@@ -37,73 +38,117 @@
       }
 
       @media print {
-        /* Hide UI elements */
+        /* A3 Landscape Optimization */
+        @page {
+          size: A3 landscape;
+          margin: 10mm;
+        }
+
+        html, body {
+          background: white !important;
+          color: black !important;
+          height: auto !important;
+          width: 100% !important;
+          overflow: visible !important;
+        }
+
+        /* Hide interactive UI components */
         .print-hidden, 
         aside, 
         button, 
         nav, 
         .fixed,
         .absolute.inset-0.z-40,
-        header .flex-items-center-gap-3 { 
+        .absolute.top-6.left-8 span, /* Design mode label */
+        header .flex { 
           display: none !important; 
         }
 
-        /* Reset colors for printing */
-        body { 
-          background: white !important; 
-          color: black !important; 
-          overflow: visible !important; 
-          height: auto !important; 
-        }
-
-        #root { 
-          display: block !important; 
-          height: auto !important; 
+        /* Show the main header specifically for print */
+        header {
+          display: block !important;
+          margin-bottom: 10mm !important;
+          border-bottom: 2px solid #000 !important;
+          padding-bottom: 5mm !important;
         }
 
         main {
           padding: 0 !important;
           margin: 0 !important;
           background: white !important;
-          color: black !important;
+          display: block !important;
         }
 
-        .bg-gray-950, .bg-gray-900, .bg-black, .bg-blue-900\/20, .bg-black\/40 {
-          background: white !important;
-          border-color: #ddd !important;
-          color: black !important;
+        .max-w-6xl {
+          max-width: 100% !important;
         }
 
-        .text-gray-100, .text-gray-200, .text-gray-400, .text-gray-500, .text-white {
-          color: black !important;
+        /* Force high quality printing of colors and images */
+        * {
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
         }
 
-        .text-blue-500, .text-green-500, .text-cyan-400, .text-blue-400 {
-          color: #000 !important;
-          font-weight: bold !important;
-        }
-
-        /* Optimize Map for Print */
+        /* Machine Map Print Styles */
         .print-map-container {
-          aspect-ratio: 16/9 !important;
-          border: 1px solid #000 !important;
-          margin-bottom: 2rem !important;
-          background: #f9f9f9 !important;
-        }
-
-        /* Table Optimization */
-        .divide-y > * {
-          border-bottom: 1px solid #ddd !important;
-        }
-        
-        .shadow-2xl, .shadow-lg, .shadow-xl {
+          width: 100% !important;
+          height: auto !important;
+          aspect-ratio: 2/1 !important;
+          border: 2px solid #000 !important;
+          margin-bottom: 15mm !important;
+          background: #fdfdfd !important;
+          border-radius: 0 !important;
           box-shadow: none !important;
         }
 
-        h1, h2, h3 {
-          color: black !important;
-          font-style: normal !important;
+        /* Make map numbers and lines stand out on paper */
+        .bg-gray-950 { background: #fdfdfd !important; }
+        .text-blue-400 { color: #000 !important; }
+        
+        /* Table Optimization for A3 */
+        .grid-cols-12 {
+          display: grid !important;
+          grid-template-cols: repeat(12, minmax(0, 1fr)) !important;
+          page-break-inside: avoid;
         }
+
+        .divide-y > * {
+          border-bottom: 1px solid #ccc !important;
+        }
+
+        .bg-gray-900, .bg-black, .bg-black\/40 {
+          background: transparent !important;
+          border-color: #ccc !important;
+        }
+
+        .text-gray-100, .text-gray-200, .text-gray-400, .text-gray-500, .text-gray-600, .text-white {
+          color: black !important;
+        }
+
+        .text-green-500 {
+          color: #059669 !important; /* Darker green for print */
+        }
+
+        /* Ensure QR codes are visible and sharp */
+        img[alt="QR"] {
+          width: 40px !important;
+          height: 40px !important;
+          filter: grayscale(100%);
+        }
+
+        /* Footer for signatures and date */
+        .print-footer {
+          display: block !important;
+          margin-top: 20mm;
+          border-top: 1px solid #000;
+          padding-top: 5mm;
+          font-size: 10pt;
+        }
+      }
+
+      /* Hidden print footer for screen */
+      .print-footer {
+        display: none;
       }
     </style>
   <script type="importmap">

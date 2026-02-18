@@ -9,7 +9,7 @@ import PhasingGauge from './components/PhasingGauge';
 import AddPointForm from './components/AddPointForm';
 import SettingsModal from './components/SettingsModal';
 import ModuleEditor from './components/ModuleEditor';
-import { Map, List, Settings, Activity, Cloud, Printer, ChevronLeft, ChevronRight, Plus, Edit3, BoxSelect } from 'lucide-react';
+import { Map, List, Settings, Activity, Cloud, Printer, ChevronLeft, ChevronRight, Plus, Edit3, BoxSelect, FileText } from 'lucide-react';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'table' | 'phasing'>('overview');
@@ -83,7 +83,7 @@ const App: React.FC = () => {
       width: 15,
       height: 10,
       color: '#3b82f6',
-      hasFill: false // Ändrat till false som standard
+      hasFill: false
     };
     setLayout([...layout, newMod]);
     setEditingModule(newMod);
@@ -110,6 +110,8 @@ const App: React.FC = () => {
       setSelectedPoint(point);
     }
   };
+
+  const currentPrintDate = new Date().toLocaleString('sv-SE', { dateStyle: 'long', timeStyle: 'short' });
 
   return (
     <div className="flex flex-row w-full h-full bg-gray-950 text-gray-100 overflow-hidden font-sans">
@@ -184,12 +186,12 @@ const App: React.FC = () => {
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col min-w-0 bg-gray-950 overflow-y-auto relative">
-        <div className="max-w-6xl mx-auto w-full p-6 lg:p-10 space-y-8">
+        <div className="max-w-6xl mx-auto w-full p-6 lg:p-10 space-y-8 print:max-w-none print:p-0">
           
-          <header className="flex justify-between items-center print:border-b print:pb-4 print:border-gray-300">
+          <header className="flex justify-between items-center print:border-b-2 print:border-black print:mb-8 print:pb-4">
             <div>
-              <h1 className="text-3xl font-black uppercase italic tracking-tighter text-white">Centerline TP-24</h1>
-              <p className="text-gray-500 text-[10px] font-black uppercase tracking-[0.3em] mt-1 print:text-black">Optimering & Fas-Synkronisering</p>
+              <h1 className="text-3xl font-black uppercase italic tracking-tighter text-white print:text-black print:text-4xl">CENTERLINE RAPPORT: TP-24</h1>
+              <p className="text-gray-500 text-[10px] font-black uppercase tracking-[0.3em] mt-1 print:text-black print:text-sm">Optimering & Fas-Synkronisering | SMI LSK Series</p>
             </div>
             <div className="flex items-center gap-3 print:hidden">
                <button 
@@ -200,17 +202,21 @@ const App: React.FC = () => {
                </button>
                <button 
                 onClick={handlePrint} 
-                className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl border border-gray-700 font-black text-[10px] uppercase tracking-widest transition-all"
+                className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl border border-blue-400 font-black text-xs uppercase tracking-widest transition-all shadow-xl shadow-blue-900/40"
                >
-                 <Printer size={14} /> PDF Rapport
+                 <Printer size={16} /> Skriv ut A3 / PDF
                </button>
+            </div>
+            <div className="hidden print:block text-right">
+              <p className="text-xs font-bold uppercase text-black">Utskrivet den</p>
+              <p className="text-sm font-black text-black">{currentPrintDate}</p>
             </div>
           </header>
 
           <div className="space-y-10">
-            {activeTab === 'overview' && (
-              <>
-                <div className="bg-gray-900 rounded-[2.5rem] p-2 border border-gray-800 shadow-2xl print:shadow-none print:border-none print:p-0 relative">
+            {/* Overview / Map (Alltid med vid utskrift) */}
+            <section className={`${activeTab === 'overview' ? 'block' : 'print:block hidden'} space-y-4`}>
+                <div className="bg-gray-900 rounded-[2.5rem] p-2 border border-gray-800 shadow-2xl print:shadow-none print:border-2 print:border-black print:p-0 print:rounded-none relative overflow-hidden">
                   <MachineMap 
                     points={points} 
                     layout={layout}
@@ -224,14 +230,15 @@ const App: React.FC = () => {
                 </div>
                 
                 {!isDesignMode && (
-                   <div className="bg-gray-900 rounded-[2rem] border border-gray-800 overflow-hidden print:border-gray-200">
-                    <div className="grid grid-cols-12 px-8 py-5 bg-black/40 text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] border-b border-gray-800 print:bg-gray-100 print:text-black">
+                   <div className="bg-gray-900 rounded-[2rem] border border-gray-800 overflow-hidden print:border-2 print:border-black print:rounded-none">
+                    <div className="grid grid-cols-12 px-8 py-5 bg-black/40 text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] border-b border-gray-800 print:bg-gray-100 print:text-black print:border-black">
                       <div className="col-span-1">#</div>
                       <div className="col-span-7">Kontrollpunkt</div>
                       <div className="col-span-2 text-right">Centerline</div>
                       <div className="col-span-2 text-center print:hidden">System</div>
+                      <div className="hidden print:block col-span-2 text-right italic font-normal">Kontroll / Signatur</div>
                     </div>
-                    <div className="divide-y divide-gray-800/50 print:divide-gray-200">
+                    <div className="divide-y divide-gray-800/50 print:divide-black">
                       {points.sort((a,b) => a.number - b.number).map((point) => (
                         <div 
                           key={point.id} 
@@ -249,22 +256,41 @@ const App: React.FC = () => {
                               <img src={getQrCodeUrl(point.id, 60)} alt="QR" className="w-8 h-8" />
                             </div>
                           </div>
+                          <div className="hidden print:block col-span-2 border-l border-gray-300 h-8 ml-4"></div>
                         </div>
                       ))}
                     </div>
                   </div>
                 )}
-              </>
-            )}
+            </section>
 
-            {activeTab === 'table' && (
+            {activeTab === 'table' && !isDesignMode && (
               <ParameterTable points={points} onPointSelect={setSelectedPoint} getQrUrl={getQrCodeUrl} />
             )}
 
-            {activeTab === 'phasing' && (
+            {activeTab === 'phasing' && !isDesignMode && (
               <PhasingGauge currentDegree={0} points={points} />
             )}
           </div>
+
+          {/* Rapport-fot för utskrift */}
+          <footer className="print-footer space-y-6">
+            <div className="grid grid-cols-2 gap-20">
+              <div className="border-t border-black pt-2">
+                <p className="text-[10pt] font-bold">Utförd av:</p>
+                <div className="h-12"></div>
+                <p className="text-[8pt] text-gray-600 italic">Namnförtydligande</p>
+              </div>
+              <div className="border-t border-black pt-2">
+                <p className="text-[10pt] font-bold">Godkänd av (Team Leader):</p>
+                <div className="h-12"></div>
+                <p className="text-[8pt] text-gray-600 italic">Signatur & Datum</p>
+              </div>
+            </div>
+            <p className="text-[8pt] text-center text-gray-500 pt-10">
+              Centerline Pro System - Genererad Rapport - Sida 1 av 1
+            </p>
+          </footer>
         </div>
       </main>
 

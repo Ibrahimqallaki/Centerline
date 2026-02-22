@@ -215,7 +215,7 @@ const App: React.FC = () => {
                   <div className="col-span-2 text-center print:hidden">System</div>
                 </div>
                 <div className="divide-y divide-gray-800/50 print:divide-black">
-                  {points.sort((a,b) => a.number - b.number).map((point) => (
+                  {[...points].sort((a,b) => a.number - b.number).map((point) => (
                     <div 
                       key={point.id} 
                       onClick={() => setSelectedPoint(point)} 
@@ -287,7 +287,11 @@ const App: React.FC = () => {
           existingPoints={points} 
           layout={layout} 
           initialData={editingPoint} 
-          onSave={(p) => { setPoints(points.map(x => x.id === p.id ? p : x)); setEditingPoint(null); setSelectedPoint(p); }} 
+          onSave={(p) => { 
+            setPoints(points.map(x => x.id === editingPoint.id ? p : x)); 
+            setEditingPoint(null); 
+            setSelectedPoint(p); 
+          }} 
           onCancel={() => { setEditingPoint(null); setSelectedPoint(editingPoint); }} 
         />
       )}

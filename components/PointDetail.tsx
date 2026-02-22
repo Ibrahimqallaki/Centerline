@@ -83,24 +83,13 @@ const PointDetail: React.FC<PointDetailProps> = ({ point, onUpdate, onEdit, onCl
                 <img src={isEditingImage ? imageUrlInput : point.imagePlaceholder} alt={point.name} className="w-full h-full object-cover transition-opacity" />
                 
                 {!isEditingImage && (
-                  <>
-                    <div className="absolute top-2 left-2 bg-black/60 px-2 py-1 rounded text-xs text-white flex items-center gap-1">
-                      <BookOpen size={12} /> Referensbild
-                    </div>
-                    <button 
-                      onClick={() => { setIsEditingImage(true); setImageUrlInput(point.imagePlaceholder); }}
-                      className="absolute top-2 right-2 p-2 bg-black/60 hover:bg-blue-600 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-all"
-                      title="Byt bild"
-                    >
-                      <Edit2 size={16} />
-                    </button>
-                  </>
-                )}
-                
-                {point.phaseAngle !== undefined && !isEditingImage && (
-                   <div className="absolute bottom-2 right-2 bg-cyan-900/80 text-cyan-200 border border-cyan-500/50 px-3 py-1 rounded font-mono font-bold">
-                     Fasning: {point.phaseAngle}°
-                   </div>
+                  <button 
+                    onClick={() => { setIsEditingImage(true); setImageUrlInput(point.imagePlaceholder); }}
+                    className="absolute top-2 right-2 p-2 bg-black/60 hover:bg-blue-600 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-all"
+                    title="Byt bild"
+                  >
+                    <Edit2 size={16} />
+                  </button>
                 )}
               </div>
 
@@ -158,6 +147,12 @@ const PointDetail: React.FC<PointDetailProps> = ({ point, onUpdate, onEdit, onCl
                      <span className="text-gray-500 block">Mätmetod</span>
                      <span className="text-gray-200">{point.measureMethod}</span>
                    </div>
+                   {point.phaseAngle !== undefined && (
+                     <div className="col-span-2 mt-2 pt-2 border-t border-gray-800 flex justify-between items-center">
+                       <span className="text-gray-500">Fasningsvinkel</span>
+                       <span className="text-cyan-400 font-mono font-bold">{point.phaseAngle}°</span>
+                     </div>
+                   )}
                 </div>
               </div>
 

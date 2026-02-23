@@ -60,7 +60,13 @@ const App: React.FC = () => {
     localStorage.setItem('centerline_points', JSON.stringify(points));
     localStorage.setItem('centerline_layout', JSON.stringify(layout));
     localStorage.setItem('sidebar_collapsed', isSidebarCollapsed.toString());
-  }, [points, layout, isSidebarCollapsed]);
+    if (customMapUrl) {
+      localStorage.setItem('centerline_map_url', customMapUrl);
+    } else {
+      localStorage.removeItem('centerline_map_url');
+    }
+    localStorage.setItem('centerline_public_url', publicBaseUrl);
+  }, [points, layout, isSidebarCollapsed, customMapUrl, publicBaseUrl]);
 
   const getQrCodeUrl = useCallback((pointId: string, size: number = 200) => {
     const isCloud = window.location.hostname !== 'localhost';

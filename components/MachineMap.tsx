@@ -52,10 +52,10 @@ const MachineMap: React.FC<MachineMapProps> = ({
           <img 
             src={customMapUrl} 
             alt="Machine Layout" 
-            className="w-full h-full object-contain p-4 opacity-40"
+            className="w-full h-full object-contain p-4 opacity-40 print:opacity-60"
           />
         ) : (
-          <div className="absolute inset-0 opacity-[0.03] pointer-events-none z-0" 
+          <div className="absolute inset-0 opacity-[0.03] print:opacity-10 pointer-events-none z-0" 
                style={{ 
                  backgroundImage: `linear-gradient(#3b82f6 1px, transparent 1px), linear-gradient(90deg, #3b82f6 1px, transparent 1px)`,
                  backgroundSize: '30px 30px' 

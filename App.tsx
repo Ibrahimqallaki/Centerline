@@ -114,9 +114,14 @@ const App: React.FC = () => {
   return (
     <div className="flex flex-row w-full h-full bg-gray-950 text-gray-100 overflow-hidden font-sans print:bg-white print:text-black print:overflow-visible">
       
-      {/* Sidebar */}
-      <aside className={`${isSidebarCollapsed ? 'w-20' : 'w-64'} bg-black border-r border-gray-900 flex-shrink-0 flex flex-col justify-between transition-all duration-300 print:hidden shadow-2xl z-30 relative`}>
-        <div>
+      {/* Sidebar / Mobile Nav */}
+      <aside className={`
+        fixed bottom-0 left-0 right-0 h-16 bg-black border-t border-gray-900 flex flex-row justify-around items-center z-40 print:hidden
+        md:relative md:h-auto md:w-64 md:border-r md:border-t-0 md:flex-col md:justify-between md:items-stretch
+        ${isSidebarCollapsed ? 'md:w-20' : 'md:w-64'}
+        transition-all duration-300 shadow-2xl
+      `}>
+        <div className="hidden md:block">
           <div className={`h-20 flex items-center px-5 border-b border-gray-900 ${isSidebarCollapsed ? 'justify-center' : 'justify-between'}`}>
              <div className="flex items-center overflow-hidden">
                <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center font-black text-2xl italic shadow-lg shrink-0 text-white">C</div>
@@ -153,7 +158,30 @@ const App: React.FC = () => {
           </nav>
         </div>
 
-        <div className="p-3 border-t border-gray-800">
+        {/* Mobile Navigation */}
+        <nav className="flex md:hidden w-full justify-around items-center h-full px-2">
+            {[
+              { id: 'overview', icon: Map, label: 'Karta' },
+              { id: 'table', icon: List, label: 'Lista' },
+              { id: 'phasing', icon: Activity, label: 'Synk' },
+              { id: 'guide', icon: BookOpen, label: 'Guide' }
+            ].map((tab) => (
+              <button 
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as any)} 
+                className={`flex flex-col items-center justify-center p-2 rounded-lg transition-all ${activeTab === tab.id ? 'text-blue-500' : 'text-gray-500'}`}
+              >
+                <tab.icon size={24} />
+                <span className="text-[10px] font-bold mt-1">{tab.label}</span>
+              </button>
+            ))}
+             <button onClick={() => setIsSettingsOpen(true)} className="flex flex-col items-center justify-center p-2 rounded-lg text-gray-500">
+                <Settings size={24} />
+                <span className="text-[10px] font-bold mt-1">Inställn.</span>
+             </button>
+        </nav>
+
+        <div className="hidden md:block p-3 border-t border-gray-800">
            <button onClick={() => setIsSettingsOpen(true)} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-500 hover:text-white transition-colors">
               <Settings size={20} className="shrink-0" />
               {!isSidebarCollapsed && <span className="font-bold">Inställningar</span>}
@@ -162,7 +190,7 @@ const App: React.FC = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col min-w-0 bg-gray-950 overflow-y-auto relative print:bg-white print:overflow-visible">
+      <main className="flex-1 flex flex-col min-w-0 bg-gray-950 overflow-y-auto relative print:bg-white print:overflow-visible pb-20 md:pb-0">
         <div className="max-w-6xl mx-auto w-full p-6 lg:p-10 space-y-8 print:max-w-none print:p-0">
           
           <header className="flex justify-between items-end border-b border-gray-800 pb-6 print:border-black print:mb-10">

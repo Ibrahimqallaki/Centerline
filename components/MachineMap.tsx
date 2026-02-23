@@ -106,7 +106,8 @@ const MachineMap: React.FC<MachineMapProps> = ({
                     strokeWidth={editMode ? "0.8" : "0.5"} 
                     strokeDasharray={showFill ? "" : "1 0.5"} // Subtilare streckning för genomskinliga rutor
                     rx="0.5" 
-                    className={`transition-all duration-300 print:fill-white print:stroke-black ${editMode ? 'group-hover:stroke-white group-hover:stroke-[1px]' : ''}`}
+                    className={`transition-all duration-300 print:fill-transparent print:stroke-black print:stroke-[1px] print:stroke-solid ${editMode ? 'group-hover:stroke-white group-hover:stroke-[1px]' : ''}`}
+                    style={{ strokeDasharray: 'none' }} // Force solid line in print via inline style override if needed, though class is better
                   />
                   <text 
                     x={mod.x + mod.width / 2} 

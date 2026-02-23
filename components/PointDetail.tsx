@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { MachinePoint, Criticality } from '../types';
-import { AlertTriangle, CheckCircle, Video, BookOpen, AlertOctagon, Edit2, Upload, Save, Link, PenBox, Zap } from 'lucide-react';
+import { AlertTriangle, CheckCircle, Video, BookOpen, AlertOctagon, Edit2, Upload, Save, Link, PenBox, Zap, Image as ImageIcon } from 'lucide-react';
 
 interface PointDetailProps {
   point: MachinePoint;
@@ -11,16 +11,17 @@ interface PointDetailProps {
 
 const PointDetail: React.FC<PointDetailProps> = ({ point, onUpdate, onEdit, onClose }) => {
   // Image Editing State
-  const [isEditingImage, setIsEditingImage] = useState(false);
-  const [imageUrlInput, setImageUrlInput] = useState(point.imagePlaceholder);
+  const [isEditingImage, setIsEditingImage] = useState<'img1' | 'img2' | null>(null);
+  const [imageUrlInput, setImageUrlInput] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleSaveImage = () => {
-    onUpdate({
-      ...point,
-      imagePlaceholder: imageUrlInput
-    });
-    setIsEditingImage(false);
+    if (isEditingImage === 'img1') {
+      onUpdate({ ...point, imagePlaceholder: imageUrlInput });
+    } else if (isEditingImage === 'img2') {
+      onUpdate({ ...point, imagePlaceholder2: imageUrlInput });
+    }
+    setIsEditingImage(null);
   };
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,7 +39,7 @@ const PointDetail: React.FC<PointDetailProps> = ({ point, onUpdate, onEdit, onCl
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 print:hidden">
-      <div className="bg-gray-800 w-full max-w-4xl max-h-[90vh] rounded-2xl border border-gray-600 shadow-2xl overflow-hidden flex flex-col">
+      <div className="bg-gray-800 w-full max-w-5xl max-h-[95vh] rounded-2xl border border-gray-600 shadow-2xl overflow-hidden flex flex-col">
         
         {/* Header - CLEANED UP */}
         <div className="flex justify-between items-center p-6 border-b border-gray-700 bg-gray-900">
@@ -64,28 +65,54 @@ const PointDetail: React.FC<PointDetailProps> = ({ point, onUpdate, onEdit, onCl
         <div className="flex-1 overflow-y-auto p-6 space-y-8">
           
           {/* Main Layout: Image & Data */}
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             
-            {/* Visuals - ENLARGED */}
-            <div className="lg:col-span-3 space-y-4">
-              <div className="relative aspect-[16/10] bg-black rounded-2xl overflow-hidden border border-gray-600 group shadow-2xl">
-                <img src={isEditingImage ? imageUrlInput : point.imagePlaceholder} alt={point.name} className="w-full h-full object-cover transition-opacity" />
-                
-                {!isEditingImage && (
-                  <button 
-                    onClick={() => { setIsEditingImage(true); setImageUrlInput(point.imagePlaceholder); }}
-                    className="absolute top-4 right-4 p-3 bg-black/60 hover:bg-blue-600 text-white rounded-xl opacity-0 group-hover:opacity-100 transition-all backdrop-blur-md border border-white/10"
-                    title="Byt bild"
-                  >
-                    <Edit2 size={20} />
-                  </button>
-                )}
+            {/* Visuals - TWO IMAGES */}
+            <div className="lg:col-span-8 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Image 1 */}
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">1. Översikt</label>
+                  <div className="relative aspect-[4/3] bg-black rounded-2xl overflow-hidden border border-gray-600 group shadow-xl">
+                    <img src={isEditingImage === 'img1' ? imageUrlInput : point.imagePlaceholder} alt="Overview" className="w-full h-full object-cover" />
+                    {!isEditingImage && (
+                      <button 
+                        onClick={() => { setIsEditingImage('img1'); setImageUrlInput(point.imagePlaceholder); }}
+                        className="absolute top-3 right-3 p-2 bg-black/60 hover:bg-blue-600 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-all backdrop-blur-md border border-white/10"
+                      >
+                        <Edit2 size={16} />
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Image 2 */}
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">2. Detalj / Inställning</label>
+                  <div className="relative aspect-[4/3] bg-black rounded-2xl overflow-hidden border border-gray-600 group shadow-xl">
+                    {point.imagePlaceholder2 || isEditingImage === 'img2' ? (
+                      <img src={isEditingImage === 'img2' ? imageUrlInput : point.imagePlaceholder2} alt="Detail" className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-gray-900 text-gray-700 italic text-sm">Ingen detaljbild</div>
+                    )}
+                    {!isEditingImage && (
+                      <button 
+                        onClick={() => { setIsEditingImage('img2'); setImageUrlInput(point.imagePlaceholder2 || ''); }}
+                        className="absolute top-3 right-3 p-2 bg-black/60 hover:bg-blue-600 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-all backdrop-blur-md border border-white/10"
+                      >
+                        <Edit2 size={16} />
+                      </button>
+                    )}
+                  </div>
+                </div>
               </div>
 
               {/* Edit Mode Interface */}
-              {isEditingImage ? (
-                <div className="bg-gray-700/50 p-4 rounded-xl space-y-3 border border-gray-600">
-                  <h4 className="font-bold text-gray-300 text-sm">Byt Referensbild</h4>
+              {isEditingImage && (
+                <div className="bg-blue-900/20 p-4 rounded-xl space-y-3 border border-blue-500/30 animate-in slide-in-from-top duration-200">
+                  <h4 className="font-bold text-blue-300 text-sm flex items-center gap-2">
+                    <ImageIcon size={16} /> Byt {isEditingImage === 'img1' ? 'Översiktsbild' : 'Detaljbild'}
+                  </h4>
                   
                   <div className="flex gap-2">
                     <div className="relative flex-1">
@@ -105,22 +132,22 @@ const PointDetail: React.FC<PointDetailProps> = ({ point, onUpdate, onEdit, onCl
                   </div>
 
                   <div className="flex justify-end gap-2">
-                    <button onClick={() => setIsEditingImage(false)} className="px-3 py-1 text-sm text-gray-400 hover:text-white">Avbryt</button>
-                    <button onClick={handleSaveImage} className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-500 rounded-lg text-white text-sm font-bold">
-                      <Save size={14} /> Spara
+                    <button onClick={() => setIsEditingImage(null)} className="px-3 py-1 text-sm text-gray-400 hover:text-white">Avbryt</button>
+                    <button onClick={handleSaveImage} className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-white text-sm font-bold">
+                      <Save size={14} /> Spara ändring
                     </button>
                   </div>
                 </div>
-              ) : (
-                <button className="w-full py-4 bg-gray-900/50 hover:bg-gray-700 rounded-xl flex items-center justify-center gap-3 transition-all border border-gray-700 group">
-                  <Video size={24} className="text-blue-500 group-hover:scale-110 transition-transform" />
-                  <span className="font-bold text-gray-300">Spela upp instruktionsfilm (Kommer snart)</span>
-                </button>
               )}
+
+              <button className="w-full py-4 bg-gray-900/50 hover:bg-gray-700 rounded-xl flex items-center justify-center gap-3 transition-all border border-gray-700 group">
+                <Video size={24} className="text-blue-500 group-hover:scale-110 transition-transform" />
+                <span className="font-bold text-gray-300">Spela upp instruktionsfilm (Kommer snart)</span>
+              </button>
             </div>
 
             {/* Data & Risk - REARRANGED */}
-            <div className="lg:col-span-2 space-y-6">
+            <div className="lg:col-span-4 space-y-6">
               <div className="bg-gray-900/80 p-6 rounded-2xl border border-gray-700 shadow-inner">
                 <div className="space-y-6">
                   <div>

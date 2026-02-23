@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { MachinePoint, Zone, Criticality, MachineModule } from '../types';
-import { X, Save, MapPin, Eye, EyeOff, MousePointer2 } from 'lucide-react';
+import { X, Save, MapPin, Eye, EyeOff, MousePointer2, Upload } from 'lucide-react';
 import MachineMap from './MachineMap';
 
 interface AddPointFormProps {
@@ -27,6 +27,7 @@ const AddPointForm: React.FC<AddPointFormProps> = ({ existingPoints, initialData
     measureMethod: initialData?.measureMethod ?? '',
     criticality: initialData?.criticality ?? Criticality.MEDIUM,
     imagePlaceholder: initialData?.imagePlaceholder ?? 'https://picsum.photos/400/300?grayscale',
+    imagePlaceholder2: initialData?.imagePlaceholder2 ?? '',
     coordinates: initialData?.coordinates ?? { x: 50, y: 50 },
     visibleOnMap: initialData?.visibleOnMap ?? true,
     phaseAngle: initialData?.phaseAngle
@@ -36,6 +37,17 @@ const AddPointForm: React.FC<AddPointFormProps> = ({ existingPoints, initialData
 
   const handleChange = (field: keyof MachinePoint, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleFileUpload = (field: 'imagePlaceholder' | 'imagePlaceholder2', event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        handleChange(field, reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleCoordinateChange = (x: number, y: number) => {
@@ -119,6 +131,51 @@ const AddPointForm: React.FC<AddPointFormProps> = ({ existingPoints, initialData
                    <select value={formData.criticality} onChange={(e) => handleChange('criticality', e.target.value)} className="w-full bg-gray-900 border border-gray-600 rounded p-2 text-white">
                      {Object.values(Criticality).map(c => <option key={c} value={c}>{c}</option>)}
                    </select>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-4 pt-4 border-t border-gray-700">
+              <h3 className="text-pink-400 font-bold uppercase text-xs tracking-widest border-b border-gray-700 pb-2">Bilder & Referenser</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-3">
+                  <label className="block text-[10px] font-black text-gray-500 uppercase">Referensbild 1 (Översikt)</label>
+                  <div className="aspect-video bg-gray-900 rounded-xl overflow-hidden border border-gray-700 relative group">
+                    <img src={formData.imagePlaceholder} className="w-full h-full object-cover" alt="Preview 1" />
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                       <button type="button" onClick={() => document.getElementById('file-upload-1')?.click()} className="p-2 bg-blue-600 rounded-lg text-white"><Upload size={18} /></button>
+                    </div>
+                    <input id="file-upload-1" type="file" className="hidden" onChange={(e) => handleFileUpload('imagePlaceholder', e)} accept="image/*" />
+                  </div>
+                  <input 
+                    type="text" 
+                    value={formData.imagePlaceholder} 
+                    onChange={(e) => handleChange('imagePlaceholder', e.target.value)}
+                    placeholder="Bild-URL 1..." 
+                    className="w-full bg-gray-900 border border-gray-600 rounded p-2 text-xs text-white" 
+                  />
+                </div>
+
+                <div className="space-y-3">
+                  <label className="block text-[10px] font-black text-gray-500 uppercase">Referensbild 2 (Detalj/Inställning)</label>
+                  <div className="aspect-video bg-gray-900 rounded-xl overflow-hidden border border-gray-700 relative group">
+                    {formData.imagePlaceholder2 ? (
+                      <img src={formData.imagePlaceholder2} className="w-full h-full object-cover" alt="Preview 2" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-gray-700 italic text-xs">Ingen bild vald</div>
+                    )}
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                       <button type="button" onClick={() => document.getElementById('file-upload-2')?.click()} className="p-2 bg-blue-600 rounded-lg text-white"><Upload size={18} /></button>
+                    </div>
+                    <input id="file-upload-2" type="file" className="hidden" onChange={(e) => handleFileUpload('imagePlaceholder2', e)} accept="image/*" />
+                  </div>
+                  <input 
+                    type="text" 
+                    value={formData.imagePlaceholder2 || ''} 
+                    onChange={(e) => handleChange('imagePlaceholder2', e.target.value)}
+                    placeholder="Bild-URL 2..." 
+                    className="w-full bg-gray-900 border border-gray-600 rounded p-2 text-xs text-white" 
+                  />
                 </div>
               </div>
             </div>

@@ -39,6 +39,7 @@ export interface MachinePoint {
   measureMethod: string;
   criticality: Criticality;
   imagePlaceholder: string;
+  imagePlaceholder2?: string;
   coordinates: { x: number; y: number };
   visibleOnMap: boolean;
   phaseAngle?: number;

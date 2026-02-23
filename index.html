@@ -48,8 +48,6 @@
           height: auto !important;
           min-height: 0 !important;
           overflow: visible !important;
-          position: static !important;
-          display: block !important;
         }
 
         /* Göm navigerings-element */
@@ -99,6 +97,19 @@
           page-break-inside: avoid;
           aspect-ratio: 2/1 !important;
           width: 100% !important;
+          position: relative !important;
+          display: block !important;
+          overflow: hidden !important;
+        }
+
+        .print-map-container > div,
+        .print-map-container > svg,
+        .print-map-container > img {
+          position: absolute !important;
+          top: 0 !important;
+          left: 0 !important;
+          width: 100% !important;
+          height: 100% !important;
         }
 
         /* Tabeller / Punktlistor */

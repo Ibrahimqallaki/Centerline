@@ -79,18 +79,50 @@ const ModuleEditor: React.FC<ModuleEditorProps> = ({ module, onSave, onDelete, o
             </div>
           </div>
 
-          <div className="flex items-center justify-between p-3 bg-gray-900/50 rounded-xl border border-gray-700">
-            <div className="flex items-center gap-3">
-              <label className="text-sm font-bold text-gray-300">Visa fyllnadsfärg</label>
-              <p className="text-[10px] text-gray-500 uppercase tracking-tight">Gör rutan genomskinlig</p>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex items-center justify-between p-3 bg-gray-900/50 rounded-xl border border-gray-700">
+              <div className="flex flex-col">
+                <label className="text-sm font-bold text-gray-300">Fyllnad</label>
+                <p className="text-[9px] text-gray-500 uppercase">Bakgrundsfärg</p>
+              </div>
+              <button 
+                type="button"
+                onClick={() => handleChange('hasFill', !formData.hasFill)}
+                className={`p-1.5 rounded-lg transition-colors ${formData.hasFill ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-400'}`}
+              >
+                {formData.hasFill ? <CheckSquare size={18} /> : <Square size={18} />}
+              </button>
             </div>
-            <button 
-              type="button"
-              onClick={() => handleChange('hasFill', !formData.hasFill)}
-              className={`p-2 rounded-lg transition-colors ${formData.hasFill ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-400'}`}
-            >
-              {formData.hasFill ? <CheckSquare size={20} /> : <Square size={20} />}
-            </button>
+
+            <div className="flex items-center justify-between p-3 bg-gray-900/50 rounded-xl border border-gray-700">
+              <div className="flex flex-col">
+                <label className="text-sm font-bold text-gray-300">Radbryt</label>
+                <p className="text-[9px] text-gray-500 uppercase">Textomfång</p>
+              </div>
+              <button 
+                type="button"
+                onClick={() => handleChange('wrapText', !formData.wrapText)}
+                className={`p-1.5 rounded-lg transition-colors ${formData.wrapText ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-400'}`}
+              >
+                {formData.wrapText ? <CheckSquare size={18} /> : <Square size={18} />}
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-[10px] font-black text-gray-500 mb-2 uppercase tracking-widest italic">Textstorlek</label>
+            <div className="flex items-center gap-4 bg-gray-900/50 p-3 rounded-xl border border-gray-700">
+              <input 
+                type="range" 
+                min="0.5" 
+                max="5" 
+                step="0.1" 
+                value={formData.fontSize || 2} 
+                onChange={(e) => handleChange('fontSize', Number(e.target.value))}
+                className="flex-1 accent-blue-500"
+              />
+              <span className="text-xs font-mono text-blue-400 w-8 text-right">{formData.fontSize || 2}</span>
+            </div>
           </div>
 
           <div>

@@ -46,40 +46,42 @@ const MachineMap: React.FC<MachineMapProps> = ({
       onClick={handleContainerClick}
       className={`relative w-full aspect-[2/1] bg-gray-950 rounded-[2rem] border border-gray-800 overflow-hidden shadow-2xl print-map-container ${onMapClick ? 'cursor-crosshair' : ''} ${editMode ? 'ring-2 ring-blue-500 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}
     >
-      {/* Blueprint Grid */}
-      <div className="absolute inset-0 opacity-[0.03] pointer-events-none z-0" 
-           style={{ 
-             backgroundImage: `linear-gradient(#3b82f6 1px, transparent 1px), linear-gradient(90deg, #3b82f6 1px, transparent 1px)`,
-             backgroundSize: '30px 30px' 
-           }}>
+      {/* Background Image or SVG Grid */}
+      <div className="absolute inset-0 z-0">
+        {customMapUrl ? (
+          <img 
+            src={customMapUrl} 
+            alt="Machine Layout" 
+            className="w-full h-full object-contain p-4 opacity-40"
+          />
+        ) : (
+          <div className="absolute inset-0 opacity-[0.03] pointer-events-none z-0" 
+               style={{ 
+                 backgroundImage: `linear-gradient(#3b82f6 1px, transparent 1px), linear-gradient(90deg, #3b82f6 1px, transparent 1px)`,
+                 backgroundSize: '30px 30px' 
+               }}>
+          </div>
+        )}
       </div>
 
       <div className="absolute top-6 left-8 z-10 pointer-events-none">
-        <h2 className="text-xl font-black text-blue-400 tracking-tighter uppercase italic print:text-black flex items-center gap-2">
-          Layout: TP-24 Tray Packer
-          {editMode && <span className="text-[10px] bg-blue-600 text-white px-2 py-0.5 rounded-full animate-pulse flex items-center gap-1"><Edit3 size={10}/> DESIGNLÄGE</span>}
-        </h2>
+        {editMode && (
+          <div className="text-[10px] bg-blue-600 text-white px-2 py-0.5 rounded-full animate-pulse flex items-center gap-1 w-fit"><Edit3 size={10}/> DESIGNLÄGE</div>
+        )}
         {editMode && selectedPointId && (
-          <div className="mt-2 text-[10px] bg-amber-500 text-black px-3 py-1 rounded-full font-black flex items-center gap-1 border border-amber-400 shadow-lg">
+          <div className="mt-2 text-[10px] bg-amber-500 text-black px-3 py-1 rounded-full font-black flex items-center gap-1 border border-amber-400 shadow-lg w-fit">
             <Crosshair size={12} className="animate-spin-slow" /> KLICKA PÅ KARTAN FÖR ATT FLYTTA PUNKTEN
           </div>
         )}
       </div>
 
-      {customMapUrl ? (
-        <img 
-          src={customMapUrl} 
-          alt="Machine Layout" 
-          className="absolute inset-0 w-full h-full object-contain p-4"
-        />
-      ) : (
-        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 50" preserveAspectRatio="xMidYMid meet">
-          <g transform="translate(0, 0)">
-            {/* Main Axis Line */}
-            <line x1="0" y1="20" x2="100" y2="20" stroke="#1e293b" strokeWidth="0.2" />
-            
-            {/* Render Dynamic Modules */}
-            {layout.map((mod) => {
+      <svg className="absolute inset-0 w-full h-full z-5" viewBox="0 0 100 50" preserveAspectRatio="xMidYMid meet">
+        <g transform="translate(0, 0)">
+          {/* Main Axis Line - Only show if no custom map */}
+          {!customMapUrl && <line x1="0" y1="20" x2="100" y2="20" stroke="#1e293b" strokeWidth="0.2" />}
+          
+          {/* Render Dynamic Modules */}
+          {layout.map((mod) => {
               const showFill = mod.hasFill === true; // Default nu till false om ej specificerat som true
               const fillColor = editMode ? `${mod.color}15` : `${mod.color}08`;
               
@@ -108,26 +110,33 @@ const MachineMap: React.FC<MachineMapProps> = ({
                   />
                   <text 
                     x={mod.x + mod.width / 2} 
-                    y={mod.y + mod.height / 2} 
+                    y={mod.y + mod.height / 2 + (mod.fontSize || 2) * 0.3} 
                     textAnchor="middle" 
-                    dominantBaseline="middle" 
-                    fill={mod.color} 
-                    fontSize="2" 
+                    fill={mod.color === '#ffffff' ? '#ffffff' : mod.color} 
+                    stroke="black"
+                    strokeWidth="0.05"
+                    paintOrder="stroke"
+                    fontSize={mod.fontSize || Math.max(1.5, Math.min(mod.width * 0.25, mod.height * 0.6, 3.5))} 
                     fontWeight="900"
-                    className="uppercase tracking-[0.15em] print:fill-black pointer-events-none italic"
-                    style={{ 
-                      opacity: editMode ? 0.8 : 0.5,
-                      textShadow: showFill ? 'none' : '0 1px 3px rgba(0,0,0,0.9)' // Extra skugga för text utan bakgrund
-                    }}
+                    className="uppercase tracking-wider print:fill-black pointer-events-none italic"
                   >
-                    {mod.label}
+                    {mod.wrapText ? (
+                      mod.label.split(' ').map((line, i, arr) => (
+                        <tspan 
+                          key={i} 
+                          x={mod.x + mod.width / 2} 
+                          dy={i === 0 ? `-${(arr.length - 1) * 0.5}em` : '1.1em'}
+                        >
+                          {line}
+                        </tspan>
+                      ))
+                    ) : mod.label}
                   </text>
                 </g>
               );
             })}
           </g>
         </svg>
-      )}
 
       {/* Render Points */}
       <div className="absolute inset-0 pointer-events-none">

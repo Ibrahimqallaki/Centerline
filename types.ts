@@ -24,6 +24,8 @@ export interface MachineModule {
   height: number;
   color: string;
   hasFill?: boolean;
+  fontSize?: number;
+  wrapText?: boolean;
 }
 
 export interface MachinePoint {

@@ -10,7 +10,7 @@ import AddPointForm from './components/AddPointForm';
 import SettingsModal from './components/SettingsModal';
 import ModuleEditor from './components/ModuleEditor';
 import Guide from './components/Guide';
-import { Map, List, Settings, Activity, Printer, ChevronLeft, ChevronRight, Plus, Edit3, BookOpen } from 'lucide-react';
+import { Map, List, Settings, Activity, Printer, ChevronLeft, ChevronRight, Plus, Edit3, BookOpen, Square, Crosshair, Image as ImageIcon } from 'lucide-react';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'table' | 'phasing' | 'guide'>('overview');
@@ -190,6 +190,44 @@ const App: React.FC = () => {
           <div className="space-y-12 print:space-y-10">
             {/* MASKINSKISS */}
             <section className={`${activeTab === 'overview' ? 'block' : 'print:block hidden'} print:break-inside-avoid`}>
+              {isDesignMode && (
+                <div className="flex flex-wrap gap-3 mb-4 animate-in slide-in-from-top duration-300">
+                  <button 
+                    onClick={() => {
+                      const newId = `m${Date.now()}`;
+                      const newModule: MachineModule = {
+                        id: newId,
+                        label: 'NY ENHET',
+                        x: 40,
+                        y: 20,
+                        width: 15,
+                        height: 10,
+                        color: '#3b82f6',
+                        hasFill: false,
+                        fontSize: 2,
+                        wrapText: false
+                      };
+                      setLayout([...layout, newModule]);
+                      setEditingModule(newModule);
+                    }}
+                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-black text-[10px] uppercase tracking-widest shadow-lg transition-all"
+                  >
+                    <Square size={14} /> Lägg till Maskindel
+                  </button>
+                  <button 
+                    onClick={() => setIsAddingPoint(true)}
+                    className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-black text-[10px] uppercase tracking-widest shadow-lg transition-all"
+                  >
+                    <Crosshair size={14} /> Lägg till Punkt
+                  </button>
+                  <button 
+                    onClick={() => setIsSettingsOpen(true)}
+                    className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl font-black text-[10px] uppercase tracking-widest border border-gray-700 transition-all"
+                  >
+                    <ImageIcon size={14} /> Ändra Bakgrundsbild
+                  </button>
+                </div>
+              )}
               <div className="bg-gray-900 rounded-[2.5rem] p-2 border border-gray-800 shadow-2xl print:border-2 print:border-black print:p-0 print:rounded-none relative overflow-hidden print:bg-white">
                 <MachineMap 
                   points={points} 

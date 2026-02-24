@@ -132,6 +132,22 @@ const AddPointForm: React.FC<AddPointFormProps> = ({ existingPoints, initialData
                      {Object.values(Criticality).map(c => <option key={c} value={c}>{c}</option>)}
                    </select>
                 </div>
+                <div>
+                   <label className="block text-[10px] font-black text-cyan-400 mb-1 uppercase">Fasningsvinkel (0-360°)</label>
+                   <div className="flex items-center gap-2">
+                     <input 
+                       type="number" 
+                       min="0" 
+                       max="360" 
+                       value={phaseAngleStr} 
+                       onChange={(e) => setPhaseAngleStr(e.target.value)} 
+                       placeholder="t.ex. 180"
+                       className="w-full bg-gray-900 border border-gray-600 rounded p-2 text-cyan-400 font-mono" 
+                     />
+                     <span className="text-gray-500 font-bold">°</span>
+                   </div>
+                   <p className="text-[9px] text-gray-600 mt-1 italic">Lämna tomt om punkten inte är synk-beroende.</p>
+                </div>
               </div>
             </div>
 

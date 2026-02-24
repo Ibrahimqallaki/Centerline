@@ -183,6 +183,43 @@ const Guide: React.FC = () => {
           </div>
         </div>
 
+        {/* CARD 5: 360 CYKEL SYNK */}
+        <div className="bg-gray-900 border border-gray-800 p-6 rounded-2xl shadow-xl hover:border-gray-700 transition-colors md:col-span-2">
+          <div className="flex items-center gap-3 mb-6 border-b border-gray-800 pb-4">
+            <div className="p-3 bg-cyan-900/30 rounded-xl text-cyan-400">
+              <Activity size={24} />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-white uppercase tracking-wide">360° Cykel Synk (Timing)</h3>
+              <p className="text-xs text-gray-500 font-mono">Hur man ställer in synkningen</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="space-y-3">
+              <h4 className="text-cyan-400 font-bold text-xs uppercase">1. Definiera punkten</h4>
+              <p className="text-xs text-gray-400 leading-relaxed">
+                När du skapar eller redigerar en kontrollpunkt, leta efter fältet <strong>"Fasningsvinkel"</strong>. 
+                Här anger du vid vilket gradtal (0-360°) i maskincykeln som momentet inträffar.
+              </p>
+            </div>
+            <div className="space-y-3">
+              <h4 className="text-cyan-400 font-bold text-xs uppercase">2. Verifiera i Synk-vyn</h4>
+              <p className="text-xs text-gray-400 leading-relaxed">
+                Gå till fliken <strong>"Synk"</strong> i sidomenyn. Här ser du en visuell klocka. 
+                Dra i reglaget ("Master Encoder") för att simulera maskinens rörelse.
+              </p>
+            </div>
+            <div className="space-y-3">
+              <h4 className="text-cyan-400 font-bold text-xs uppercase">3. Undvik krascher</h4>
+              <p className="text-xs text-gray-400 leading-relaxed">
+                Punkter som ligger nära varandra i gradtal men fysiskt långt ifrån varandra kan indikera risk för krockar. 
+                Använd vyn för att utbilda personal i maskinens timing.
+              </p>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   );

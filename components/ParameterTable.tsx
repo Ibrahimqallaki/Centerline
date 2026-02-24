@@ -71,7 +71,14 @@ const ParameterTable: React.FC<ParameterTableProps> = ({ points, onPointSelect, 
             </div>
             <div className="col-span-3 text-right">
               <div className="font-mono text-green-400 font-black text-xl leading-none">{point.targetValue}</div>
-              <div className="text-[10px] text-gray-500 font-bold italic">Tol: {point.tolerance}</div>
+              <div className="flex justify-end items-center gap-2">
+                {point.phaseAngle !== undefined && (
+                  <span className="text-[9px] bg-cyan-900/30 text-cyan-400 px-1 rounded border border-cyan-800/50 font-mono">
+                    {point.phaseAngle}°
+                  </span>
+                )}
+                <div className="text-[10px] text-gray-500 font-bold italic">Tol: {point.tolerance}</div>
+              </div>
             </div>
             <div className="col-span-2 flex justify-center">
                <div className="bg-white p-2 rounded shadow-2xl group-hover:scale-[2.5] transition-transform origin-right z-20">

@@ -75,7 +75,7 @@ const MachineMap: React.FC<MachineMapProps> = ({
         )}
       </div>
 
-      <svg className="absolute inset-0 w-full h-full z-5" viewBox="0 0 100 50" preserveAspectRatio="xMidYMid meet">
+      <svg className="absolute inset-0 w-full h-full z-10" viewBox="0 0 100 50" preserveAspectRatio="xMidYMid meet">
         <g transform="translate(0, 0)">
           {/* Main Axis Line - Only show if no custom map */}
           {!customMapUrl && <line x1="0" y1="20" x2="100" y2="20" stroke="#1e293b" strokeWidth="0.2" />}
@@ -136,39 +136,95 @@ const MachineMap: React.FC<MachineMapProps> = ({
                 </g>
               );
             })}
+
+          {/* Render Points inside SVG for better print reliability */}
+          {visiblePoints.map((point) => {
+            const isSelected = point.id === selectedPointId;
+            const isCritical = point.criticality === Criticality.CRITICAL;
+            const color = isCritical ? '#ef4444' : (point.criticality === Criticality.HIGH ? '#f97316' : '#3b82f6');
+            
+            return (
+              <g 
+                key={point.id}
+                className="cursor-pointer pointer-events-auto"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (onPointClick) onPointClick(point);
+                }}
+              >
+                <circle 
+                  cx={point.coordinates.x} 
+                  cy={point.coordinates.y * 0.5} // SVG viewBox is 100x50, coordinates are 0-100
+                  r={isSelected ? 1.8 : 1.4} 
+                  fill={color}
+                  stroke="white"
+                  strokeWidth="0.3"
+                  className={`transition-all duration-200 print:stroke-black print:stroke-[0.5px] ${isSelected ? 'filter drop-shadow-lg' : ''}`}
+                />
+                <text 
+                  x={point.coordinates.x} 
+                  y={point.coordinates.y * 0.5 + 0.6}
+                  textAnchor="middle"
+                  fill="white"
+                  fontSize="1.2"
+                  fontWeight="900"
+                  className="italic pointer-events-none print:fill-white"
+                >
+                  {point.number}
+                </text>
+              </g>
+            );
+          })}
+          {/* Add/Preview Point Marker */}
+          {previewPoint && (
+            <g className="animate-pulse">
+              <circle 
+                cx={previewPoint.coordinates.x} 
+                cy={previewPoint.coordinates.y * 0.5} 
+                r="2" 
+                fill="rgba(59, 130, 246, 0.4)" 
+                stroke="#60a5fa" 
+                strokeWidth="0.5" 
+                strokeDasharray="1 0.5"
+              />
+              <line 
+                x1={previewPoint.coordinates.x - 3} y1={previewPoint.coordinates.y * 0.5} 
+                x2={previewPoint.coordinates.x + 3} y2={previewPoint.coordinates.y * 0.5} 
+                stroke="#93c5fd" strokeWidth="0.3" 
+              />
+              <line 
+                x1={previewPoint.coordinates.x} y1={previewPoint.coordinates.y * 0.5 - 3} 
+                x2={previewPoint.coordinates.x} y2={previewPoint.coordinates.y * 0.5 + 3} 
+                stroke="#93c5fd" strokeWidth="0.3" 
+              />
+            </g>
+          )}
           </g>
         </svg>
 
-      {/* Render Points */}
-      <div className="absolute inset-0 pointer-events-none">
+      {/* Render Points (Overlay for interaction/animations if needed, but SVG is primary now) */}
+      <div className="absolute inset-0 pointer-events-none hidden md:block print:hidden">
+        {/* We keep this for the pulse animation and move icon which are hard in SVG */}
         {visiblePoints.map((point) => {
           const isSelected = point.id === selectedPointId;
           const isCritical = point.criticality === Criticality.CRITICAL;
+          if (!isSelected && !isCritical) return null;
           
           return (
             <div 
-              key={point.id}
-              className={`absolute flex items-center justify-center w-8 h-8 rounded-full border-2 border-white shadow-xl cursor-pointer pointer-events-auto transition-all duration-200 z-20 print:border-black print:shadow-none
-                ${CRITICALITY_COLORS[point.criticality]} 
-                ${isSelected ? 'scale-125 z-40 ring-[6px] ring-blue-500/30 border-blue-400' : 'hover:scale-110'} 
-                ${editMode && !isSelected ? 'opacity-40 hover:opacity-100' : ''}`}
+              key={`overlay-${point.id}`}
+              className={`absolute flex items-center justify-center w-8 h-8 rounded-full pointer-events-none z-20`}
               style={{ 
                 left: `${point.coordinates.x}%`, 
                 top: `${point.coordinates.y}%`, 
                 transform: 'translate(-50%, -50%)',
-                boxShadow: isSelected ? '0 0 20px rgba(59,130,246,0.6)' : '0 4px 10px rgba(0,0,0,0.5)'
-              }}
-              onClick={(e) => {
-                e.stopPropagation();
-                if (onPointClick) onPointClick(point);
               }}
             >
-              <span className="text-xs font-black text-white italic drop-shadow-md">{point.number}</span>
               {isCritical && (
-                <div className="absolute -inset-1.5 rounded-full border-2 border-red-500/50 animate-ping pointer-events-none"></div>
+                <div className="absolute -inset-1.5 rounded-full border-2 border-red-500/50 animate-ping"></div>
               )}
               {editMode && isSelected && (
-                <div className="absolute -top-3 -right-3 bg-blue-500 text-white rounded-full p-1 shadow-lg border border-white/20">
+                <div className="absolute -top-3 -right-3 bg-blue-500 text-white rounded-full p-1 shadow-lg border border-white/20 pointer-events-auto cursor-move">
                   <Move size={10} />
                 </div>
               )}
@@ -176,14 +232,13 @@ const MachineMap: React.FC<MachineMapProps> = ({
           );
         })}
 
-        {/* Add/Preview Point Marker */}
+        {/* Preview Label (Still easier in HTML for text positioning) */}
         {previewPoint && (
            <div 
-              className={`absolute flex items-center justify-center w-10 h-10 rounded-full border-2 border-dashed border-blue-400 shadow-2xl z-50 animate-pulse bg-blue-900/40`}
-              style={{ left: `${previewPoint.coordinates.x}%`, top: `${previewPoint.coordinates.y}%`, transform: 'translate(-50%, -50%)' }}
+              className={`absolute z-50 pointer-events-none`}
+              style={{ left: `${previewPoint.coordinates.x}%`, top: `${previewPoint.coordinates.y}%`, transform: 'translate(-50%, 20px)' }}
             >
-              <Crosshair size={20} className="text-blue-300" />
-              <div className="absolute -bottom-8 bg-blue-600 text-[10px] text-white px-2 py-0.5 rounded-full font-black border border-blue-400 whitespace-nowrap">
+              <div className="bg-blue-600 text-[10px] text-white px-2 py-0.5 rounded-full font-black border border-blue-400 whitespace-nowrap shadow-xl">
                 PLACERA: {Math.round(previewPoint.coordinates.x)}% / {Math.round(previewPoint.coordinates.y)}%
               </div>
             </div>

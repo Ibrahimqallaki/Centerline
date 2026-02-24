@@ -27,19 +27,35 @@
           margin: 10mm;
         }
 
-        /* Tvinga vit bakgrund på ALLA element, utom kartan */
-        *:not(.print-map-container *):not(.print-map-container) {
-          -webkit-print-color-adjust: exact !important;
-          print-color-adjust: exact !important;
-          background-color: transparent !important;
+        /* Tvinga vit bakgrund på ALLA element för maximal kompatibilitet */
+        * {
+          -webkit-print-color-adjust: auto !important;
+          print-color-adjust: auto !important;
+          background-color: white !important;
           color: black !important;
           box-shadow: none !important;
-          border-color: #000 !important;
+          border-color: #ccc !important;
         }
 
-        .print-map-container, .print-map-container * {
-          -webkit-print-color-adjust: exact !important;
-          print-color-adjust: exact !important;
+        /* Undantag för kartan - vi vill behålla dess struktur */
+        .print-map-container {
+          border: 1pt solid black !important;
+          background-color: #f9fafb !important; /* Ljusgrå istället för svart för att spara bläck och öka kompatibilitet */
+          page-break-inside: avoid;
+          position: relative !important;
+          display: block !important;
+          aspect-ratio: 2/1 !important;
+          width: 100% !important;
+        }
+
+        .print-map-container * {
+          background-color: transparent !important;
+        }
+
+        .print-map-container img {
+          display: block !important;
+          opacity: 1 !important;
+          position: relative !important;
         }
 
         html, body {
@@ -92,26 +108,6 @@
         header h1 {
           font-size: 28pt !important;
           margin: 0 !important;
-        }
-
-        /* Karta */
-        .print-map-container {
-          border: 2pt solid black !important;
-          border-radius: 0 !important;
-          margin-bottom: 8mm !important;
-          page-break-inside: avoid;
-          aspect-ratio: 2/1 !important;
-          width: 100% !important;
-          position: relative !important;
-          display: block !important;
-          overflow: hidden !important;
-          background-color: #030712 !important; /* Keep dark background for map in print to preserve point contrast */
-        }
-
-        .print-map-container img {
-          opacity: 1 !important;
-          -webkit-print-color-adjust: exact !important;
-          print-color-adjust: exact !important;
         }
 
         /* Tabeller / Punktlistor */

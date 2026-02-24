@@ -304,7 +304,7 @@ const App: React.FC = () => {
                       </div>
                       
                       <div className="col-span-2 flex justify-center">
-                        <div className="bg-white p-1 rounded shadow-md group-hover:scale-110 transition-transform print:shadow-none print:border print:border-gray-200">
+                        <div className="bg-white p-1 rounded shadow-md group-hover:scale-110 transition-transform print:shadow-none print:border print:border-black">
                           <img src={getQrCodeUrl(point.id, 60)} alt="QR" className="w-8 h-8" />
                         </div>
                       </div>

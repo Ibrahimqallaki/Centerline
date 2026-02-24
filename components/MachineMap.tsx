@@ -52,10 +52,10 @@ const MachineMap: React.FC<MachineMapProps> = ({
           <img 
             src={customMapUrl} 
             alt="Machine Layout" 
-            className="w-full h-full object-contain p-4 opacity-40 print:opacity-60"
+            className="w-full h-full object-contain opacity-40 print:opacity-100"
           />
         ) : (
-          <div className="absolute inset-0 opacity-[0.03] print:opacity-10 pointer-events-none z-0" 
+          <div className="absolute inset-0 opacity-[0.03] print:opacity-20 pointer-events-none z-0" 
                style={{ 
                  backgroundImage: `linear-gradient(#3b82f6 1px, transparent 1px), linear-gradient(90deg, #3b82f6 1px, transparent 1px)`,
                  backgroundSize: '30px 30px' 
@@ -148,7 +148,7 @@ const MachineMap: React.FC<MachineMapProps> = ({
           return (
             <div 
               key={point.id}
-              className={`absolute flex items-center justify-center w-8 h-8 rounded-full border-2 border-white shadow-xl cursor-pointer pointer-events-auto transition-all duration-200 z-20 
+              className={`absolute flex items-center justify-center w-8 h-8 rounded-full border-2 border-white shadow-xl cursor-pointer pointer-events-auto transition-all duration-200 z-20 print:border-black print:shadow-none
                 ${CRITICALITY_COLORS[point.criticality]} 
                 ${isSelected ? 'scale-125 z-40 ring-[6px] ring-blue-500/30 border-blue-400' : 'hover:scale-110'} 
                 ${editMode && !isSelected ? 'opacity-40 hover:opacity-100' : ''}`}

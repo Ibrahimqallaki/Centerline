@@ -281,10 +281,10 @@ const App: React.FC = () => {
               <div className="bg-gray-900 rounded-[2rem] border border-gray-800 overflow-hidden print:border-2 print:border-black print:rounded-none print:bg-white">
                 <div className="grid grid-cols-12 px-8 py-5 bg-black/40 text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] border-b border-gray-800 print:bg-gray-100 print:text-black print:border-black">
                   <div className="col-span-1">#</div>
-                  <div className="col-span-5">Beskrivning</div>
-                  <div className="col-span-4 text-right">Målvärde & Tolerans</div>
+                  <div className="col-span-4 md:col-span-5 print:col-span-4">Beskrivning</div>
+                  <div className="col-span-3 md:col-span-4 print:col-span-3 text-right">Målvärde & Tolerans</div>
+                  <div className="col-span-2 text-center print:block">QR</div>
                   <div className="col-span-2 text-right italic font-normal print:block hidden">Signatur</div>
-                  <div className="col-span-2 text-center print:hidden">System</div>
                 </div>
                 <div className="divide-y divide-gray-800/50 print:divide-black">
                   {[...points].sort((a,b) => a.number - b.number).map((point) => (
@@ -294,17 +294,17 @@ const App: React.FC = () => {
                       className="grid grid-cols-12 px-8 py-6 items-center hover:bg-blue-600/5 cursor-pointer transition-all print:text-black print:py-5 print:break-inside-avoid"
                     >
                       <div className="col-span-1 font-black italic text-xl text-gray-700 print:text-black">{point.number}</div>
-                      <div className="col-span-5">
+                      <div className="col-span-4 md:col-span-5 print:col-span-4">
                         <div className="font-bold text-gray-200 text-lg print:text-black leading-tight">{point.name}</div>
                         <div className="text-[10px] text-gray-600 font-bold uppercase tracking-widest print:text-gray-500">{point.measureMethod}</div>
                       </div>
-                      <div className="col-span-4 text-right">
+                      <div className="col-span-3 md:col-span-4 print:col-span-3 text-right">
                         <span className="font-mono text-2xl font-black text-green-500 print:text-black">{point.targetValue}</span>
                         <span className="block text-[10px] text-gray-500 font-bold print:text-gray-700 italic">Tol: {point.tolerance}</span>
                       </div>
                       
-                      <div className="col-span-2 flex justify-center print:hidden">
-                        <div className="bg-white p-1 rounded shadow-md group-hover:scale-110 transition-transform">
+                      <div className="col-span-2 flex justify-center">
+                        <div className="bg-white p-1 rounded shadow-md group-hover:scale-110 transition-transform print:shadow-none print:border print:border-gray-200">
                           <img src={getQrCodeUrl(point.id, 60)} alt="QR" className="w-8 h-8" />
                         </div>
                       </div>

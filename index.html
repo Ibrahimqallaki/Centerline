@@ -27,14 +27,19 @@
           margin: 10mm;
         }
 
-        /* Tvinga vit bakgrund på ALLA element, även djupt i DOM:en */
-        * {
+        /* Tvinga vit bakgrund på ALLA element, utom kartan */
+        *:not(.print-map-container *):not(.print-map-container) {
           -webkit-print-color-adjust: exact !important;
           print-color-adjust: exact !important;
           background-color: transparent !important;
           color: black !important;
           box-shadow: none !important;
           border-color: #000 !important;
+        }
+
+        .print-map-container, .print-map-container * {
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
         }
 
         html, body {
@@ -100,16 +105,13 @@
           position: relative !important;
           display: block !important;
           overflow: hidden !important;
+          background-color: #030712 !important; /* Keep dark background for map in print to preserve point contrast */
         }
 
-        .print-map-container > div,
-        .print-map-container > svg,
-        .print-map-container > img {
-          position: absolute !important;
-          top: 0 !important;
-          left: 0 !important;
-          width: 100% !important;
-          height: 100% !important;
+        .print-map-container img {
+          opacity: 1 !important;
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
         }
 
         /* Tabeller / Punktlistor */

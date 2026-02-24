@@ -75,15 +75,16 @@ const MachineMap: React.FC<MachineMapProps> = ({
         )}
       </div>
 
-      <svg className="absolute inset-0 w-full h-full z-10" viewBox="0 0 100 50" preserveAspectRatio="xMidYMid meet">
-        <g transform="translate(0, 0)">
+      <svg className="absolute inset-0 w-full h-full z-10" viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid meet">
+        <g>
           {/* Main Axis Line - Only show if no custom map */}
-          {!customMapUrl && <line x1="0" y1="20" x2="100" y2="20" stroke="#1e293b" strokeWidth="0.2" />}
+          {!customMapUrl && <line x1="0" y1="200" x2="1000" y2="200" stroke="#1e293b" strokeWidth="2" />}
           
           {/* Render Dynamic Modules */}
           {layout.map((mod) => {
-              const showFill = mod.hasFill === true; // Default nu till false om ej specificerat som true
+              const showFill = mod.hasFill === true;
               const fillColor = editMode ? `${mod.color}15` : `${mod.color}08`;
+              const fontSize = (mod.fontSize || 2) * 10;
               
               return (
                 <g 
@@ -97,27 +98,25 @@ const MachineMap: React.FC<MachineMapProps> = ({
                   }}
                 >
                   <rect 
-                    x={mod.x} 
-                    y={mod.y} 
-                    width={mod.width} 
-                    height={mod.height} 
+                    x={mod.x * 10} 
+                    y={mod.y * 5} 
+                    width={mod.width * 10} 
+                    height={mod.height * 5} 
                     fill={showFill ? fillColor : "none"} 
                     stroke={mod.color} 
-                    strokeWidth={editMode ? "0.8" : "0.5"} 
-                    strokeDasharray={showFill ? "" : "1 0.5"} // Subtilare streckning för genomskinliga rutor
-                    rx="0.5" 
-                    className={`transition-all duration-300 print:fill-transparent print:stroke-black print:stroke-[1px] print:stroke-solid ${editMode ? 'group-hover:stroke-white group-hover:stroke-[1px]' : ''}`}
-                    style={{ strokeDasharray: 'none' }} // Force solid line in print via inline style override if needed, though class is better
+                    strokeWidth={editMode ? "8" : "5"} 
+                    rx="5" 
+                    className={`transition-all duration-300 print:fill-transparent print:stroke-black print:stroke-[1px] print:stroke-solid ${editMode ? 'group-hover:stroke-white group-hover:stroke-[2px]' : ''}`}
                   />
                   <text 
-                    x={mod.x + mod.width / 2} 
-                    y={mod.y + mod.height / 2 + (mod.fontSize || 2) * 0.3} 
+                    x={mod.x * 10 + (mod.width * 10) / 2} 
+                    y={mod.y * 5 + (mod.height * 5) / 2 + fontSize * 0.3} 
                     textAnchor="middle" 
                     fill={mod.color === '#ffffff' ? '#ffffff' : mod.color} 
                     stroke="black"
-                    strokeWidth="0.05"
+                    strokeWidth="0.5"
                     paintOrder="stroke"
-                    fontSize={mod.fontSize || Math.max(1.5, Math.min(mod.width * 0.25, mod.height * 0.6, 3.5))} 
+                    fontSize={fontSize} 
                     fontWeight="900"
                     className="uppercase tracking-wider print:fill-black pointer-events-none italic"
                   >
@@ -125,7 +124,7 @@ const MachineMap: React.FC<MachineMapProps> = ({
                       mod.label.split(' ').map((line, i, arr) => (
                         <tspan 
                           key={i} 
-                          x={mod.x + mod.width / 2} 
+                          x={mod.x * 10 + (mod.width * 10) / 2} 
                           dy={i === 0 ? `-${(arr.length - 1) * 0.5}em` : '1.1em'}
                         >
                           {line}
@@ -153,20 +152,20 @@ const MachineMap: React.FC<MachineMapProps> = ({
                 }}
               >
                 <circle 
-                  cx={point.coordinates.x} 
-                  cy={point.coordinates.y * 0.5} // SVG viewBox is 100x50, coordinates are 0-100
-                  r={isSelected ? 1.8 : 1.4} 
+                  cx={point.coordinates.x * 10} 
+                  cy={point.coordinates.y * 5} 
+                  r={isSelected ? 18 : 14} 
                   fill={color}
                   stroke="white"
-                  strokeWidth="0.3"
+                  strokeWidth="3"
                   className={`transition-all duration-200 print:stroke-black print:stroke-[0.5px] ${isSelected ? 'filter drop-shadow-lg' : ''}`}
                 />
                 <text 
-                  x={point.coordinates.x} 
-                  y={point.coordinates.y * 0.5 + 0.6}
+                  x={point.coordinates.x * 10} 
+                  y={point.coordinates.y * 5 + 6}
                   textAnchor="middle"
                   fill="white"
-                  fontSize="1.2"
+                  fontSize="12"
                   fontWeight="900"
                   className="italic pointer-events-none print:fill-white"
                 >
@@ -179,28 +178,28 @@ const MachineMap: React.FC<MachineMapProps> = ({
           {previewPoint && (
             <g className="animate-pulse">
               <circle 
-                cx={previewPoint.coordinates.x} 
-                cy={previewPoint.coordinates.y * 0.5} 
-                r="2" 
+                cx={previewPoint.coordinates.x * 10} 
+                cy={previewPoint.coordinates.y * 5} 
+                r="20" 
                 fill="rgba(59, 130, 246, 0.4)" 
                 stroke="#60a5fa" 
-                strokeWidth="0.5" 
-                strokeDasharray="1 0.5"
+                strokeWidth="5" 
+                strokeDasharray="10 5"
               />
               <line 
-                x1={previewPoint.coordinates.x - 3} y1={previewPoint.coordinates.y * 0.5} 
-                x2={previewPoint.coordinates.x + 3} y2={previewPoint.coordinates.y * 0.5} 
-                stroke="#93c5fd" strokeWidth="0.3" 
+                x1={previewPoint.coordinates.x * 10 - 30} y1={previewPoint.coordinates.y * 5} 
+                x2={previewPoint.coordinates.x * 10 + 30} y2={previewPoint.coordinates.y * 5} 
+                stroke="#93c5fd" strokeWidth="3" 
               />
               <line 
-                x1={previewPoint.coordinates.x} y1={previewPoint.coordinates.y * 0.5 - 3} 
-                x2={previewPoint.coordinates.x} y2={previewPoint.coordinates.y * 0.5 + 3} 
-                stroke="#93c5fd" strokeWidth="0.3" 
+                x1={previewPoint.coordinates.x * 10} y1={previewPoint.coordinates.y * 5 - 30} 
+                x2={previewPoint.coordinates.x * 10} y2={previewPoint.coordinates.y * 5 + 30} 
+                stroke="#93c5fd" strokeWidth="3" 
               />
             </g>
           )}
-          </g>
-        </svg>
+        </g>
+      </svg>
 
       {/* Render Points (Overlay for interaction/animations if needed, but SVG is primary now) */}
       <div className="absolute inset-0 pointer-events-none hidden md:block print:hidden">

@@ -155,11 +155,29 @@ const App: React.FC = () => {
                 {!isSidebarCollapsed && <span className="font-bold">{tab.label}</span>}
               </button>
             ))}
+            
+            <div className="pt-4 mt-4 border-t border-gray-900 space-y-2">
+              <button 
+                onClick={() => { setIsDesignMode(!isDesignMode); setSelectedPoint(null); }}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${isDesignMode ? 'bg-amber-600 text-black shadow-lg' : 'text-gray-500 hover:bg-gray-900'}`}
+              >
+                <Edit3 size={20} className="shrink-0" />
+                {!isSidebarCollapsed && <span className="font-bold">{isDesignMode ? 'Lås Layout' : 'Redigera'}</span>}
+              </button>
+              
+              <button 
+                onClick={handlePrint} 
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-500 hover:bg-gray-900 hover:text-white transition-all"
+              >
+                <Printer size={20} className="shrink-0" />
+                {!isSidebarCollapsed && <span className="font-bold">Skriv ut / PDF</span>}
+              </button>
+            </div>
           </nav>
         </div>
 
         {/* Mobile Navigation */}
-        <nav className="flex md:hidden w-full justify-around items-center h-full px-2">
+        <nav className="flex md:hidden w-full justify-around items-center h-full px-1 overflow-x-auto no-scrollbar">
             {[
               { id: 'overview', icon: Map, label: 'Karta' },
               { id: 'table', icon: List, label: 'Lista' },
@@ -169,15 +187,22 @@ const App: React.FC = () => {
               <button 
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)} 
-                className={`flex flex-col items-center justify-center p-2 rounded-lg transition-all ${activeTab === tab.id ? 'text-blue-500' : 'text-gray-500'}`}
+                className={`flex flex-col items-center justify-center min-w-[50px] p-1 rounded-lg transition-all ${activeTab === tab.id ? 'text-blue-500' : 'text-gray-500'}`}
               >
-                <tab.icon size={24} />
-                <span className="text-[10px] font-bold mt-1">{tab.label}</span>
+                <tab.icon size={20} />
+                <span className="text-[9px] font-bold mt-1">{tab.label}</span>
               </button>
             ))}
-             <button onClick={() => setIsSettingsOpen(true)} className="flex flex-col items-center justify-center p-2 rounded-lg text-gray-500">
-                <Settings size={24} />
-                <span className="text-[10px] font-bold mt-1">Inställn.</span>
+             <button 
+                onClick={handlePrint} 
+                className="flex flex-col items-center justify-center min-w-[50px] p-1 rounded-lg text-gray-500"
+              >
+                <Printer size={20} />
+                <span className="text-[9px] font-bold mt-1">Print</span>
+             </button>
+             <button onClick={() => setIsSettingsOpen(true)} className="flex flex-col items-center justify-center min-w-[50px] p-1 rounded-lg text-gray-500">
+                <Settings size={20} />
+                <span className="text-[9px] font-bold mt-1">Inställn.</span>
              </button>
         </nav>
 
@@ -199,23 +224,6 @@ const App: React.FC = () => {
               <p className="text-gray-500 text-[10px] font-black uppercase tracking-[0.3em] mt-1 print:text-black print:text-xs italic">Systemdokumentation för optimerad produktion</p>
             </div>
             
-            <div className="flex items-center gap-3 print:hidden">
-               {activeTab === 'overview' && (
-                 <button 
-                  onClick={() => { setIsDesignMode(!isDesignMode); setSelectedPoint(null); }}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl border font-black text-[10px] uppercase tracking-widest transition-all ${isDesignMode ? 'bg-amber-600 text-black border-amber-400' : 'bg-gray-800 text-gray-400 border-gray-700 hover:text-white'}`}
-                 >
-                   <Edit3 size={14} /> {isDesignMode ? 'Lås Layout' : 'Redigera Layout'}
-                 </button>
-               )}
-               <button 
-                onClick={handlePrint} 
-                className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg border border-blue-400 font-black text-xs uppercase tracking-widest shadow-xl transition-all"
-               >
-                 <Printer size={16} /> Skriv ut
-               </button>
-            </div>
-
             <div className="hidden print:block text-right">
               <p className="text-sm font-black text-black uppercase tracking-widest">{currentPrintDate}</p>
             </div>

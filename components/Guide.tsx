@@ -194,10 +194,10 @@ const Guide: React.FC = () => {
               <div>
                 <h4 className="text-[11px] font-black text-white uppercase mb-1">Tagga</h4>
                 <p className="text-[9px] text-gray-500 leading-relaxed px-2">
-                  Sätt en Tagg på maskinen för att visualisera avvikelsen för TL och LTL.
+                  Ansvarar för att visualisera taggen för LTL och PE för att säkerställa eskalering.
                 </p>
               </div>
-              <div className="text-[8px] text-red-400 font-bold uppercase tracking-tighter bg-red-900/20 px-2 py-0.5 rounded">Operatör</div>
+              <div className="text-[8px] text-red-400 font-bold uppercase tracking-tighter bg-red-900/20 px-2 py-0.5 rounded">Team Leader</div>
             </div>
 
             <div className="relative z-10 flex flex-col items-center text-center space-y-3">

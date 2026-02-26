@@ -29,9 +29,9 @@ const ParameterTable: React.FC<ParameterTableProps> = ({ points, onPointSelect, 
   };
 
   return (
-    <div className="bg-gray-800 rounded-xl border border-gray-700 shadow-xl overflow-hidden flex flex-col h-full">
+    <div className="bg-gray-800 rounded-xl border border-gray-700 shadow-xl overflow-hidden flex flex-col h-full print:bg-white print:border-black print:rounded-none print:shadow-none">
       
-      <div className="p-4 border-b border-gray-700 flex flex-col lg:flex-row gap-4 justify-between bg-gray-900/50">
+      <div className="p-4 border-b border-gray-700 flex flex-col lg:flex-row gap-4 justify-between bg-gray-900/50 print:hidden">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" size={18} />
           <input 
@@ -68,34 +68,35 @@ const ParameterTable: React.FC<ParameterTableProps> = ({ points, onPointSelect, 
         </div>
       </div>
 
-      <div className="grid grid-cols-12 gap-2 px-6 py-3 bg-gray-900 text-[10px] uppercase font-black text-gray-500 tracking-widest border-b border-gray-700">
+      <div className="grid grid-cols-12 gap-2 px-6 py-3 bg-gray-900 text-[10px] uppercase font-black text-gray-500 tracking-widest border-b border-gray-700 print:bg-gray-100 print:text-black print:border-black">
         <div className="col-span-1">Nr</div>
-        <div className="col-span-4">Parameter & Kritikalitet</div>
-        <div className="col-span-3 text-center">Status / Åtgärd</div>
-        <div className="col-span-2 text-right">Värde</div>
+        <div className="col-span-4 print:col-span-5">Parameter & Kritikalitet</div>
+        <div className="col-span-3 text-center print:hidden">Status / Åtgärd</div>
+        <div className="col-span-2 text-right print:col-span-3 print:text-right">Värde</div>
         <div className="col-span-2 text-center">QR</div>
+        <div className="hidden print:block col-span-1 text-right italic font-normal">Sign.</div>
       </div>
 
-      <div className="overflow-y-auto flex-1 divide-y divide-gray-700">
+      <div className="overflow-y-auto flex-1 divide-y divide-gray-700 print:divide-black print:overflow-visible">
         {filteredPoints.map((point) => (
           <div 
             key={point.id} 
             onClick={() => onPointSelect(point)}
-            className={`grid grid-cols-12 gap-2 px-6 py-4 items-center hover:bg-gray-700/50 cursor-pointer group transition-colors ${point.status === PointStatus.TAGGED_RED ? 'bg-red-900/10' : point.status === PointStatus.TAGGED_YELLOW ? 'bg-orange-900/10' : ''}`}
+            className={`grid grid-cols-12 gap-2 px-6 py-4 items-center hover:bg-gray-700/50 cursor-pointer group transition-colors print:text-black print:py-5 print:break-inside-avoid ${point.status === PointStatus.TAGGED_RED ? 'bg-red-900/10' : point.status === PointStatus.TAGGED_YELLOW ? 'bg-orange-900/10' : ''}`}
           >
-            <div className="col-span-1 font-mono text-gray-500 group-hover:text-white font-bold">{point.number}</div>
-            <div className="col-span-4 space-y-2">
+            <div className="col-span-1 font-mono text-gray-500 group-hover:text-white font-bold print:text-black print:text-xl print:italic">{point.number}</div>
+            <div className="col-span-4 print:col-span-5 space-y-2">
               <div>
-                <div className="font-bold text-gray-200 group-hover:text-blue-300 transition-colors leading-tight">{point.name}</div>
-                <div className="text-[10px] text-gray-500 italic mt-0.5">{point.measureMethod}</div>
+                <div className="font-bold text-gray-200 group-hover:text-blue-300 transition-colors leading-tight print:text-black print:text-lg">{point.name}</div>
+                <div className="text-[10px] text-gray-500 italic mt-0.5 print:text-gray-600">{point.measureMethod}</div>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 print:hidden">
                 <span className={`w-2 h-2 rounded-full ${CRITICALITY_COLORS[point.criticality]}`}></span>
                 <span className="text-[9px] text-gray-500 font-bold uppercase">{point.criticality.split(':')[0]}</span>
               </div>
             </div>
             
-            <div className="col-span-3 flex flex-col items-center gap-2">
+            <div className="col-span-3 flex flex-col items-center gap-2 print:hidden">
               {point.status && point.status !== PointStatus.OK ? (
                 <div className={`flex items-center gap-1 px-2 py-1 rounded text-[9px] font-black uppercase tracking-tighter ${
                   point.status === PointStatus.TAGGED_RED ? 'bg-red-600 text-white' : 
@@ -135,16 +136,18 @@ const ParameterTable: React.FC<ParameterTableProps> = ({ points, onPointSelect, 
               </div>
             </div>
 
-            <div className="col-span-2 text-right">
-              <div className="font-mono text-green-400 font-black text-xl leading-none">{point.targetValue}</div>
-              <div className="text-[10px] text-gray-500 font-bold italic">Tol: {point.tolerance}</div>
+            <div className="col-span-2 text-right print:col-span-3">
+              <div className="font-mono text-green-400 font-black text-xl leading-none print:text-black print:text-2xl">{point.targetValue}</div>
+              <div className="text-[10px] text-gray-500 font-bold italic print:text-gray-700">Tol: {point.tolerance}</div>
             </div>
 
             <div className="col-span-2 flex justify-center">
-               <div className="bg-white p-2 rounded shadow-2xl group-hover:scale-[2.5] transition-transform origin-right z-20">
-                 <img src={getQrUrl(point.id, 120)} alt="QR" className="w-8 h-8 block" />
+               <div className="bg-white p-2 rounded shadow-2xl group-hover:scale-[2.5] transition-transform origin-right z-20 print:shadow-none print:border print:border-black print:p-1">
+                 <img src={getQrUrl(point.id, 120)} alt="QR" className="w-8 h-8 block print:w-6 print:h-6" />
                </div>
             </div>
+
+            <div className="hidden print:block col-span-1 border-b border-gray-300 h-8 ml-2"></div>
           </div>
         ))}
       </div>

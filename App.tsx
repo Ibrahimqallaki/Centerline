@@ -198,7 +198,6 @@ const App: React.FC = () => {
           <nav className="p-3 space-y-2 mt-4">
             {[
               { id: 'overview', icon: Map, label: 'Karta' },
-              { id: 'table', icon: List, label: 'Operativ Vy' },
               { id: 'phasing', icon: Activity, label: 'Synk' },
               { id: 'guide', icon: BookOpen, label: 'Guide' }
             ].map((tab) => (
@@ -236,7 +235,6 @@ const App: React.FC = () => {
         <nav className="flex md:hidden w-full justify-around items-center h-full px-1 overflow-x-auto no-scrollbar">
             {[
               { id: 'overview', icon: Map, label: 'Karta' },
-              { id: 'table', icon: List, label: 'Operativ Vy' },
               { id: 'phasing', icon: Activity, label: 'Synk' },
               { id: 'guide', icon: BookOpen, label: 'Guide' }
             ].map((tab) => (
@@ -340,56 +338,18 @@ const App: React.FC = () => {
               </div>
             </section>
                 
-            {/* CHECKLISTA - Visas alltid vid utskrift oavsett flik */}
-            <section className={`${(activeTab !== 'phasing' && activeTab !== 'guide') ? 'block' : 'print:block hidden'} print:mt-10`}>
-              <div className="bg-gray-900 rounded-[2rem] border border-gray-800 overflow-hidden print:border-2 print:border-black print:rounded-none print:bg-white">
-                <div className="grid grid-cols-12 px-8 py-5 bg-black/40 text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] border-b border-gray-800 print:bg-gray-100 print:text-black print:border-black">
-                  <div className="col-span-1">#</div>
-                  <div className="col-span-4 md:col-span-5 print:col-span-4">Beskrivning</div>
-                  <div className="col-span-3 md:col-span-4 print:col-span-3 text-right">Målvärde & Tolerans</div>
-                  <div className="col-span-2 text-center print:block">QR</div>
-                  <div className="col-span-2 text-right italic font-normal print:block hidden">Signatur</div>
-                </div>
-                <div className="divide-y divide-gray-800/50 print:divide-black">
-                  {[...points].sort((a,b) => a.number - b.number).map((point) => (
-                    <div 
-                      key={point.id} 
-                      onClick={() => setSelectedPoint(point)} 
-                      className="grid grid-cols-12 px-8 py-6 items-center hover:bg-blue-600/5 cursor-pointer transition-all print:text-black print:py-5 print:break-inside-avoid"
-                    >
-                      <div className="col-span-1 font-black italic text-xl text-gray-700 print:text-black">{point.number}</div>
-                      <div className="col-span-4 md:col-span-5 print:col-span-4">
-                        <div className="font-bold text-gray-200 text-lg print:text-black leading-tight">{point.name}</div>
-                        <div className="text-[10px] text-gray-600 font-bold uppercase tracking-widest print:text-gray-500">{point.measureMethod}</div>
-                      </div>
-                      <div className="col-span-3 md:col-span-4 print:col-span-3 text-right">
-                        <span className="font-mono text-2xl font-black text-green-500 print:text-black">{point.targetValue}</span>
-                        <span className="block text-[10px] text-gray-500 font-bold print:text-gray-700 italic">Tol: {point.tolerance}</span>
-                      </div>
-                      
-                      <div className="col-span-2 flex justify-center">
-                        <div className="bg-white p-1 rounded shadow-md group-hover:scale-110 transition-transform print:shadow-none print:border print:border-black">
-                          <img src={getQrCodeUrl(point.id, 60)} alt="QR" className="w-8 h-8" />
-                        </div>
-                      </div>
-
-                      <div className="hidden print:block col-span-2 border-b border-gray-300 h-8 ml-6"></div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+            {/* UNIFIERAD PARAMETERTABELL (Ersätter Checklistan) */}
+            <section className={`${activeTab === 'overview' ? 'block' : 'print:block hidden'} print:mt-10`}>
+              <ParameterTable 
+                points={points} 
+                onPointSelect={setSelectedPoint} 
+                onUpdatePoint={(p) => savePoints(points.map(x => x.id === p.id ? p : x))}
+                getQrUrl={getQrCodeUrl} 
+              />
             </section>
 
             {/* Skärm-specifika flikar */}
             <div className="print:hidden">
-              {activeTab === 'table' && (
-                <ParameterTable 
-                  points={points} 
-                  onPointSelect={setSelectedPoint} 
-                  onUpdatePoint={(p) => savePoints(points.map(x => x.id === p.id ? p : x))}
-                  getQrUrl={getQrCodeUrl} 
-                />
-              )}
               {activeTab === 'phasing' && <PhasingGauge currentDegree={0} points={points} />}
               {activeTab === 'guide' && <Guide />}
             </div>

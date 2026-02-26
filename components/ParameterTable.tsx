@@ -73,7 +73,7 @@ const ParameterTable: React.FC<ParameterTableProps> = ({ points, onPointSelect, 
         <div className="col-span-4 print:col-span-5">Parameter & Kritikalitet</div>
         <div className="col-span-3 text-center print:hidden">Status / Åtgärd</div>
         <div className="col-span-2 text-right print:col-span-3 print:text-right">Värde</div>
-        <div className="col-span-2 text-center">QR</div>
+        <div className="col-span-2 text-right pr-4">QR</div>
         <div className="hidden print:block col-span-1 text-right italic font-normal">Sign.</div>
       </div>
 
@@ -141,9 +141,9 @@ const ParameterTable: React.FC<ParameterTableProps> = ({ points, onPointSelect, 
               <div className="text-[10px] text-gray-500 font-bold italic print:text-gray-700">Tol: {point.tolerance}</div>
             </div>
 
-            <div className="col-span-2 flex justify-center">
+            <div className="col-span-2 flex justify-end pr-2">
                <div className="bg-white p-2 rounded shadow-2xl group-hover:scale-[2.5] transition-transform origin-right z-20 print:shadow-none print:border print:border-black print:p-1">
-                 <img src={getQrUrl(point.id, 120)} alt="QR" className="w-8 h-8 block print:w-6 print:h-6" />
+                 <img src={getQrUrl(point.id, 200)} alt="QR" className="w-8 h-8 block print:w-14 print:h-14" />
                </div>
             </div>
 

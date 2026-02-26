@@ -14,7 +14,10 @@ import { Map, List, Settings, Activity, Printer, ChevronLeft, ChevronRight, Plus
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'table' | 'phasing' | 'guide'>('overview');
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => localStorage.getItem('sidebar_collapsed') === 'true');
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
+    const saved = localStorage.getItem('sidebar_collapsed');
+    return saved !== null ? saved === 'true' : true;
+  });
   const [isDesignMode, setIsDesignMode] = useState(false);
   
   const [isAddingPoint, setIsAddingPoint] = useState(false);
@@ -185,8 +188,8 @@ const App: React.FC = () => {
              </div>
              
              <button 
-                onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)} 
-                className={`flex items-center justify-center transition-all duration-300 z-40
+                onClick={() => setIsSidebarCollapsed(prev => !prev)} 
+                className={`flex items-center justify-center transition-all duration-300 z-50 cursor-pointer
                   ${isSidebarCollapsed 
                     ? 'absolute -right-3 top-7 w-6 h-6 bg-gray-800 text-gray-400 hover:text-white rounded-full border border-gray-700 shadow-xl' 
                     : 'p-2 text-gray-500 hover:text-white'}`}

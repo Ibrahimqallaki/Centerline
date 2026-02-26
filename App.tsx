@@ -22,25 +22,72 @@ const App: React.FC = () => {
   const [editingPoint, setEditingPoint] = useState<MachinePoint | null>(null);
   const [selectedPoint, setSelectedPoint] = useState<MachinePoint | null>(null);
   const [editingModule, setEditingModule] = useState<MachineModule | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   
-  const [points, setPoints] = useState<MachinePoint[]>(() => {
-    try {
-      const saved = localStorage.getItem('centerline_points');
-      if (saved) return JSON.parse(saved);
-    } catch (e) {}
-    return MACHINE_POINTS;
-  });
+  const [points, setPoints] = useState<MachinePoint[]>([]);
+  const [layout, setLayout] = useState<MachineModule[]>([]);
 
-  const [layout, setLayout] = useState<MachineModule[]>(() => {
-    try {
-      const saved = localStorage.getItem('centerline_layout');
-      if (saved) return JSON.parse(saved);
-    } catch (e) {}
-    return DEFAULT_MACHINE_LAYOUT;
-  });
+  // Fetch initial data
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [pointsRes, layoutRes] = await Promise.all([
+          fetch('/api/points'),
+          fetch('/api/layout')
+        ]);
+        
+        if (pointsRes.ok) {
+          const pointsData = await pointsRes.json();
+          setPoints(pointsData.length > 0 ? pointsData : MACHINE_POINTS);
+        }
+        
+        if (layoutRes.ok) {
+          const layoutData = await layoutRes.json();
+          setLayout(layoutData.length > 0 ? layoutData : DEFAULT_MACHINE_LAYOUT);
+        }
+      } catch (error) {
+        console.error("Failed to fetch data:", error);
+        // Fallback to constants if fetch fails
+        setPoints(MACHINE_POINTS);
+        setLayout(DEFAULT_MACHINE_LAYOUT);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchData();
+  }, []);
 
   const [customMapUrl, setCustomMapUrl] = useState<string | null>(() => localStorage.getItem('centerline_map_url'));
   const [publicBaseUrl, setPublicBaseUrl] = useState<string>(() => localStorage.getItem('centerline_public_url') || '');
+
+  // Save points to API
+  const savePoints = async (newPoints: MachinePoint[]) => {
+    setPoints(newPoints);
+    try {
+      await fetch('/api/points', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newPoints)
+      });
+    } catch (error) {
+      console.error("Failed to save points:", error);
+    }
+  };
+
+  // Save layout to API
+  const saveLayout = async (newLayout: MachineModule[]) => {
+    setLayout(newLayout);
+    try {
+      await fetch('/api/layout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newLayout)
+      });
+    } catch (error) {
+      console.error("Failed to save layout:", error);
+    }
+  };
 
   // Handle deep-linking via QR codes (?p=ID)
   useEffect(() => {
@@ -57,8 +104,6 @@ const App: React.FC = () => {
   }, [points]);
 
   useEffect(() => {
-    localStorage.setItem('centerline_points', JSON.stringify(points));
-    localStorage.setItem('centerline_layout', JSON.stringify(layout));
     localStorage.setItem('sidebar_collapsed', isSidebarCollapsed.toString());
     if (customMapUrl) {
       localStorage.setItem('centerline_map_url', customMapUrl);
@@ -66,7 +111,7 @@ const App: React.FC = () => {
       localStorage.removeItem('centerline_map_url');
     }
     localStorage.setItem('centerline_public_url', publicBaseUrl);
-  }, [points, layout, isSidebarCollapsed, customMapUrl, publicBaseUrl]);
+  }, [isSidebarCollapsed, customMapUrl, publicBaseUrl]);
 
   const getQrCodeUrl = useCallback((pointId: string, size: number = 200) => {
     const isCloud = window.location.hostname !== 'localhost';
@@ -80,13 +125,13 @@ const App: React.FC = () => {
   };
 
   const handleModuleUpdate = (updatedMod: MachineModule) => {
-    setLayout(layout.map(m => m.id === updatedMod.id ? updatedMod : m));
+    saveLayout(layout.map(m => m.id === updatedMod.id ? updatedMod : m));
     setEditingModule(null);
   };
 
   const handleModuleDelete = (id: string) => {
     if (confirm("Är du säker på att du vill ta bort denna maskinenhet?")) {
-      setLayout(layout.filter(m => m.id !== id));
+      saveLayout(layout.filter(m => m.id !== id));
       setEditingModule(null);
     }
   };
@@ -96,7 +141,7 @@ const App: React.FC = () => {
       const updatedPoints = points.map(p => 
         p.id === selectedPoint.id ? { ...p, coordinates: { x, y } } : p
       );
-      setPoints(updatedPoints);
+      savePoints(updatedPoints);
       setSelectedPoint({ ...selectedPoint, coordinates: { x, y } });
     }
   };
@@ -110,6 +155,17 @@ const App: React.FC = () => {
   };
 
   const currentPrintDate = new Date().toLocaleString('sv-SE', { dateStyle: 'long', timeStyle: 'short' });
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center w-full h-full bg-gray-950">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-gray-400 font-black uppercase tracking-widest text-xs">Laddar Systemdata...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-row w-full h-full bg-gray-950 text-gray-100 overflow-hidden font-sans print:bg-white print:text-black print:overflow-visible">
@@ -142,7 +198,7 @@ const App: React.FC = () => {
           <nav className="p-3 space-y-2 mt-4">
             {[
               { id: 'overview', icon: Map, label: 'Karta' },
-              { id: 'table', icon: List, label: 'Lista' },
+              { id: 'table', icon: List, label: 'Operativ Vy' },
               { id: 'phasing', icon: Activity, label: 'Synk' },
               { id: 'guide', icon: BookOpen, label: 'Guide' }
             ].map((tab) => (
@@ -180,7 +236,7 @@ const App: React.FC = () => {
         <nav className="flex md:hidden w-full justify-around items-center h-full px-1 overflow-x-auto no-scrollbar">
             {[
               { id: 'overview', icon: Map, label: 'Karta' },
-              { id: 'table', icon: List, label: 'Lista' },
+              { id: 'table', icon: List, label: 'Operativ Vy' },
               { id: 'phasing', icon: Activity, label: 'Synk' },
               { id: 'guide', icon: BookOpen, label: 'Guide' }
             ].map((tab) => (
@@ -326,7 +382,14 @@ const App: React.FC = () => {
 
             {/* Skärm-specifika flikar */}
             <div className="print:hidden">
-              {activeTab === 'table' && <ParameterTable points={points} onPointSelect={setSelectedPoint} getQrUrl={getQrCodeUrl} />}
+              {activeTab === 'table' && (
+                <ParameterTable 
+                  points={points} 
+                  onPointSelect={setSelectedPoint} 
+                  onUpdatePoint={(p) => savePoints(points.map(x => x.id === p.id ? p : x))}
+                  getQrUrl={getQrCodeUrl} 
+                />
+              )}
               {activeTab === 'phasing' && <PhasingGauge currentDegree={0} points={points} />}
               {activeTab === 'guide' && <Guide />}
             </div>
@@ -358,7 +421,7 @@ const App: React.FC = () => {
         <AddPointForm 
           existingPoints={points} 
           layout={layout} 
-          onSave={(p) => { setPoints([...points, p]); setIsAddingPoint(false); }} 
+          onSave={(p) => { savePoints([...points, p]); setIsAddingPoint(false); }} 
           onCancel={() => setIsAddingPoint(false)} 
         />
       )}
@@ -368,7 +431,7 @@ const App: React.FC = () => {
           layout={layout} 
           initialData={editingPoint} 
           onSave={(p) => { 
-            setPoints(points.map(x => x.id === editingPoint.id ? p : x)); 
+            savePoints(points.map(x => x.id === editingPoint.id ? p : x)); 
             setEditingPoint(null); 
             setSelectedPoint(p); 
           }} 
@@ -394,7 +457,7 @@ const App: React.FC = () => {
       {selectedPoint && !editingPoint && !isDesignMode && (
         <PointDetail 
           point={selectedPoint} 
-          onUpdate={(p) => setPoints(points.map(x => x.id === p.id ? p : x))} 
+          onUpdate={(p) => savePoints(points.map(x => x.id === p.id ? p : x))} 
           onEdit={() => { setEditingPoint(selectedPoint); setSelectedPoint(null); }} 
           onClose={() => setSelectedPoint(null)} 
         />

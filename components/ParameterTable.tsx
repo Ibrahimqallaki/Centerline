@@ -1,29 +1,37 @@
 
 import React from 'react';
-import { MachinePoint, Zone } from '../types';
-import { Search, AlertTriangle } from 'lucide-react';
-import { ZONE_COLORS } from '../constants';
+import { MachinePoint, Zone, PointStatus, Criticality } from '../types';
+import { Search, AlertTriangle, CheckCircle2, Tag, Filter } from 'lucide-react';
+import { ZONE_COLORS, CRITICALITY_COLORS } from '../constants';
 
 interface ParameterTableProps {
   points: MachinePoint[];
   onPointSelect: (point: MachinePoint) => void;
+  onUpdatePoint: (point: MachinePoint) => void;
   getQrUrl: (id: string, size?: number) => string;
 }
 
-const ParameterTable: React.FC<ParameterTableProps> = ({ points, onPointSelect, getQrUrl }) => {
+const ParameterTable: React.FC<ParameterTableProps> = ({ points, onPointSelect, onUpdatePoint, getQrUrl }) => {
   const [filter, setFilter] = React.useState('');
   const [zoneFilter, setZoneFilter] = React.useState<Zone | 'All'>('All');
+  const [statusFilter, setStatusFilter] = React.useState<PointStatus | 'All'>('All');
 
   const filteredPoints = points.filter(p => {
     const matchesText = p.name.toLowerCase().includes(filter.toLowerCase()) || p.id.toLowerCase().includes(filter.toLowerCase());
     const matchesZone = zoneFilter === 'All' || p.zone === zoneFilter;
-    return matchesText && matchesZone;
+    const matchesStatus = statusFilter === 'All' || p.status === statusFilter;
+    return matchesText && matchesZone && matchesStatus;
   });
+
+  const handleStatusToggle = (e: React.MouseEvent, point: MachinePoint, newStatus: PointStatus) => {
+    e.stopPropagation();
+    onUpdatePoint({ ...point, status: newStatus, lastChecked: new Date().toISOString() });
+  };
 
   return (
     <div className="bg-gray-800 rounded-xl border border-gray-700 shadow-xl overflow-hidden flex flex-col h-full">
       
-      <div className="p-4 border-b border-gray-700 flex flex-col sm:flex-row gap-4 justify-between bg-gray-900/50">
+      <div className="p-4 border-b border-gray-700 flex flex-col lg:flex-row gap-4 justify-between bg-gray-900/50">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" size={18} />
           <input 
@@ -34,21 +42,37 @@ const ParameterTable: React.FC<ParameterTableProps> = ({ points, onPointSelect, 
             onChange={(e) => setFilter(e.target.value)}
           />
         </div>
-        <select 
-          className="bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded"
-          value={zoneFilter}
-          onChange={(e) => setZoneFilter(e.target.value as any)}
-        >
-          <option value="All">Alla Zoner</option>
-          {Object.values(Zone).map(z => <option key={z} value={z}>{z}</option>)}
-        </select>
+        <div className="flex flex-wrap gap-2">
+          <div className="flex items-center gap-2 bg-gray-800 border border-gray-700 px-3 py-1 rounded">
+            <Filter size={14} className="text-gray-500" />
+            <select 
+              className="bg-transparent text-white text-xs focus:outline-none"
+              value={zoneFilter}
+              onChange={(e) => setZoneFilter(e.target.value as any)}
+            >
+              <option value="All">Alla Zoner</option>
+              {Object.values(Zone).map(z => <option key={z} value={z}>{z}</option>)}
+            </select>
+          </div>
+          <div className="flex items-center gap-2 bg-gray-800 border border-gray-700 px-3 py-1 rounded">
+            <Tag size={14} className="text-gray-500" />
+            <select 
+              className="bg-transparent text-white text-xs focus:outline-none"
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value as any)}
+            >
+              <option value="All">Alla Status</option>
+              {Object.values(PointStatus).map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
+          </div>
+        </div>
       </div>
 
-      <div className="grid grid-cols-12 gap-2 px-6 py-3 bg-gray-900 text-[10px] uppercase font-black text-gray-500 tracking-widest">
+      <div className="grid grid-cols-12 gap-2 px-6 py-3 bg-gray-900 text-[10px] uppercase font-black text-gray-500 tracking-widest border-b border-gray-700">
         <div className="col-span-1">Nr</div>
-        <div className="col-span-4">Parameter</div>
-        <div className="col-span-2">Zon</div>
-        <div className="col-span-3 text-right">Värde & Tol.</div>
+        <div className="col-span-4">Parameter & Kritikalitet</div>
+        <div className="col-span-3 text-center">Status / Åtgärd</div>
+        <div className="col-span-2 text-right">Värde</div>
         <div className="col-span-2 text-center">QR</div>
       </div>
 
@@ -57,29 +81,65 @@ const ParameterTable: React.FC<ParameterTableProps> = ({ points, onPointSelect, 
           <div 
             key={point.id} 
             onClick={() => onPointSelect(point)}
-            className="grid grid-cols-12 gap-2 px-6 py-4 items-center hover:bg-gray-700/50 cursor-pointer group"
+            className={`grid grid-cols-12 gap-2 px-6 py-4 items-center hover:bg-gray-700/50 cursor-pointer group transition-colors ${point.status === PointStatus.TAGGED_RED ? 'bg-red-900/10' : point.status === PointStatus.TAGGED_YELLOW ? 'bg-orange-900/10' : ''}`}
           >
             <div className="col-span-1 font-mono text-gray-500 group-hover:text-white font-bold">{point.number}</div>
-            <div className="col-span-4">
-              <div className="font-bold text-gray-200 group-hover:text-blue-300 transition-colors leading-tight">{point.name}</div>
-              <div className="text-[10px] text-gray-500 italic mt-0.5">{point.measureMethod}</div>
-            </div>
-            <div className="col-span-2">
-               <span className={`text-[9px] px-2 py-0.5 rounded border border-opacity-30 font-bold whitespace-nowrap ${ZONE_COLORS[point.zone]}`}>
-                 {point.zone}
-               </span>
-            </div>
-            <div className="col-span-3 text-right">
-              <div className="font-mono text-green-400 font-black text-xl leading-none">{point.targetValue}</div>
-              <div className="flex justify-end items-center gap-2">
-                {point.phaseAngle !== undefined && (
-                  <span className="text-[9px] bg-cyan-900/30 text-cyan-400 px-1 rounded border border-cyan-800/50 font-mono">
-                    {point.phaseAngle}°
-                  </span>
-                )}
-                <div className="text-[10px] text-gray-500 font-bold italic">Tol: {point.tolerance}</div>
+            <div className="col-span-4 space-y-2">
+              <div>
+                <div className="font-bold text-gray-200 group-hover:text-blue-300 transition-colors leading-tight">{point.name}</div>
+                <div className="text-[10px] text-gray-500 italic mt-0.5">{point.measureMethod}</div>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className={`w-2 h-2 rounded-full ${CRITICALITY_COLORS[point.criticality]}`}></span>
+                <span className="text-[9px] text-gray-500 font-bold uppercase">{point.criticality.split(':')[0]}</span>
               </div>
             </div>
+            
+            <div className="col-span-3 flex flex-col items-center gap-2">
+              {point.status && point.status !== PointStatus.OK ? (
+                <div className={`flex items-center gap-1 px-2 py-1 rounded text-[9px] font-black uppercase tracking-tighter ${
+                  point.status === PointStatus.TAGGED_RED ? 'bg-red-600 text-white' : 
+                  point.status === PointStatus.TAGGED_YELLOW ? 'bg-orange-500 text-white' : 
+                  'bg-yellow-600 text-white'
+                }`}>
+                  <AlertTriangle size={10} /> {point.status}
+                </div>
+              ) : (
+                <div className="flex items-center gap-1 text-green-500 text-[9px] font-bold uppercase">
+                  <CheckCircle2 size={12} /> OK
+                </div>
+              )}
+              
+              <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button 
+                  onClick={(e) => handleStatusToggle(e, point, PointStatus.OK)}
+                  className="p-1 bg-green-900/40 text-green-400 rounded hover:bg-green-600 hover:text-white transition-colors"
+                  title="Markera som OK"
+                >
+                  <CheckCircle2 size={14} />
+                </button>
+                <button 
+                  onClick={(e) => handleStatusToggle(e, point, PointStatus.TAGGED_YELLOW)}
+                  className="p-1 bg-orange-900/40 text-orange-400 rounded hover:bg-orange-500 hover:text-white transition-colors"
+                  title="Sätt Gul Tagg (P2)"
+                >
+                  <Tag size={14} />
+                </button>
+                <button 
+                  onClick={(e) => handleStatusToggle(e, point, PointStatus.TAGGED_RED)}
+                  className="p-1 bg-red-900/40 text-red-400 rounded hover:bg-red-600 hover:text-white transition-colors"
+                  title="Sätt Röd Tagg (P1)"
+                >
+                  <AlertTriangle size={14} />
+                </button>
+              </div>
+            </div>
+
+            <div className="col-span-2 text-right">
+              <div className="font-mono text-green-400 font-black text-xl leading-none">{point.targetValue}</div>
+              <div className="text-[10px] text-gray-500 font-bold italic">Tol: {point.tolerance}</div>
+            </div>
+
             <div className="col-span-2 flex justify-center">
                <div className="bg-white p-2 rounded shadow-2xl group-hover:scale-[2.5] transition-transform origin-right z-20">
                  <img src={getQrUrl(point.id, 120)} alt="QR" className="w-8 h-8 block" />
@@ -93,3 +153,4 @@ const ParameterTable: React.FC<ParameterTableProps> = ({ points, onPointSelect, 
 };
 
 export default ParameterTable;
+

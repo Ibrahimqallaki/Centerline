@@ -9,10 +9,16 @@ export enum Zone {
 }
 
 export enum Criticality {
-  LOW = 'Låg',
-  MEDIUM = 'Medium',
-  HIGH = 'Hög',
-  CRITICAL = 'Kritisk (Kraschrisk)'
+  P1 = 'P1: Kritisk (Haveri & Kvalitet)',
+  P2 = 'P2: Viktig (Produktivitet & Slitage)',
+  P3 = 'P3: Standard (Processoptimering)'
+}
+
+export enum PointStatus {
+  OK = 'OK',
+  TAGGED_RED = 'Röd Tagg (P1)',
+  TAGGED_YELLOW = 'Gul Tagg (P2)',
+  OUT_OF_SPEC = 'Utanför Standard'
 }
 
 export interface MachineModule {
@@ -44,6 +50,8 @@ export interface MachinePoint {
   visibleOnMap: boolean;
   phaseAngle?: number;
   lastChecked?: string;
+  status?: PointStatus;
+  tagComment?: string;
 }
 
 export interface GenerationRequest {

@@ -21,7 +21,7 @@ export const MACHINE_POINTS: MachinePoint[] = [
     targetValue: 'Visare B1 = 142',
     tolerance: '+/- 0.5',
     measureMethod: 'Mekanisk mätare B1',
-    criticality: Criticality.MEDIUM,
+    criticality: Criticality.P2,
     imagePlaceholder: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=400',
     coordinates: { x: 10, y: 21 },
     visibleOnMap: true
@@ -35,7 +35,7 @@ export const MACHINE_POINTS: MachinePoint[] = [
     targetValue: 'Visare I1 = 45.5',
     tolerance: '+/- 0.2',
     measureMethod: 'Siko-mätare I1',
-    criticality: Criticality.HIGH,
+    criticality: Criticality.P1,
     imagePlaceholder: 'https://images.unsplash.com/photo-1565608411386-35f922754972?auto=format&fit=crop&q=80&w=400',
     coordinates: { x: 38, y: 40 },
     visibleOnMap: true
@@ -49,7 +49,7 @@ export const MACHINE_POINTS: MachinePoint[] = [
     targetValue: 'Visare L1 = 80.0',
     tolerance: '+/- 0.5',
     measureMethod: 'Siko-mätare L1',
-    criticality: Criticality.MEDIUM,
+    criticality: Criticality.P2,
     imagePlaceholder: 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&q=80&w=400',
     coordinates: { x: 44, y: 40 },
     visibleOnMap: true
@@ -63,7 +63,7 @@ export const MACHINE_POINTS: MachinePoint[] = [
     targetValue: 'Mätare M1 = 312',
     tolerance: '+/- 0.5',
     measureMethod: 'Mekanisk mätare M1',
-    criticality: Criticality.HIGH,
+    criticality: Criticality.P1,
     imagePlaceholder: 'https://images.unsplash.com/photo-1537462715879-360eeb61a0ad?auto=format&fit=crop&q=80&w=400',
     coordinates: { x: 50, y: 16 },
     visibleOnMap: true
@@ -77,7 +77,7 @@ export const MACHINE_POINTS: MachinePoint[] = [
     targetValue: 'X: 1.5mm / Y: 0.5mm',
     tolerance: '+/- 0.05',
     measureMethod: 'Bladmått',
-    criticality: Criticality.CRITICAL,
+    criticality: Criticality.P1,
     imagePlaceholder: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&q=80&w=400',
     coordinates: { x: 55, y: 12 },
     visibleOnMap: true
@@ -91,7 +91,7 @@ export const MACHINE_POINTS: MachinePoint[] = [
     targetValue: 'X: 1.8mm / Y: 0.2mm',
     tolerance: '+/- 0.05',
     measureMethod: 'Bladmått',
-    criticality: Criticality.CRITICAL,
+    criticality: Criticality.P1,
     imagePlaceholder: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&q=80&w=400',
     coordinates: { x: 55, y: 20 },
     visibleOnMap: true
@@ -105,7 +105,7 @@ export const MACHINE_POINTS: MachinePoint[] = [
     targetValue: 'Mätare F1 = 215',
     tolerance: '+/- 1.0',
     measureMethod: 'Siko-mätare F1',
-    criticality: Criticality.MEDIUM,
+    criticality: Criticality.P2,
     imagePlaceholder: 'https://images.unsplash.com/photo-1590247813693-5541d1c609fd?auto=format&fit=crop&q=80&w=400',
     coordinates: { x: 71, y: 36 },
     visibleOnMap: true
@@ -119,7 +119,7 @@ export const MACHINE_POINTS: MachinePoint[] = [
     targetValue: '2.8°',
     tolerance: '+/- 0.1°',
     measureMethod: 'Encoder-position',
-    criticality: Criticality.CRITICAL,
+    criticality: Criticality.P1,
     imagePlaceholder: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80&w=400',
     coordinates: { x: 71, y: 15 },
     phaseAngle: 2.8,
@@ -134,7 +134,7 @@ export const MACHINE_POINTS: MachinePoint[] = [
     targetValue: '2.5 Bar',
     tolerance: '+/- 0.2',
     measureMethod: 'Manometer punkt 4',
-    criticality: Criticality.HIGH,
+    criticality: Criticality.P1,
     imagePlaceholder: 'https://images.unsplash.com/photo-1530315592271-bfc71333ef34?auto=format&fit=crop&q=80&w=400',
     coordinates: { x: 73, y: 34 },
     visibleOnMap: true
@@ -151,8 +151,7 @@ export const ZONE_COLORS = {
 };
 
 export const CRITICALITY_COLORS = {
-  [Criticality.LOW]: 'bg-gray-600',
-  [Criticality.MEDIUM]: 'bg-yellow-600',
-  [Criticality.HIGH]: 'bg-orange-600',
-  [Criticality.CRITICAL]: 'bg-red-600 animate-pulse',
+  [Criticality.P1]: 'bg-red-600 animate-pulse',
+  [Criticality.P2]: 'bg-orange-600',
+  [Criticality.P3]: 'bg-blue-600',
 };

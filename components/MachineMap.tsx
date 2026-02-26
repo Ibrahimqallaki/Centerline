@@ -139,8 +139,8 @@ const MachineMap: React.FC<MachineMapProps> = ({
           {/* Render Points inside SVG for better print reliability */}
           {visiblePoints.map((point) => {
             const isSelected = point.id === selectedPointId;
-            const isCritical = point.criticality === Criticality.CRITICAL;
-            const color = isCritical ? '#ef4444' : (point.criticality === Criticality.HIGH ? '#f97316' : '#3b82f6');
+            const isCritical = point.criticality === Criticality.P1;
+            const color = isCritical ? '#ef4444' : (point.criticality === Criticality.P2 ? '#f97316' : '#3b82f6');
             
             return (
               <g 
@@ -206,7 +206,7 @@ const MachineMap: React.FC<MachineMapProps> = ({
         {/* We keep this for the pulse animation and move icon which are hard in SVG */}
         {visiblePoints.map((point) => {
           const isSelected = point.id === selectedPointId;
-          const isCritical = point.criticality === Criticality.CRITICAL;
+          const isCritical = point.criticality === Criticality.P1;
           if (!isSelected && !isCritical) return null;
           
           return (

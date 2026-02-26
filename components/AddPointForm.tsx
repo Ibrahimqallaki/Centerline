@@ -25,7 +25,7 @@ const AddPointForm: React.FC<AddPointFormProps> = ({ existingPoints, initialData
     targetValue: initialData?.targetValue ?? '',
     tolerance: initialData?.tolerance ?? '',
     measureMethod: initialData?.measureMethod ?? '',
-    criticality: initialData?.criticality ?? Criticality.MEDIUM,
+    criticality: initialData?.criticality ?? Criticality.P2,
     imagePlaceholder: initialData?.imagePlaceholder ?? 'https://picsum.photos/400/300?grayscale',
     imagePlaceholder2: initialData?.imagePlaceholder2 ?? '',
     coordinates: initialData?.coordinates ?? { x: 50, y: 50 },

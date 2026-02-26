@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
-import { MachinePoint, Criticality } from '../types';
-import { AlertTriangle, CheckCircle, Video, BookOpen, AlertOctagon, Edit2, Upload, Save, Link, PenBox, Zap, Image as ImageIcon } from 'lucide-react';
+import { MachinePoint, Criticality, PointStatus } from '../types';
+import { AlertTriangle, CheckCircle, Video, BookOpen, AlertOctagon, Edit2, Upload, Save, Link, PenBox, Zap, Image as ImageIcon, Tag, CheckCircle2 } from 'lucide-react';
 
 interface PointDetailProps {
   point: MachinePoint;
@@ -35,7 +35,12 @@ const PointDetail: React.FC<PointDetailProps> = ({ point, onUpdate, onEdit, onCl
     }
   };
 
-  const isCritical = point.criticality === Criticality.CRITICAL || point.criticality === Criticality.HIGH;
+  const handleStatusChange = (newStatus: PointStatus) => {
+    onUpdate({ ...point, status: newStatus, lastChecked: new Date().toISOString() });
+  };
+
+  const isP1 = point.criticality === Criticality.P1;
+  const isP2 = point.criticality === Criticality.P2;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 print:hidden">
@@ -50,12 +55,42 @@ const PointDetail: React.FC<PointDetailProps> = ({ point, onUpdate, onEdit, onCl
             </div>
             <p className="text-gray-400 mt-1">{point.zone} &bull; Punkt #{point.number}</p>
           </div>
-          {/* Status indicator instead of buttons */}
-          <div className="flex items-center gap-2">
-            {isCritical && (
+          
+          <div className="flex items-center gap-3">
+            {/* Status Selector */}
+            <div className="flex bg-gray-950 p-1 rounded-xl border border-gray-700">
+              <button 
+                onClick={() => handleStatusChange(PointStatus.OK)}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all ${point.status === PointStatus.OK || !point.status ? 'bg-green-600 text-white' : 'text-gray-500 hover:text-gray-300'}`}
+              >
+                <CheckCircle2 size={14} /> OK
+              </button>
+              <button 
+                onClick={() => handleStatusChange(PointStatus.TAGGED_YELLOW)}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all ${point.status === PointStatus.TAGGED_YELLOW ? 'bg-orange-500 text-white' : 'text-gray-500 hover:text-gray-300'}`}
+              >
+                <Tag size={14} /> Gul Tagg (P2)
+              </button>
+              <button 
+                onClick={() => handleStatusChange(PointStatus.TAGGED_RED)}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all ${point.status === PointStatus.TAGGED_RED ? 'bg-red-600 text-white' : 'text-gray-500 hover:text-gray-300'}`}
+              >
+                <AlertTriangle size={14} /> Röd Tagg (P1)
+              </button>
+            </div>
+
+            <div className="h-8 w-px bg-gray-700 mx-2"></div>
+
+            {isP1 && (
               <span className="px-3 py-1 bg-red-900/50 text-red-200 text-xs font-bold uppercase rounded border border-red-800 flex items-center gap-2">
                 <AlertOctagon size={14} />
-                Kritisk Punkt
+                P1: Kritisk
+              </span>
+            )}
+            {isP2 && (
+              <span className="px-3 py-1 bg-orange-900/50 text-orange-200 text-xs font-bold uppercase rounded border border-orange-800 flex items-center gap-2">
+                <Tag size={14} />
+                P2: Viktig
               </span>
             )}
           </div>
@@ -183,7 +218,7 @@ const PointDetail: React.FC<PointDetailProps> = ({ point, onUpdate, onEdit, onCl
                 </div>
               </div>
 
-              {isCritical && (
+              {isP1 && (
                 <div className="bg-red-950/30 border border-red-500/30 p-5 rounded-2xl flex items-start gap-4 shadow-lg shadow-red-900/10">
                   <AlertOctagon className="text-red-500 shrink-0 mt-1" size={28} />
                   <div>

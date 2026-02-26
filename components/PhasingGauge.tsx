@@ -112,6 +112,42 @@ const PhasingGauge: React.FC<PhasingGaugeProps> = ({ currentDegree, points }) =>
           <span>360°</span>
         </div>
       </div>
+
+      {/* Help Section */}
+      <div className="mt-12 w-full max-w-2xl grid grid-cols-1 md:grid-cols-3 gap-6 border-t border-gray-700 pt-8">
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="w-5 h-5 rounded-full bg-blue-900/50 text-blue-400 flex items-center justify-center text-[10px] font-bold border border-blue-800">1</span>
+            <h4 className="text-xs font-bold text-white uppercase tracking-wider">Definiera punkten</h4>
+          </div>
+          <p className="text-[10px] text-gray-500 leading-relaxed">
+            När du skapar eller redigerar en kontrollpunkt, leta efter fältet <strong>"Fasningsvinkel"</strong>. 
+            Här anger du vid vilket gradtal (0-360°) i maskincykeln som momentet inträffar.
+          </p>
+        </div>
+
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="w-5 h-5 rounded-full bg-cyan-900/50 text-cyan-400 flex items-center justify-center text-[10px] font-bold border border-cyan-800">2</span>
+            <h4 className="text-xs font-bold text-white uppercase tracking-wider">Verifiera i Synk-vyn</h4>
+          </div>
+          <p className="text-[10px] text-gray-500 leading-relaxed">
+            Använd reglaget ovan ("Master Encoder") för att simulera maskinens rörelse. 
+            Punkterna på klockan visar när momenten sker i förhållande till varandra.
+          </p>
+        </div>
+
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="w-5 h-5 rounded-full bg-red-900/50 text-red-400 flex items-center justify-center text-[10px] font-bold border border-red-800">3</span>
+            <h4 className="text-xs font-bold text-white uppercase tracking-wider">Undvik krascher</h4>
+          </div>
+          <p className="text-[10px] text-gray-500 leading-relaxed">
+            Punkter som ligger nära varandra i gradtal men fysiskt långt ifrån varandra kan indikera risk för krockar. 
+            Använd vyn för att utbilda personal i maskinens timing.
+          </p>
+        </div>
+      </div>
     </div>
   );
 };

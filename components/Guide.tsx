@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { BookOpen, Target, AlertTriangle, Users, GitCommit, ShieldCheck, Zap, Activity } from 'lucide-react';
+import { BookOpen, Target, AlertTriangle, Users, GitCommit, ShieldCheck, Zap, Activity, AlertOctagon, PenBox } from 'lucide-react';
 
 const Guide: React.FC = () => {
   return (
@@ -9,101 +9,203 @@ const Guide: React.FC = () => {
       {/* Intro Header */}
       <div className="bg-gradient-to-r from-blue-900/40 to-black border border-blue-800/30 p-8 rounded-3xl relative overflow-hidden">
         <div className="relative z-10">
+          <div className="flex items-center gap-2 mb-2">
+            <Zap className="text-blue-400" size={20} />
+            <span className="text-blue-400 font-black text-xs uppercase tracking-widest">Centerline Excellence (CLX)</span>
+          </div>
           <h2 className="text-3xl font-black text-white uppercase italic tracking-tighter mb-4">
-            Centerlining Basic Training
+            Standardiserat Arbetssätt
           </h2>
           <p className="text-blue-200 max-w-2xl leading-relaxed">
-            Centerlining är en grundläggande möjliggörare inom Autonomt Underhåll (AM). 
-            Målet är att kontrollera processen genom att säkerställa att maskinens parametrar 
-            alltid är inställda korrekt för att undvika förluster och variabilitet.
+            Syftet med CLX är att eliminera variation genom att säkerställa att maskinen alltid körs enligt 
+            fastställda <strong className="text-white">Golden Run-inställningar</strong>. Vi går från reaktivt agerande ("jag tror") 
+            till faktabaserad styrning ("jag vet").
           </p>
         </div>
         <BookOpen className="absolute right-[-20px] bottom-[-40px] text-blue-900/20 w-64 h-64 -rotate-12" />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        
-        {/* CARD 1: KULTUR & STRATEGI */}
-        <div className="bg-gray-900 border border-gray-800 p-6 rounded-2xl shadow-xl hover:border-gray-700 transition-colors">
-          <div className="flex items-center gap-3 mb-6 border-b border-gray-800 pb-4">
-            <div className="p-3 bg-purple-900/30 rounded-xl text-purple-400">
-              <Zap size={24} />
-            </div>
-            <div>
-              <h3 className="text-lg font-bold text-white uppercase tracking-wide">Kultur: Reaktiv vs Proaktiv</h3>
-              <p className="text-xs text-gray-500 font-mono">Process Control Strategy</p>
-            </div>
+      {/* CARD: KULTUR & STRATEGI */}
+      <div className="bg-gray-900 border border-gray-800 p-8 rounded-3xl shadow-2xl hover:border-gray-700 transition-colors">
+        <div className="flex items-center gap-3 mb-8 border-b border-gray-800 pb-4">
+          <div className="p-3 bg-purple-900/30 rounded-xl text-purple-400">
+            <Zap size={24} />
           </div>
-          
-          <div className="space-y-6">
-            <div className="flex gap-4">
-              <div className="flex-1 bg-red-950/20 p-4 rounded-xl border border-red-900/20">
-                <h4 className="text-red-400 font-bold text-xs uppercase mb-2">Reaktiv (Gamla sättet)</h4>
-                <p className="text-gray-400 text-xs leading-relaxed">
-                  "Jag tror jag vet felet, ge mig 10 minuter." Baserat på känsla och erfarenhet.
-                  Problem löses tillfälligt utan spårbarhet.
-                </p>
-              </div>
-              <div className="flex items-center text-gray-600">
-                <Activity size={20} />
-              </div>
-              <div className="flex-1 bg-green-950/20 p-4 rounded-xl border border-green-900/20">
-                <h4 className="text-green-400 font-bold text-xs uppercase mb-2">Proaktiv (Centerline)</h4>
-                <p className="text-gray-400 text-xs leading-relaxed">
-                  "Limmängden är låg men inom tolerans. Vi agerar nu för att undvika stopp."
-                  Baserat på data, standarder och förutsägbarhet.
-                </p>
-              </div>
-            </div>
-            
-            <div className="bg-gray-950 p-4 rounded-xl text-sm text-gray-300 italic border-l-4 border-purple-500">
-              "Målet är att minska variabiliteten i både INPUT (Material, Metod) och PROCESSEN för att garantera OUTPUT."
-            </div>
+          <div>
+            <h3 className="text-xl font-bold text-white uppercase tracking-wide italic">Kultur: Reaktiv vs Proaktiv</h3>
+            <p className="text-xs text-gray-500 font-mono">Process Control Strategy</p>
           </div>
         </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-11 gap-6 items-center">
+          <div className="md:col-span-5 bg-red-950/10 p-5 rounded-2xl border border-red-900/20 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity">
+              <AlertTriangle size={40} className="text-red-500" />
+            </div>
+            <h4 className="text-red-400 font-black text-xs uppercase mb-3 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+              Reaktiv (Gamla sättet)
+            </h4>
+            <p className="text-gray-300 text-sm leading-relaxed italic mb-2">
+              "Jag tror jag vet felet, ge mig 10 minuter."
+            </p>
+            <p className="text-gray-500 text-xs leading-relaxed">
+              Baserat på känsla och erfarenhet. Problem löses tillfälligt utan spårbarhet.
+            </p>
+          </div>
 
-        {/* CARD 2: DEFINITIONER & TYPER */}
-        <div className="bg-gray-900 border border-gray-800 p-6 rounded-2xl shadow-xl hover:border-gray-700 transition-colors">
+          <div className="md:col-span-1 flex justify-center">
+            <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-gray-600 border border-gray-700">
+              <Activity size={20} />
+            </div>
+          </div>
+
+          <div className="md:col-span-5 bg-green-950/10 p-5 rounded-2xl border border-green-900/20 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity">
+              <ShieldCheck size={40} className="text-green-500" />
+            </div>
+            <h4 className="text-green-400 font-black text-xs uppercase mb-3 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-green-500"></span>
+              Proaktiv (Centerline)
+            </h4>
+            <p className="text-gray-300 text-sm leading-relaxed italic mb-2">
+              "Limmängden är låg men inom tolerans. Vi agerar nu för att undvika stopp."
+            </p>
+            <p className="text-gray-500 text-xs leading-relaxed">
+              Baserat på data, standarder och förutsägbarhet.
+            </p>
+          </div>
+        </div>
+        
+        <div className="mt-8 bg-gray-950 p-5 rounded-2xl text-sm text-gray-400 italic border-l-4 border-purple-500 shadow-inner">
+          "Målet är att minska variabiliteten i både <span className="text-white font-bold">INPUT</span> (Material, Metod) och <span className="text-white font-bold">PROCESSEN</span> för att garantera <span className="text-white font-bold">OUTPUT</span>."
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        {/* CARD 1: DEFINITIONER */}
+        <div className="bg-gray-900 border border-gray-800 p-6 rounded-2xl shadow-xl hover:border-gray-700 transition-colors md:col-span-2">
           <div className="flex items-center gap-3 mb-6 border-b border-gray-800 pb-4">
             <div className="p-3 bg-blue-900/30 rounded-xl text-blue-400">
               <GitCommit size={24} />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-white uppercase tracking-wide">Typer av Punkter</h3>
+              <h3 className="text-lg font-bold text-white uppercase tracking-wide">Definitioner</h3>
               <p className="text-xs text-gray-500 font-mono">CL vs CPE & Kategorier</p>
             </div>
           </div>
 
           <div className="space-y-4">
-             <div className="grid grid-cols-2 gap-4">
-               <div className="bg-gray-800/50 p-3 rounded-lg">
-                 <span className="text-blue-300 font-black text-xs block mb-1">CL (Centerline)</span>
-                 <p className="text-[10px] text-gray-400">Justerbar inställning som kan övervakas. T.ex. rattar, tryck, temperaturer.</p>
-               </div>
-               <div className="bg-gray-800/50 p-3 rounded-lg">
-                 <span className="text-orange-300 font-black text-xs block mb-1">CPE (Critical Equipment Point)</span>
-                 <p className="text-[10px] text-gray-400">Fysisk referenspunkt i maskinen. T.ex. avstånd mellan kniv och mothåll.</p>
-               </div>
-             </div>
-
-             <ul className="space-y-2 mt-2">
-               {[
-                 { label: 'Static CL', desc: 'Inställning vid stillastående (t.ex. vid SKU-byte).' },
-                 { label: 'Dynamic CL', desc: 'Kontrolleras under drift (t.ex. mätare, flöden).' },
-                 { label: 'Program (Set Point)', desc: 'Värden i recept/HMI.' },
-                 { label: 'Condition', desc: 'Slitagekontroll (t.ex. knivskärpa).' }
-               ].map((item, i) => (
-                 <li key={i} className="flex items-start gap-3 text-sm text-gray-300">
-                   <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 shrink-0"></span>
-                   <span><strong className="text-white">{item.label}:</strong> {item.desc}</span>
-                 </li>
-               ))}
-             </ul>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {[
+                { type: 'CL', label: 'Centerline', desc: 'Justerbara processparametrar som övervakas mot standard (Tryck, temp, hastighet).', color: 'text-blue-400' },
+                { type: 'CPE', label: 'Critical Physical Element', desc: 'Fysiska referenspunkter i utrustningen (Knivavstånd, givarpositioner).', color: 'text-orange-400' },
+                { type: 'Static', label: 'Static CL', desc: 'Inställningar som görs vid stillastående eller omställning (Mekaniska stopp).', color: 'text-gray-400' },
+                { type: 'Dynamic', label: 'Dynamic CL', desc: 'Parametrar som kontrolleras och följs upp under drift (Flöden, PLC-värden).', color: 'text-cyan-400' },
+                { type: 'Setpoint', label: 'Setpoint (Program)', desc: 'Receptstyrda värden i HMI/PLC. Skall alltid vara uppdaterade och synkade med fysisk miljö.', color: 'text-purple-400' },
+                { type: 'Condition', label: 'Condition (Skick)', desc: 'Säkerställs under Service Window. CIL-rutiner initierar aktiviteter till renoveringar.', color: 'text-green-400' }
+              ].map((item, i) => (
+                <div key={i} className="bg-gray-800/40 p-4 rounded-xl border border-gray-700/50 flex flex-col gap-3 h-full hover:bg-gray-800/60 transition-colors">
+                  <div className={`text-[10px] font-black px-2 py-1 rounded bg-black/40 ${item.color} w-fit text-center shrink-0 tracking-widest uppercase`}>{item.type}</div>
+                  <div>
+                    <div className="text-xs font-bold text-white mb-1">{item.label}</div>
+                    <div className="text-[10px] text-gray-500 leading-relaxed">{item.desc}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* CARD 3: KRITIKALITET & RÖDA KORT */}
-        <div className="bg-gray-900 border border-gray-800 p-6 rounded-2xl shadow-xl hover:border-gray-700 transition-colors">
+        {/* CARD 2: ROLLER & ANSVAR (RACI) - HORIZONTAL */}
+        <div className="bg-gray-900 border border-gray-800 p-6 rounded-2xl shadow-xl hover:border-gray-700 transition-colors md:col-span-2">
+          <div className="flex items-center gap-3 mb-8 border-b border-gray-800 pb-4">
+            <div className="p-3 bg-green-900/30 rounded-xl text-green-400">
+              <Users size={24} />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-white uppercase tracking-wide">Roller & Ansvar (RACI)</h3>
+              <p className="text-xs text-gray-500 font-mono">Vem gör vad?</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+            {[
+              { role: 'Operatör', desc: 'Utför kontroller. Återställer till standard. Sätter Röd/Gul Tagg vid avvikelse.', icon: ShieldCheck },
+              { role: 'Team Leader', desc: 'Coachar teamet. Säkerställer att standard följs. Eskalerar taggar.', icon: Target },
+              { role: 'Line Tech Lead (LTL)', desc: 'Analyserar mekaniska avvikelser (CPE). Identifierar slitage.', icon: Activity },
+              { role: 'Processingenjör (PE)', desc: 'Systemägare. Analyserar data. Uppdaterar standarder.', icon: GitCommit },
+              { role: 'Line Leader', desc: 'Säkerställer resurser och möjliggör förbättringsarbete.', icon: Users }
+            ].map((item, i) => (
+              <div key={i} className="group flex flex-col gap-3 p-4 bg-gray-800/30 rounded-xl border border-gray-700/30 hover:bg-gray-800/50 transition-colors">
+                <div className="p-2 bg-gray-900 rounded-lg text-gray-400 group-hover:text-green-400 transition-colors w-fit">
+                  <item.icon size={18} />
+                </div>
+                <div>
+                  <h4 className="text-xs font-black text-white uppercase mb-2 tracking-wider">{item.role}</h4>
+                  <p className="text-[10px] text-gray-500 leading-relaxed">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* CARD 3: ARBETSCYKELN (HORIZONTAL) */}
+        <div className="bg-gray-900 border border-gray-800 p-6 rounded-2xl shadow-xl hover:border-gray-700 transition-colors md:col-span-2">
+          <div className="flex items-center gap-3 mb-8 border-b border-gray-800 pb-4">
+            <div className="p-3 bg-purple-900/30 rounded-xl text-purple-400">
+              <Zap size={24} />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-white uppercase tracking-wide">Arbetscykeln – Förbättringsloopen</h3>
+              <p className="text-xs text-gray-500 font-mono">Från avvikelse till ny standard</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+            {/* Connecting lines for desktop */}
+            <div className="hidden md:block absolute top-12 left-[25%] right-[25%] h-0.5 bg-gray-800 z-0"></div>
+            
+            <div className="relative z-10 flex flex-col items-center text-center space-y-4">
+              <div className="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center text-lg font-black text-white shadow-lg shadow-blue-900/40">1</div>
+              <div>
+                <h4 className="text-sm font-black text-white uppercase mb-2">Identifiera</h4>
+                <p className="text-[10px] text-gray-500 leading-relaxed px-4">
+                  Parameter utanför standard. Operatör försöker återställa. 
+                  Om ej möjligt: <span className="text-blue-400 font-bold">Skapa Röd/Gul Tagg</span>.
+                </p>
+              </div>
+              <div className="text-[9px] text-gray-600 font-mono uppercase tracking-tighter">Operatör / TL</div>
+            </div>
+
+            <div className="relative z-10 flex flex-col items-center text-center space-y-4">
+              <div className="w-12 h-12 rounded-full bg-amber-600 flex items-center justify-center text-lg font-black text-white shadow-lg shadow-amber-900/40">2</div>
+              <div>
+                <h4 className="text-sm font-black text-white uppercase mb-2">Analysera & Åtgärda</h4>
+                <p className="text-[10px] text-gray-500 leading-relaxed px-4">
+                  LTL kollar mekanik (slitage/fel). PE kollar om standarden är felaktig eller om råmaterial förändrats.
+                </p>
+              </div>
+              <div className="text-[9px] text-gray-600 font-mono uppercase tracking-tighter">PE / LTL</div>
+            </div>
+
+            <div className="relative z-10 flex flex-col items-center text-center space-y-4">
+              <div className="w-12 h-12 rounded-full bg-green-600 flex items-center justify-center text-lg font-black text-white shadow-lg shadow-green-900/40">3</div>
+              <div>
+                <h4 className="text-sm font-black text-white uppercase mb-2">Standardisera</h4>
+                <p className="text-[10px] text-gray-500 leading-relaxed px-4">
+                  Uppdatera dokument & HMI. Utbilda teamet i den nya standarden. 
+                  <span className="text-green-400 font-bold">Stäng Tagg</span>.
+                </p>
+              </div>
+              <div className="text-[9px] text-gray-600 font-mono uppercase tracking-tighter">Processingenjör</div>
+            </div>
+          </div>
+        </div>
+
+        {/* CARD 4: KRITIKALITET & AVVIKELSER */}
+        <div className="bg-gray-900 border border-gray-800 p-6 rounded-2xl shadow-xl hover:border-gray-700 transition-colors md:col-span-2">
           <div className="flex items-center gap-3 mb-6 border-b border-gray-800 pb-4">
             <div className="p-3 bg-red-900/30 rounded-xl text-red-400">
               <AlertTriangle size={24} />
@@ -114,107 +216,120 @@ const Guide: React.FC = () => {
             </div>
           </div>
 
-          <div className="space-y-4 text-sm text-gray-300">
-            <div className="p-3 border-l-4 border-red-500 bg-red-900/10">
-              <h4 className="font-bold text-white mb-1">Kritisk Centerline</h4>
-              <p className="text-xs">Om denna punkt är fel kommer det garanterat leda till kvalitetsproblem, stopp eller krasch. <strong>Kräver godkännande (TDP) för att ändras.</strong></p>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-8">
+            {/* P1 */}
+            <div className="bg-red-950/10 border border-red-900/20 p-4 rounded-xl space-y-3 relative overflow-hidden group">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse"></div>
+                <h4 className="text-red-400 font-black text-xs uppercase">P1: KRITISK (Krasch & Kvalitet)</h4>
+              </div>
+              <div className="space-y-2">
+                <p className="text-[10px] text-gray-400 leading-relaxed"><strong className="text-gray-200">Def:</strong> Risk för omedelbart haveri, allvarlig kvalitet eller säkerhet.</p>
+                <p className="text-[10px] text-gray-400 leading-relaxed"><strong className="text-gray-200">Åtgärd:</strong> Maskinen <span className="text-red-400 font-bold underline">SKALL stoppas omedelbart</span>.</p>
+                <p className="text-[10px] text-gray-400 leading-relaxed"><strong className="text-gray-200">Beslut:</strong> Kräver TDP från Processingenjör.</p>
+                <p className="text-[10px] text-gray-500 italic pt-1 border-t border-gray-800/50">Ex: Synkvinklar, formverktyg.</p>
+              </div>
             </div>
-            
-            <div className="p-3 border-l-4 border-yellow-500 bg-yellow-900/10">
-              <h4 className="font-bold text-white mb-1">Icke-Kritisk Centerline</h4>
-              <p className="text-xs">Påverkar processen men beror ofta på andra faktorer. Kan justeras av operatör men ska dokumenteras.</p>
+            {/* P2 */}
+            <div className="bg-orange-950/10 border border-orange-900/20 p-4 rounded-xl space-y-3">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-orange-500"></div>
+                <h4 className="text-orange-400 font-black text-xs uppercase">P2: VIKTIG (Produktivitet)</h4>
+              </div>
+              <div className="space-y-2">
+                <p className="text-[10px] text-gray-400 leading-relaxed"><strong className="text-gray-200">Def:</strong> Påverkar prestanda, spill eller slitage. Ej omedelbar krasch.</p>
+                <p className="text-[10px] text-gray-400 leading-relaxed"><strong className="text-gray-200">Åtgärd:</strong> Åtgärda vid nästa stopp eller inom 4h.</p>
+                <p className="text-[10px] text-gray-400 leading-relaxed"><strong className="text-gray-200">Beslut:</strong> Justeras av Operatör/LTL + Gul Tagg.</p>
+                <p className="text-[10px] text-gray-500 italic pt-1 border-t border-gray-800/50">Ex: Limtemp, filmspänning.</p>
+              </div>
             </div>
+            {/* P3 */}
+            <div className="bg-blue-950/10 border border-blue-900/20 p-4 rounded-xl space-y-3">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                <h4 className="text-blue-400 font-black text-xs uppercase">P3: STANDARD (Minor / Bas)</h4>
+              </div>
+              <div className="space-y-2">
+                <p className="text-[10px] text-gray-400 leading-relaxed"><strong className="text-gray-200">Def:</strong> Basinställningar för optimering. Ingen risk för stopp.</p>
+                <p className="text-[10px] text-gray-400 leading-relaxed"><strong className="text-gray-200">Åtgärd:</strong> Justeras till standard vid upptäckt.</p>
+                <p className="text-[10px] text-gray-400 leading-relaxed"><strong className="text-gray-200">Beslut:</strong> Loggas i skiftrapport. Ingen tagg.</p>
+                <p className="text-[10px] text-gray-500 italic pt-1 border-t border-gray-800/50">Ex: Belysning, fläktinställning.</p>
+              </div>
+            </div>
+          </div>
 
-            <div className="mt-4 pt-4 border-t border-gray-800">
-              <h4 className="font-bold text-white text-xs uppercase mb-2">Röda Kort-systemet</h4>
-              <p className="text-xs text-gray-400 mb-2">När en CL måste ändras utanför standard:</p>
-              <ol className="list-decimal list-inside text-xs text-gray-400 space-y-1">
-                <li>Dokumentera VAD som ändrades.</li>
-                <li>Dokumentera VARFÖR (orsak).</li>
-                <li>Sätt en "Röd Tagg" på maskinen/punkten.</li>
-                <li>Processingenjör/Team Leader följer upp.</li>
-              </ol>
+          <div className="bg-gray-950 p-6 rounded-2xl border border-gray-800 shadow-inner">
+            <h4 className="text-white font-black text-xs uppercase mb-6 flex items-center gap-2">
+              <PenBox size={14} className="text-blue-400" /> Röda Kort-systemet (Uppdaterat)
+            </h4>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <div className="space-y-2">
+                <div className="text-[10px] font-black text-blue-400 uppercase tracking-widest">1. Dokumentera</div>
+                <p className="text-[10px] text-gray-500 leading-relaxed">Vad ändrades och till vilket värde?</p>
+              </div>
+              <div className="space-y-2">
+                <div className="text-[10px] font-black text-blue-400 uppercase tracking-widest">2. Analys</div>
+                <p className="text-[10px] text-gray-500 leading-relaxed">Varför räckte inte standardvärdet? (Slitage, råmaterial?)</p>
+              </div>
+              <div className="space-y-2">
+                <div className="text-[10px] font-black text-blue-400 uppercase tracking-widest">3. Tagga</div>
+                <p className="text-[10px] text-gray-500 leading-relaxed">Sätt en fysisk Röd Tagg (P1) eller Gul Tagg (P2) på punkten.</p>
+              </div>
+              <div className="space-y-2">
+                <div className="text-[10px] font-black text-blue-400 uppercase tracking-widest">4. Loop</div>
+                <p className="text-[10px] text-gray-500 leading-relaxed">PE analyserar om standarden behöver uppdateras permanent.</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6 border-t border-gray-800 pt-6">
+            <div className="bg-gray-800/30 p-3 rounded-xl border border-gray-700/30">
+              <h5 className="text-red-400 font-black text-[9px] uppercase mb-1">P1 Skyddar</h5>
+              <p className="text-[9px] text-gray-500 leading-relaxed">Skyddar maskinen från krascher (största pain point).</p>
+            </div>
+            <div className="bg-gray-800/30 p-3 rounded-xl border border-gray-700/30">
+              <h5 className="text-orange-400 font-black text-[9px] uppercase mb-1">P2 Ger Frihet</h5>
+              <p className="text-[9px] text-gray-500 leading-relaxed">Operatörer kan trimma processen säkert + skapar datapunkter.</p>
+            </div>
+            <div className="bg-gray-800/30 p-3 rounded-xl border border-gray-700/30">
+              <h5 className="text-blue-400 font-black text-[9px] uppercase mb-1">P3 Håller vid liv</h5>
+              <p className="text-[9px] text-gray-500 leading-relaxed">Dokumentationen lever utan onödig administration.</p>
             </div>
           </div>
         </div>
 
-        {/* CARD 4: ROLLER & ANSVAR */}
-        <div className="bg-gray-900 border border-gray-800 p-6 rounded-2xl shadow-xl hover:border-gray-700 transition-colors">
-          <div className="flex items-center gap-3 mb-6 border-b border-gray-800 pb-4">
-            <div className="p-3 bg-green-900/30 rounded-xl text-green-400">
-              <Users size={24} />
-            </div>
-            <div>
-              <h3 className="text-lg font-bold text-white uppercase tracking-wide">Roller & Ansvar (R&R)</h3>
-              <p className="text-xs text-gray-500 font-mono">Vem gör vad?</p>
-            </div>
-          </div>
-
-          <div className="space-y-6">
-            <div className="group">
-              <h4 className="flex items-center gap-2 font-bold text-white text-sm mb-1 group-hover:text-blue-400 transition-colors">
-                <ShieldCheck size={16} /> Operatör
-              </h4>
-              <p className="text-xs text-gray-400 pl-6 border-l border-gray-700 ml-2">
-                Utför dagliga/veckovisa kontroller. Rapporterar avvikelser. 
-                Föreslår förbättringar. Äger sin maskin.
-              </p>
-            </div>
-
-            <div className="group">
-              <h4 className="flex items-center gap-2 font-bold text-white text-sm mb-1 group-hover:text-blue-400 transition-colors">
-                <Target size={16} /> Team Leader
-              </h4>
-              <p className="text-xs text-gray-400 pl-6 border-l border-gray-700 ml-2">
-                Säkerställer att standarder följs. Coachar teamet. 
-                Startar rotorsaksanalyser vid avvikelser.
-              </p>
-            </div>
-
-            <div className="group">
-              <h4 className="flex items-center gap-2 font-bold text-white text-sm mb-1 group-hover:text-blue-400 transition-colors">
-                <GitCommit size={16} /> Processingenjör
-              </h4>
-              <p className="text-xs text-gray-400 pl-6 border-l border-gray-700 ml-2">
-                Äger CL-systemet. Godkänner kritiska ändringar. 
-                Analyserar trender och optimerar processen över tid.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* CARD 5: 360 CYKEL SYNK */}
+        {/* CARD 5: STYRNING (GOVERNANCE) - HORIZONTAL */}
         <div className="bg-gray-900 border border-gray-800 p-6 rounded-2xl shadow-xl hover:border-gray-700 transition-colors md:col-span-2">
-          <div className="flex items-center gap-3 mb-6 border-b border-gray-800 pb-4">
+          <div className="flex items-center gap-3 mb-8 border-b border-gray-800 pb-4">
             <div className="p-3 bg-cyan-900/30 rounded-xl text-cyan-400">
               <Activity size={24} />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-white uppercase tracking-wide">360° Cykel Synk (Timing)</h3>
-              <p className="text-xs text-gray-500 font-mono">Hur man ställer in synkningen</p>
+              <h3 className="text-lg font-bold text-white uppercase tracking-wide">Styrning (Governance)</h3>
+              <p className="text-xs text-gray-500 font-mono">Uppföljning & Styrning</p>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="space-y-3">
-              <h4 className="text-cyan-400 font-bold text-xs uppercase">1. Definiera punkten</h4>
-              <p className="text-xs text-gray-400 leading-relaxed">
-                När du skapar eller redigerar en kontrollpunkt, leta efter fältet <strong>"Fasningsvinkel"</strong>. 
-                Här anger du vid vilket gradtal (0-360°) i maskincykeln som momentet inträffar.
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-gray-800/30 p-5 rounded-2xl border border-gray-700/30">
+              <h4 className="text-white font-black text-xs uppercase mb-3 flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-cyan-500"></span>
+                Daglig Styrning
+              </h4>
+              <p className="text-[11px] text-gray-400 leading-relaxed">
+                Team Leader (TL) följer upp antal <strong className="text-red-400">Röda Taggar</strong> (P1) och <strong className="text-orange-400">Gula Taggar</strong> (P2). 
+                Status på återställning till standard rapporteras och verifieras.
               </p>
             </div>
-            <div className="space-y-3">
-              <h4 className="text-cyan-400 font-bold text-xs uppercase">2. Verifiera i Synk-vyn</h4>
-              <p className="text-xs text-gray-400 leading-relaxed">
-                Gå till fliken <strong>"Synk"</strong> i sidomenyn. Här ser du en visuell klocka. 
-                Dra i reglaget ("Master Encoder") för att simulera maskinens rörelse.
-              </p>
-            </div>
-            <div className="space-y-3">
-              <h4 className="text-cyan-400 font-bold text-xs uppercase">3. Undvik krascher</h4>
-              <p className="text-xs text-gray-400 leading-relaxed">
-                Punkter som ligger nära varandra i gradtal men fysiskt långt ifrån varandra kan indikera risk för krockar. 
-                Använd vyn för att utbilda personal i maskinens timing.
+            
+            <div className="bg-gray-800/30 p-5 rounded-2xl border border-gray-700/30">
+              <h4 className="text-white font-black text-xs uppercase mb-3 flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-purple-500"></span>
+                Veckovis Core Team
+              </h4>
+              <p className="text-[11px] text-gray-400 leading-relaxed">
+                PE och LTL analyserar återkommande avvikelser för att skilja på maskinproblem (LTL) och parameteroptimering (PE). 
+                <strong className="text-white uppercase">Line Leader (LL)</strong> beslutar om prioritering av resurser och förbättringsarbete.
               </p>
             </div>
           </div>

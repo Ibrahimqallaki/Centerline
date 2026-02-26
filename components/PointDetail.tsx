@@ -1,6 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React from 'react';
 import { MachinePoint, Criticality, PointStatus } from '../types';
-import { AlertTriangle, CheckCircle, Video, BookOpen, AlertOctagon, Edit2, Upload, Save, Link, PenBox, Zap, Image as ImageIcon, Tag, CheckCircle2 } from 'lucide-react';
+import { AlertTriangle, Video, AlertOctagon, PenBox, Zap, Tag, CheckCircle2 } from 'lucide-react';
 
 interface PointDetailProps {
   point: MachinePoint;
@@ -10,31 +10,6 @@ interface PointDetailProps {
 }
 
 const PointDetail: React.FC<PointDetailProps> = ({ point, onUpdate, onEdit, onClose }) => {
-  // Image Editing State
-  const [isEditingImage, setIsEditingImage] = useState<'img1' | 'img2' | null>(null);
-  const [imageUrlInput, setImageUrlInput] = useState('');
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleSaveImage = () => {
-    if (isEditingImage === 'img1') {
-      onUpdate({ ...point, imagePlaceholder: imageUrlInput });
-    } else if (isEditingImage === 'img2') {
-      onUpdate({ ...point, imagePlaceholder2: imageUrlInput });
-    }
-    setIsEditingImage(null);
-  };
-
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImageUrlInput(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   const handleStatusChange = (newStatus: PointStatus) => {
     onUpdate({ ...point, status: newStatus, lastChecked: new Date().toISOString() });
   };
@@ -109,15 +84,7 @@ const PointDetail: React.FC<PointDetailProps> = ({ point, onUpdate, onEdit, onCl
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">1. Översikt</label>
                   <div className="relative aspect-[4/3] bg-black rounded-2xl overflow-hidden border border-gray-600 group shadow-xl">
-                    <img src={isEditingImage === 'img1' ? imageUrlInput : point.imagePlaceholder} alt="Overview" className="w-full h-full object-cover" />
-                    {!isEditingImage && (
-                      <button 
-                        onClick={() => { setIsEditingImage('img1'); setImageUrlInput(point.imagePlaceholder); }}
-                        className="absolute top-3 right-3 p-2 bg-black/60 hover:bg-blue-600 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-all backdrop-blur-md border border-white/10"
-                      >
-                        <Edit2 size={16} />
-                      </button>
-                    )}
+                    <img src={point.imagePlaceholder} alt="Overview" className="w-full h-full object-cover" />
                   </div>
                 </div>
 
@@ -125,55 +92,14 @@ const PointDetail: React.FC<PointDetailProps> = ({ point, onUpdate, onEdit, onCl
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">2. Detalj / Inställning</label>
                   <div className="relative aspect-[4/3] bg-black rounded-2xl overflow-hidden border border-gray-600 group shadow-xl">
-                    {point.imagePlaceholder2 || isEditingImage === 'img2' ? (
-                      <img src={isEditingImage === 'img2' ? imageUrlInput : point.imagePlaceholder2} alt="Detail" className="w-full h-full object-cover" />
+                    {point.imagePlaceholder2 ? (
+                      <img src={point.imagePlaceholder2} alt="Detail" className="w-full h-full object-cover" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-gray-900 text-gray-700 italic text-sm">Ingen detaljbild</div>
-                    )}
-                    {!isEditingImage && (
-                      <button 
-                        onClick={() => { setIsEditingImage('img2'); setImageUrlInput(point.imagePlaceholder2 || ''); }}
-                        className="absolute top-3 right-3 p-2 bg-black/60 hover:bg-blue-600 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-all backdrop-blur-md border border-white/10"
-                      >
-                        <Edit2 size={16} />
-                      </button>
                     )}
                   </div>
                 </div>
               </div>
-
-              {/* Edit Mode Interface */}
-              {isEditingImage && (
-                <div className="bg-blue-900/20 p-4 rounded-xl space-y-3 border border-blue-500/30 animate-in slide-in-from-top duration-200">
-                  <h4 className="font-bold text-blue-300 text-sm flex items-center gap-2">
-                    <ImageIcon size={16} /> Byt {isEditingImage === 'img1' ? 'Översiktsbild' : 'Detaljbild'}
-                  </h4>
-                  
-                  <div className="flex gap-2">
-                    <div className="relative flex-1">
-                       <Link className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
-                       <input 
-                        type="text" 
-                        value={imageUrlInput} 
-                        onChange={(e) => setImageUrlInput(e.target.value)}
-                        placeholder="Klistra in bild-URL..." 
-                        className="w-full bg-gray-900 border border-gray-600 rounded-lg px-3 pl-8 py-2 text-sm text-white focus:ring-2 focus:ring-blue-500 outline-none"
-                       />
-                    </div>
-                    <button onClick={() => fileInputRef.current?.click()} className="px-3 py-2 bg-gray-600 hover:bg-gray-500 rounded-lg text-white" title="Ladda upp">
-                      <Upload size={18} />
-                    </button>
-                    <input type="file" ref={fileInputRef} onChange={handleFileUpload} accept="image/*" className="hidden" />
-                  </div>
-
-                  <div className="flex justify-end gap-2">
-                    <button onClick={() => setIsEditingImage(null)} className="px-3 py-1 text-sm text-gray-400 hover:text-white">Avbryt</button>
-                    <button onClick={handleSaveImage} className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-white text-sm font-bold">
-                      <Save size={14} /> Spara ändring
-                    </button>
-                  </div>
-                </div>
-              )}
 
               <button className="w-full py-4 bg-gray-900/50 hover:bg-gray-700 rounded-xl flex items-center justify-center gap-3 transition-all border border-gray-700 group">
                 <Video size={24} className="text-blue-500 group-hover:scale-110 transition-transform" />

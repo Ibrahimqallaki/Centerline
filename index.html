@@ -5,12 +5,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Centerline Pro</title>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+      }
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
       /* Industriell scrollbar för skärm */
       ::-webkit-scrollbar { width: 6px; height: 6px; }
-      ::-webkit-scrollbar-track { background: #030712; }
-      ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 10px; }
+      ::-webkit-scrollbar-track { background: #f9fafb; }
+      ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+      
+      .dark ::-webkit-scrollbar-track { background: #030712; }
+      .dark ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 10px; }
 
       body {
         margin: 0; padding: 0;

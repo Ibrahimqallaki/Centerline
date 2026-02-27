@@ -20,7 +20,7 @@ const PointDetail: React.FC<PointDetailProps> = ({ point, onUpdate, onEdit, onCl
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 print:hidden">
-      <div className={`${theme === 'dark' ? 'bg-gray-800 border-gray-600' : 'bg-white border-gray-200'} w-full max-w-5xl max-h-[95vh] rounded-2xl border shadow-2xl overflow-hidden flex flex-col transition-colors duration-300`}>
+      <div className={`${theme === 'dark' ? 'bg-gray-800 border-gray-600' : 'bg-white border-gray-200'} w-full max-w-5xl max-h-[95vh] rounded-2xl border shadow-xl overflow-hidden flex flex-col transition-colors duration-300`}>
         
         {/* Header - CLEANED UP */}
         <div className={`flex justify-between items-center p-6 border-b ${theme === 'dark' ? 'border-gray-700 bg-gray-900' : 'border-gray-200 bg-gray-50'}`}>
@@ -37,19 +37,19 @@ const PointDetail: React.FC<PointDetailProps> = ({ point, onUpdate, onEdit, onCl
             <div className={`flex ${theme === 'dark' ? 'bg-gray-950 border-gray-700' : 'bg-gray-100 border-gray-200'} p-1 rounded-xl border`}>
               <button 
                 onClick={() => handleStatusChange(PointStatus.OK)}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all ${point.status === PointStatus.OK || !point.status ? 'bg-green-600 text-white' : 'text-gray-500 hover:text-gray-300'}`}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all ${point.status === PointStatus.OK || !point.status ? 'bg-green-600 text-white' : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'}`}
               >
                 <CheckCircle2 size={14} /> OK
               </button>
               <button 
                 onClick={() => handleStatusChange(PointStatus.TAGGED_YELLOW)}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all ${point.status === PointStatus.TAGGED_YELLOW ? 'bg-orange-500 text-white' : 'text-gray-500 hover:text-gray-300'}`}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all ${point.status === PointStatus.TAGGED_YELLOW ? 'bg-orange-500 text-white' : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'}`}
               >
                 <Tag size={14} /> Gul Tagg (P2)
               </button>
               <button 
                 onClick={() => handleStatusChange(PointStatus.TAGGED_RED)}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all ${point.status === PointStatus.TAGGED_RED ? 'bg-red-600 text-white' : 'text-gray-500 hover:text-gray-300'}`}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all ${point.status === PointStatus.TAGGED_RED ? 'bg-red-600 text-white' : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'}`}
               >
                 <AlertTriangle size={14} /> Röd Tagg (P1)
               </button>

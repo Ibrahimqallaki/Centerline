@@ -66,13 +66,17 @@ const App: React.FC = () => {
   const savePoints = async (newPoints: MachinePoint[]) => {
     setPoints(newPoints);
     try {
-      await fetch('/api/points', {
+      const response = await fetch('/api/points', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newPoints)
       });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
     } catch (error) {
       console.error("Failed to save points:", error);
+      alert("Kunde inte spara data till servern. Kontrollera att uppladdade bilder inte är för stora.");
     }
   };
 
@@ -80,13 +84,17 @@ const App: React.FC = () => {
   const saveLayout = async (newLayout: MachineModule[]) => {
     setLayout(newLayout);
     try {
-      await fetch('/api/layout', {
+      const response = await fetch('/api/layout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newLayout)
       });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
     } catch (error) {
       console.error("Failed to save layout:", error);
+      alert("Kunde inte spara layout till servern.");
     }
   };
 
@@ -112,13 +120,21 @@ const App: React.FC = () => {
     } else {
       document.documentElement.classList.remove('dark');
     }
-    if (customMapUrl) {
-      localStorage.setItem('centerline_map_url', customMapUrl);
-    } else {
-      localStorage.removeItem('centerline_map_url');
+    
+    try {
+      if (customMapUrl) {
+        localStorage.setItem('centerline_map_url', customMapUrl);
+      } else {
+        localStorage.removeItem('centerline_map_url');
+      }
+    } catch (e) {
+      console.error("Failed to save map url to local storage:", e);
+      alert("Bilden är för stor för att sparas i webbläsaren. Vänligen använd en mindre bild (under 5MB).");
+      setCustomMapUrl(null);
     }
+    
     localStorage.setItem('centerline_public_url', publicBaseUrl);
-  }, [isSidebarCollapsed, customMapUrl, publicBaseUrl]);
+  }, [isSidebarCollapsed, customMapUrl, publicBaseUrl, theme]);
 
   const getQrCodeUrl = useCallback((pointId: string, size: number = 200) => {
     const isCloud = window.location.hostname !== 'localhost';

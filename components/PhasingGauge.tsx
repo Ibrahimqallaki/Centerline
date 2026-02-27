@@ -26,9 +26,9 @@ const PhasingGauge: React.FC<PhasingGaugeProps> = ({ currentDegree, points }) =>
   const needlePos = getPos(testDegree, radius - 10);
 
   return (
-    <div className="bg-gray-800 p-6 rounded-xl border border-gray-700 flex flex-col items-center">
-      <h3 className="text-xl font-bold mb-4 text-cyan-400 uppercase tracking-widest">360° Cykel Synk</h3>
-      <p className="text-gray-400 text-sm mb-6 text-center">
+    <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 flex flex-col items-center shadow-xl transition-colors duration-300">
+      <h3 className="text-xl font-bold mb-4 text-cyan-600 dark:text-cyan-400 uppercase tracking-widest">360° Cykel Synk</h3>
+      <p className="text-gray-500 dark:text-gray-400 text-sm mb-6 text-center">
         Dra i reglaget för att simulera maskinens cykel och se var kritiska moment inträffar.
         Detta förhindrar krascher genom att verifiera timing.
       </p>
@@ -36,7 +36,7 @@ const PhasingGauge: React.FC<PhasingGaugeProps> = ({ currentDegree, points }) =>
       <div className="relative w-[300px] h-[300px] mb-6">
         <svg width="300" height="300" className="drop-shadow-2xl">
           {/* Outer Ring */}
-          <circle cx={center} cy={center} r={radius} fill="#111827" stroke="#374151" strokeWidth="12" />
+          <circle cx={center} cy={center} r={radius} className="fill-gray-100 dark:fill-gray-900 stroke-gray-300 dark:stroke-gray-700 transition-colors duration-300" strokeWidth="12" />
           
           {/* Ticks */}
           {Array.from({ length: 36 }).map((_, i) => {
@@ -48,7 +48,7 @@ const PhasingGauge: React.FC<PhasingGaugeProps> = ({ currentDegree, points }) =>
                 key={i} 
                 x1={p1.x} y1={p1.y} 
                 x2={p2.x} y2={p2.y} 
-                stroke={i % 9 === 0 ? "#fff" : "#6b7280"} 
+                className="stroke-gray-400 dark:stroke-gray-600 transition-colors duration-300"
                 strokeWidth={i % 9 === 0 ? 3 : 1} 
               />
             );

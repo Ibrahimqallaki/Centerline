@@ -402,6 +402,7 @@ const App: React.FC = () => {
           layout={layout} 
           onSave={(p) => { savePoints([...points, p]); setIsAddingPoint(false); }} 
           onCancel={() => setIsAddingPoint(false)} 
+          theme={theme}
         />
       )}
       {editingPoint && (
@@ -415,6 +416,7 @@ const App: React.FC = () => {
             setSelectedPoint(p); 
           }} 
           onCancel={() => { setEditingPoint(null); setSelectedPoint(editingPoint); }} 
+          theme={theme}
         />
       )}
       {editingModule && (
@@ -423,6 +425,7 @@ const App: React.FC = () => {
           onSave={handleModuleUpdate}
           onDelete={handleModuleDelete}
           onClose={() => setEditingModule(null)}
+          theme={theme}
         />
       )}
       {isSettingsOpen && (
@@ -439,6 +442,7 @@ const App: React.FC = () => {
           onUpdate={(p) => savePoints(points.map(x => x.id === p.id ? p : x))} 
           onEdit={() => { setEditingPoint(selectedPoint); setSelectedPoint(null); }} 
           onClose={() => setSelectedPoint(null)} 
+          theme={theme}
         />
       )}
     </div>

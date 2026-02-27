@@ -10,14 +10,12 @@ import AddPointForm from './components/AddPointForm';
 import SettingsModal from './components/SettingsModal';
 import ModuleEditor from './components/ModuleEditor';
 import Guide from './components/Guide';
-import { Map, List, Settings, Activity, Printer, ChevronLeft, ChevronRight, Plus, Edit3, BookOpen, Square, Crosshair, Image as ImageIcon } from 'lucide-react';
+import { Map, List, Settings, Activity, Printer, ChevronLeft, ChevronRight, Plus, Edit3, BookOpen, Square, Crosshair, Image as ImageIcon, Sun, Moon } from 'lucide-react';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'table' | 'phasing' | 'guide'>('overview');
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
-    const saved = localStorage.getItem('sidebar_collapsed');
-    return saved !== null ? saved === 'true' : true;
-  });
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => (localStorage.getItem('theme') as 'dark' | 'light') || 'dark');
   const [isDesignMode, setIsDesignMode] = useState(false);
   
   const [isAddingPoint, setIsAddingPoint] = useState(false);
@@ -108,6 +106,12 @@ const App: React.FC = () => {
 
   useEffect(() => {
     localStorage.setItem('sidebar_collapsed', isSidebarCollapsed.toString());
+    localStorage.setItem('theme', theme);
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
     if (customMapUrl) {
       localStorage.setItem('centerline_map_url', customMapUrl);
     } else {
@@ -171,30 +175,32 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-row w-full h-full bg-gray-950 text-gray-100 overflow-hidden font-sans print:bg-white print:text-black print:overflow-visible">
+    <div className={`flex flex-row w-full h-full ${theme === 'dark' ? 'bg-gray-950 text-gray-100' : 'bg-gray-50 text-gray-900'} overflow-hidden font-sans print:bg-white print:text-black print:overflow-visible transition-colors duration-300`}>
       
       {/* Sidebar / Mobile Nav */}
       <aside className={`
-        fixed bottom-0 left-0 right-0 h-16 bg-black border-t border-gray-900 flex flex-row justify-around items-center z-40 print:hidden
+        fixed bottom-0 left-0 right-0 h-16 ${theme === 'dark' ? 'bg-black border-gray-900' : 'bg-white border-gray-200'} border-t flex flex-row justify-around items-center z-40 print:hidden
         md:relative md:h-auto md:w-64 md:border-r md:border-t-0 md:flex-col md:justify-between md:items-stretch
         ${isSidebarCollapsed ? 'md:w-20' : 'md:w-64'}
         transition-all duration-300 shadow-2xl
       `}>
         <div className="hidden md:block">
-          <div className={`h-20 flex items-center px-5 border-b border-gray-900 ${isSidebarCollapsed ? 'justify-center' : 'justify-between'}`}>
+          <div className="h-20 flex items-center px-5 border-b border-gray-900 relative">
              <div className="flex items-center overflow-hidden">
                <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center font-black text-2xl italic shadow-lg shrink-0 text-white">C</div>
                {!isSidebarCollapsed && <span className="ml-3 font-black text-xl italic uppercase tracking-tighter text-white">Centerline</span>}
              </div>
              
              <button 
-                onClick={() => setIsSidebarCollapsed(prev => !prev)} 
-                className={`flex items-center justify-center transition-all duration-300 z-50 cursor-pointer
-                  ${isSidebarCollapsed 
-                    ? 'absolute -right-3 top-7 w-6 h-6 bg-gray-800 text-gray-400 hover:text-white rounded-full border border-gray-700 shadow-xl' 
-                    : 'p-2 text-gray-500 hover:text-white'}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setIsSidebarCollapsed(prev => !prev);
+                }} 
+                className={`absolute -right-3 top-7 w-7 h-7 bg-gray-800 text-gray-400 hover:text-white rounded-full border border-gray-700 shadow-xl flex items-center justify-center z-50 transition-transform hover:scale-110 active:scale-95 cursor-pointer`}
+                title={isSidebarCollapsed ? "Öppna meny" : "Stäng meny"}
               >
-               {isSidebarCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={18} />}
+               {isSidebarCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
              </button>
           </div>
           
@@ -264,7 +270,15 @@ const App: React.FC = () => {
         </nav>
 
         <div className="hidden md:block p-3 border-t border-gray-800">
-           <button onClick={() => setIsSettingsOpen(true)} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-500 hover:text-white transition-colors">
+           <button 
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} 
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${theme === 'dark' ? 'text-gray-500 hover:text-white' : 'text-gray-500 hover:text-gray-900'}`}
+              title={theme === 'dark' ? "Byt till ljust tema" : "Byt till mörkt tema"}
+           >
+              {theme === 'dark' ? <Sun size={20} className="shrink-0" /> : <Moon size={20} className="shrink-0" />}
+              {!isSidebarCollapsed && <span className="font-bold">{theme === 'dark' ? 'Ljust tema' : 'Mörkt tema'}</span>}
+           </button>
+           <button onClick={() => setIsSettingsOpen(true)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${theme === 'dark' ? 'text-gray-500 hover:text-white' : 'text-gray-500 hover:text-gray-900'}`}>
               <Settings size={20} className="shrink-0" />
               {!isSidebarCollapsed && <span className="font-bold">Inställningar</span>}
            </button>
@@ -272,12 +286,12 @@ const App: React.FC = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col min-w-0 bg-gray-950 overflow-y-auto relative print:bg-white print:overflow-visible pb-20 md:pb-0">
+      <main className={`flex-1 flex flex-col min-w-0 ${theme === 'dark' ? 'bg-gray-950' : 'bg-gray-50'} overflow-y-auto relative print:bg-white print:overflow-visible pb-20 md:pb-0 transition-colors duration-300`}>
         <div className="max-w-6xl mx-auto w-full p-6 lg:p-10 space-y-8 print:max-w-none print:p-0">
           
-          <header className="flex justify-between items-end border-b border-gray-800 pb-6 print:border-black print:mb-10">
+          <header className={`flex justify-between items-end border-b ${theme === 'dark' ? 'border-gray-800' : 'border-gray-200'} pb-6 print:border-black print:mb-10`}>
             <div>
-              <h1 className="text-3xl font-black uppercase italic tracking-tighter text-white print:text-black print:text-4xl">CENTERLINE: TP-24</h1>
+              <h1 className={`text-3xl font-black uppercase italic tracking-tighter ${theme === 'dark' ? 'text-white' : 'text-gray-900'} print:text-black print:text-4xl`}>CENTERLINE: TP-24</h1>
               <p className="text-gray-500 text-[10px] font-black uppercase tracking-[0.3em] mt-1 print:text-black print:text-xs italic">Systemdokumentation för optimerad produktion</p>
             </div>
             
@@ -327,7 +341,7 @@ const App: React.FC = () => {
                   </button>
                 </div>
               )}
-              <div className="bg-gray-900 rounded-[2.5rem] p-2 border border-gray-800 shadow-2xl print:border-2 print:border-black print:p-0 print:rounded-none relative overflow-hidden print:bg-white">
+              <div className={`${theme === 'dark' ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-200'} rounded-[2.5rem] p-2 border shadow-2xl print:border-2 print:border-black print:p-0 print:rounded-none relative overflow-hidden print:bg-white transition-colors duration-300`}>
                 <MachineMap 
                   points={points} 
                   layout={layout}
@@ -337,6 +351,7 @@ const App: React.FC = () => {
                   selectedPointId={selectedPoint?.id}
                   customMapUrl={customMapUrl}
                   editMode={isDesignMode}
+                  theme={theme}
                 />
               </div>
             </section>
@@ -345,6 +360,7 @@ const App: React.FC = () => {
             <section className={`${activeTab === 'overview' ? 'block' : 'print:block hidden'} print:mt-10`}>
               <ParameterTable 
                 points={points} 
+                sections={layout.map(m => m.label)}
                 onPointSelect={setSelectedPoint} 
                 onUpdatePoint={(p) => savePoints(points.map(x => x.id === p.id ? p : x))}
                 getQrUrl={getQrCodeUrl} 

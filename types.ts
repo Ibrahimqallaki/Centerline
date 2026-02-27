@@ -1,13 +1,4 @@
 
-export enum Zone {
-  INFEED = 'Inmatning (Enhet 1-2)',
-  SEPARATION = 'Separering (Enhet 3)',
-  CARDBOARD = 'Kartongmagasin (Enhet 11-13)',
-  FORMING = 'Brickformning (Enhet 5, 20)',
-  FILM_UNIT = 'Filmlindning/Kniv (Enhet 9-10, 18)',
-  DISCHARGE = 'Utmatning (Enhet 8)'
-}
-
 export enum Criticality {
   P1 = 'P1: Kritisk (Haveri & Kvalitet)',
   P2 = 'P2: Viktig (Produktivitet & Slitage)',
@@ -38,7 +29,7 @@ export interface MachinePoint {
   id: string;
   number: number;
   name: string;
-  zone: Zone;
+  section: string;
   description: string;
   targetValue: string;
   tolerance: string;

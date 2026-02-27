@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { MachinePoint, Zone, Criticality, MachineModule } from '../types';
+import { MachinePoint, Criticality, MachineModule } from '../types';
 import { X, Save, MapPin, Eye, EyeOff, MousePointer2, Upload } from 'lucide-react';
 import MachineMap from './MachineMap';
 
@@ -10,9 +10,10 @@ interface AddPointFormProps {
   layout?: MachineModule[];
   onSave: (point: MachinePoint) => void;
   onCancel: () => void;
+  theme?: 'dark' | 'light';
 }
 
-const AddPointForm: React.FC<AddPointFormProps> = ({ existingPoints, initialData, layout, onSave, onCancel }) => {
+const AddPointForm: React.FC<AddPointFormProps> = ({ existingPoints, initialData, layout, onSave, onCancel, theme = 'dark' }) => {
   const isEditing = !!initialData;
   const nextNumber = existingPoints.length > 0 ? Math.max(...existingPoints.map(p => p.number)) + 1 : 1;
 
@@ -20,7 +21,7 @@ const AddPointForm: React.FC<AddPointFormProps> = ({ existingPoints, initialData
     number: initialData?.number ?? nextNumber,
     id: initialData?.id ?? `P-${nextNumber < 10 ? '0' + nextNumber : nextNumber}`,
     name: initialData?.name ?? '',
-    zone: initialData?.zone ?? Zone.INFEED,
+    section: initialData?.section ?? (layout && layout.length > 0 ? layout[0].label : ''),
     description: initialData?.description ?? '',
     targetValue: initialData?.targetValue ?? '',
     tolerance: initialData?.tolerance ?? '',
@@ -71,12 +72,12 @@ const AddPointForm: React.FC<AddPointFormProps> = ({ existingPoints, initialData
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-      <div className="bg-gray-800 w-full max-w-4xl max-h-[90vh] rounded-2xl border border-gray-600 shadow-2xl flex flex-col">
+      <div className={`${theme === 'dark' ? 'bg-gray-800 border-gray-600' : 'bg-white border-gray-200'} w-full max-w-4xl max-h-[90vh] rounded-2xl border shadow-2xl flex flex-col transition-colors duration-300`}>
         
-        <div className="flex justify-between items-center p-6 border-b border-gray-700 bg-gray-900 rounded-t-2xl">
-          <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+        <div className={`flex justify-between items-center p-6 border-b ${theme === 'dark' ? 'border-gray-700 bg-gray-900' : 'border-gray-200 bg-gray-50'} rounded-t-2xl`}>
+          <h2 className={`text-2xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'} flex items-center gap-2`}>
             {isEditing ? 'Redigera punkt' : 'Lägg till ny kontrollpunkt'}
-            <span className="text-sm font-normal text-gray-400 bg-gray-800 px-2 py-1 rounded border border-gray-700">#{formData.number}</span>
+            <span className={`text-sm font-normal ${theme === 'dark' ? 'text-gray-400 bg-gray-800 border-gray-700' : 'text-gray-500 bg-gray-100 border-gray-200'} px-2 py-1 rounded border`}>#{formData.number}</span>
           </h2>
           <button onClick={onCancel} className="text-gray-400 hover:text-white transition-colors">
             <X size={32} />
@@ -103,9 +104,10 @@ const AddPointForm: React.FC<AddPointFormProps> = ({ existingPoints, initialData
                   <input type="text" value={formData.name} onChange={(e) => handleChange('name', e.target.value)} className="w-full bg-gray-900 border border-gray-600 rounded p-2 text-white" required />
                 </div>
                 <div>
-                   <label className="block text-[10px] font-black text-gray-500 mb-1 uppercase">Zon</label>
-                   <select value={formData.zone} onChange={(e) => handleChange('zone', e.target.value)} className="w-full bg-gray-900 border border-gray-600 rounded p-2 text-white">
-                     {Object.values(Zone).map(z => <option key={z} value={z}>{z}</option>)}
+                   <label className="block text-[10px] font-black text-gray-500 mb-1 uppercase">Sektion (Maskindel)</label>
+                   <select value={formData.section} onChange={(e) => handleChange('section', e.target.value)} className="w-full bg-gray-900 border border-gray-600 rounded p-2 text-white">
+                     <option value="">Välj sektion...</option>
+                     {layout?.map(m => <option key={m.id} value={m.label}>{m.label}</option>)}
                    </select>
                 </div>
               </div>

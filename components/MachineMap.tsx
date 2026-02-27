@@ -14,6 +14,7 @@ interface MachineMapProps {
   customMapUrl?: string | null;
   layout?: MachineModule[];
   editMode?: boolean;
+  theme?: 'dark' | 'light';
 }
 
 const MachineMap: React.FC<MachineMapProps> = ({ 
@@ -25,7 +26,8 @@ const MachineMap: React.FC<MachineMapProps> = ({
   previewPoint, 
   customMapUrl,
   layout = DEFAULT_MACHINE_LAYOUT,
-  editMode = false
+  editMode = false,
+  theme = 'dark'
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const visiblePoints = points.filter(p => p.visibleOnMap !== false);
@@ -44,7 +46,7 @@ const MachineMap: React.FC<MachineMapProps> = ({
     <div 
       ref={containerRef}
       onClick={handleContainerClick}
-      className={`relative w-full aspect-[2/1] bg-gray-950 rounded-[2rem] border border-gray-800 overflow-hidden shadow-2xl print-map-container ${onMapClick ? 'cursor-crosshair' : ''} ${editMode ? 'ring-2 ring-blue-500 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}
+      className={`relative w-full aspect-[2/1] bg-white dark:bg-gray-950 rounded-[2rem] border border-gray-200 dark:border-gray-800 overflow-hidden shadow-2xl print-map-container ${onMapClick ? 'cursor-crosshair' : ''} ${editMode ? 'ring-2 ring-blue-500 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''} transition-colors duration-300`}
     >
       {/* Background Image or SVG Grid */}
       <div className="absolute inset-0 z-0">
@@ -52,10 +54,10 @@ const MachineMap: React.FC<MachineMapProps> = ({
           <img 
             src={customMapUrl} 
             alt="Machine Layout" 
-            className="w-full h-full object-contain opacity-40 print:opacity-100"
+            className="w-full h-full object-contain opacity-60 dark:opacity-40 print:opacity-100"
           />
         ) : (
-          <div className="absolute inset-0 opacity-[0.03] print:opacity-20 pointer-events-none z-0" 
+          <div className="absolute inset-0 opacity-[0.05] dark:opacity-[0.03] print:opacity-20 pointer-events-none z-0" 
                style={{ 
                  backgroundImage: `linear-gradient(#3b82f6 1px, transparent 1px), linear-gradient(90deg, #3b82f6 1px, transparent 1px)`,
                  backgroundSize: '30px 30px' 
@@ -112,8 +114,8 @@ const MachineMap: React.FC<MachineMapProps> = ({
                     x={mod.x * 10 + (mod.width * 10) / 2} 
                     y={mod.y * 5 + (mod.height * 5) / 2 + fontSize * 0.3} 
                     textAnchor="middle" 
-                    fill={mod.color === '#ffffff' ? '#ffffff' : mod.color} 
-                    stroke="black"
+                    fill={mod.color === '#ffffff' ? (theme === 'dark' ? '#ffffff' : '#111827') : mod.color} 
+                    stroke={theme === 'dark' ? "black" : "none"}
                     strokeWidth="0.5"
                     paintOrder="stroke"
                     fontSize={fontSize} 

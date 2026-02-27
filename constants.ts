@@ -1,5 +1,5 @@
 
-import { MachinePoint, Zone, Criticality, MachineModule } from './types';
+import { MachinePoint, Criticality, MachineModule } from './types';
 
 export const DEFAULT_MACHINE_LAYOUT: MachineModule[] = [
   { id: 'm1', label: 'Inmatning (1-2)', x: 0, y: 15, width: 20, height: 12, color: '#3b82f6', hasFill: false },
@@ -16,7 +16,7 @@ export const MACHINE_POINTS: MachinePoint[] = [
     id: 'LSK-B1',
     number: 1,
     name: 'Skiljeskenor (Vev B)',
-    zone: Zone.INFEED,
+    section: 'Inmatning (1-2)',
     description: 'Breddinställning för produktens kanalisering. Justeras med vev B. Se manual fig 7.2.2.',
     targetValue: 'Visare B1 = 142',
     tolerance: '+/- 0.5',
@@ -30,7 +30,7 @@ export const MACHINE_POINTS: MachinePoint[] = [
     id: 'LSK-I1',
     number: 12,
     name: 'Kartongmatning Höjd (Vev I)',
-    zone: Zone.CARDBOARD,
+    section: 'Magasin (13)',
     description: 'Höjdjustering för kartonginmatningen. Justeras med vev I. Se manual fig 7.2.6.',
     targetValue: 'Visare I1 = 45.5',
     tolerance: '+/- 0.2',
@@ -44,7 +44,7 @@ export const MACHINE_POINTS: MachinePoint[] = [
     id: 'LSK-L1',
     number: 13,
     name: 'Kartongmatning Bredd (Vev L)',
-    zone: Zone.CARDBOARD,
+    section: 'Magasin (13)',
     description: 'Breddjustering för kartongmagasinets inmatning. Se manual fig 7.2.6.',
     targetValue: 'Visare L1 = 80.0',
     tolerance: '+/- 0.5',
@@ -58,7 +58,7 @@ export const MACHINE_POINTS: MachinePoint[] = [
     id: 'LSK-M1',
     number: 20,
     name: 'Formverktyg Brickdon (Vev M)',
-    zone: Zone.FORMING,
+    section: 'Formning (5-6)',
     description: 'Breddinställning för brickformningsenheten. Se manual fig 7.2.8.',
     targetValue: 'Mätare M1 = 312',
     tolerance: '+/- 0.5',
@@ -72,7 +72,7 @@ export const MACHINE_POINTS: MachinePoint[] = [
     id: 'LSK-SOL-CC',
     number: 25,
     name: 'Solenoidspel (Spole CC)',
-    zone: Zone.FORMING,
+    section: 'Formning (5-6)',
     description: 'Kritiskt mekaniskt spel för manöverorganet (CC). Se manual kap 8.2.',
     targetValue: 'X: 1.5mm / Y: 0.5mm',
     tolerance: '+/- 0.05',
@@ -86,7 +86,7 @@ export const MACHINE_POINTS: MachinePoint[] = [
     id: 'LSK-SOL-CA',
     number: 26,
     name: 'Solenoidspel (Spole CA)',
-    zone: Zone.FORMING,
+    section: 'Formning (5-6)',
     description: 'Kritiskt mekaniskt spel för manöverorganet (CA). Se manual kap 8.2.',
     targetValue: 'X: 1.8mm / Y: 0.2mm',
     tolerance: '+/- 0.05',
@@ -100,7 +100,7 @@ export const MACHINE_POINTS: MachinePoint[] = [
     id: 'LSK-F1',
     number: 4,
     name: 'Filmspole Position',
-    zone: Zone.FILM_UNIT,
+    section: 'Filmspole (18)',
     description: 'Sidledsjustering av filmspolen på spindeln (placerad under maskinen). Se manual fig 7.2.4.',
     targetValue: 'Mätare F1 = 215',
     tolerance: '+/- 1.0',
@@ -114,7 +114,7 @@ export const MACHINE_POINTS: MachinePoint[] = [
     id: 'LSK-CB2',
     number: 40,
     name: 'Knivstoppläge CB-2',
-    zone: Zone.FILM_UNIT,
+    section: 'Filmlindning (9-10)',
     description: 'Minsta tillåtna regleringsgrad för styrlagrets stoppläge i lindningsenheten. Se manual kap 8.4.',
     targetValue: '2.8°',
     tolerance: '+/- 0.1°',
@@ -129,7 +129,7 @@ export const MACHINE_POINTS: MachinePoint[] = [
     id: 'LSK-P4',
     number: 55,
     name: 'Filmspänning (Regulator 4)',
-    zone: Zone.FILM_UNIT,
+    section: 'Filmspole (18)',
     description: 'Tryckinställning för filmbroms/spänning vid spolen under maskinen. Punkt 4 i fig 8.7.2.',
     targetValue: '2.5 Bar',
     tolerance: '+/- 0.2',
@@ -140,15 +140,6 @@ export const MACHINE_POINTS: MachinePoint[] = [
     visibleOnMap: true
   }
 ];
-
-export const ZONE_COLORS = {
-  [Zone.INFEED]: 'text-blue-400 border-blue-400 bg-blue-900/20',
-  [Zone.SEPARATION]: 'text-indigo-400 border-indigo-400 bg-indigo-900/20',
-  [Zone.CARDBOARD]: 'text-yellow-400 border-yellow-400 bg-yellow-900/20',
-  [Zone.FORMING]: 'text-orange-400 border-orange-400 bg-orange-900/20',
-  [Zone.FILM_UNIT]: 'text-pink-400 border-pink-400 bg-pink-900/20',
-  [Zone.DISCHARGE]: 'text-purple-400 border-purple-400 bg-purple-900/20',
-};
 
 export const CRITICALITY_COLORS = {
   [Criticality.P1]: 'bg-red-600 animate-pulse',

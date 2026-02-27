@@ -7,9 +7,10 @@ interface PointDetailProps {
   onUpdate: (point: MachinePoint) => void;
   onEdit: () => void;
   onClose: () => void;
+  theme?: 'dark' | 'light';
 }
 
-const PointDetail: React.FC<PointDetailProps> = ({ point, onUpdate, onEdit, onClose }) => {
+const PointDetail: React.FC<PointDetailProps> = ({ point, onUpdate, onEdit, onClose, theme = 'dark' }) => {
   const handleStatusChange = (newStatus: PointStatus) => {
     onUpdate({ ...point, status: newStatus, lastChecked: new Date().toISOString() });
   };
@@ -19,21 +20,21 @@ const PointDetail: React.FC<PointDetailProps> = ({ point, onUpdate, onEdit, onCl
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 print:hidden">
-      <div className="bg-gray-800 w-full max-w-5xl max-h-[95vh] rounded-2xl border border-gray-600 shadow-2xl overflow-hidden flex flex-col">
+      <div className={`${theme === 'dark' ? 'bg-gray-800 border-gray-600' : 'bg-white border-gray-200'} w-full max-w-5xl max-h-[95vh] rounded-2xl border shadow-2xl overflow-hidden flex flex-col transition-colors duration-300`}>
         
         {/* Header - CLEANED UP */}
-        <div className="flex justify-between items-center p-6 border-b border-gray-700 bg-gray-900">
+        <div className={`flex justify-between items-center p-6 border-b ${theme === 'dark' ? 'border-gray-700 bg-gray-900' : 'border-gray-200 bg-gray-50'}`}>
           <div>
             <div className="flex items-center gap-3">
-               <span className="bg-gray-700 text-gray-300 px-2 py-1 rounded text-sm font-mono">{point.id}</span>
-               <h2 className="text-2xl font-bold text-white">{point.name}</h2>
+               <span className={`${theme === 'dark' ? 'bg-gray-700 text-gray-300' : 'bg-gray-200 text-gray-600'} px-2 py-1 rounded text-sm font-mono`}>{point.id}</span>
+               <h2 className={`text-2xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>{point.name}</h2>
             </div>
-            <p className="text-gray-400 mt-1">{point.zone} &bull; Punkt #{point.number}</p>
+            <p className="text-gray-400 mt-1">{point.section} &bull; Punkt #{point.number}</p>
           </div>
           
           <div className="flex items-center gap-3">
             {/* Status Selector */}
-            <div className="flex bg-gray-950 p-1 rounded-xl border border-gray-700">
+            <div className={`flex ${theme === 'dark' ? 'bg-gray-950 border-gray-700' : 'bg-gray-100 border-gray-200'} p-1 rounded-xl border`}>
               <button 
                 onClick={() => handleStatusChange(PointStatus.OK)}
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all ${point.status === PointStatus.OK || !point.status ? 'bg-green-600 text-white' : 'text-gray-500 hover:text-gray-300'}`}
@@ -83,7 +84,7 @@ const PointDetail: React.FC<PointDetailProps> = ({ point, onUpdate, onEdit, onCl
                 {/* Image 1 */}
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">1. Översikt</label>
-                  <div className="relative aspect-[4/3] bg-black rounded-2xl overflow-hidden border border-gray-600 group shadow-xl">
+                  <div className={`relative aspect-[4/3] ${theme === 'dark' ? 'bg-black border-gray-600' : 'bg-gray-200 border-gray-300'} rounded-2xl overflow-hidden border group shadow-xl transition-colors duration-300`}>
                     <img src={point.imagePlaceholder} alt="Overview" className="w-full h-full object-cover" />
                   </div>
                 </div>
@@ -91,42 +92,42 @@ const PointDetail: React.FC<PointDetailProps> = ({ point, onUpdate, onEdit, onCl
                 {/* Image 2 */}
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">2. Detalj / Inställning</label>
-                  <div className="relative aspect-[4/3] bg-black rounded-2xl overflow-hidden border border-gray-600 group shadow-xl">
+                  <div className={`relative aspect-[4/3] ${theme === 'dark' ? 'bg-black border-gray-600' : 'bg-gray-200 border-gray-300'} rounded-2xl overflow-hidden border group shadow-xl transition-colors duration-300`}>
                     {point.imagePlaceholder2 ? (
                       <img src={point.imagePlaceholder2} alt="Detail" className="w-full h-full object-cover" />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gray-900 text-gray-700 italic text-sm">Ingen detaljbild</div>
+                      <div className={`w-full h-full flex items-center justify-center ${theme === 'dark' ? 'bg-gray-900 text-gray-700' : 'bg-gray-100 text-gray-400'} italic text-sm`}>Ingen detaljbild</div>
                     )}
                   </div>
                 </div>
               </div>
 
-              <button className="w-full py-4 bg-gray-900/50 hover:bg-gray-700 rounded-xl flex items-center justify-center gap-3 transition-all border border-gray-700 group">
+              <button className={`w-full py-4 ${theme === 'dark' ? 'bg-gray-900/50 hover:bg-gray-700 border-gray-700' : 'bg-gray-100 hover:bg-gray-200 border-gray-200'} rounded-xl flex items-center justify-center gap-3 transition-all border group`}>
                 <Video size={24} className="text-blue-500 group-hover:scale-110 transition-transform" />
-                <span className="font-bold text-gray-300">Spela upp instruktionsfilm (Kommer snart)</span>
+                <span className={`font-bold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>Spela upp instruktionsfilm (Kommer snart)</span>
               </button>
             </div>
 
             {/* Data & Risk - REARRANGED */}
             <div className="lg:col-span-4 space-y-6">
-              <div className="bg-gray-900/80 p-6 rounded-2xl border border-gray-700 shadow-inner">
+              <div className={`${theme === 'dark' ? 'bg-gray-900/80 border-gray-700' : 'bg-gray-50 border-gray-200'} p-6 rounded-2xl border shadow-inner`}>
                 <div className="space-y-6">
                   <div>
                     <span className="text-gray-500 text-[10px] font-black uppercase tracking-[0.2em] block mb-2">Målvärde (Centerline)</span>
                     <div className="flex items-baseline gap-2">
-                      <span className="text-5xl font-black text-green-400 font-mono tracking-tighter">{point.targetValue}</span>
+                      <span className={`text-5xl font-black ${theme === 'dark' ? 'text-green-400' : 'text-green-600'} font-mono tracking-tighter`}>{point.targetValue}</span>
                       <span className="text-gray-600 font-bold italic text-sm">Target</span>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-6 pt-6 border-t border-gray-800">
+                  <div className={`grid grid-cols-2 gap-6 pt-6 border-t ${theme === 'dark' ? 'border-gray-800' : 'border-gray-200'}`}>
                     <div>
                       <span className="text-gray-600 text-[10px] font-black uppercase tracking-widest block mb-1">Tolerans</span>
-                      <span className="text-gray-200 font-bold text-lg">{point.tolerance || 'N/A'}</span>
+                      <span className={`font-bold text-lg ${theme === 'dark' ? 'text-gray-200' : 'text-gray-800'}`}>{point.tolerance || 'N/A'}</span>
                     </div>
                     <div>
                       <span className="text-gray-600 text-[10px] font-black uppercase tracking-widest block mb-1">Mätmetod</span>
-                      <span className="text-gray-200 font-bold text-lg">{point.measureMethod}</span>
+                      <span className={`font-bold text-lg ${theme === 'dark' ? 'text-gray-200' : 'text-gray-800'}`}>{point.measureMethod}</span>
                     </div>
                   </div>
 

@@ -55,16 +55,16 @@ const PointDetail: React.FC<PointDetailProps> = ({ point, onUpdate, onEdit, onCl
               </button>
             </div>
 
-            <div className="h-8 w-px bg-gray-700 mx-2"></div>
+            <div className="h-8 w-px bg-gray-300 dark:bg-gray-700 mx-2"></div>
 
             {isP1 && (
-              <span className="px-3 py-1 bg-red-900/50 text-red-200 text-xs font-bold uppercase rounded border border-red-800 flex items-center gap-2">
+              <span className="px-3 py-1 bg-red-100 dark:bg-red-900/50 text-red-600 dark:text-red-200 text-xs font-bold uppercase rounded border border-red-200 dark:border-red-800 flex items-center gap-2">
                 <AlertOctagon size={14} />
                 P1: Kritisk
               </span>
             )}
             {isP2 && (
-              <span className="px-3 py-1 bg-orange-900/50 text-orange-200 text-xs font-bold uppercase rounded border border-orange-800 flex items-center gap-2">
+              <span className="px-3 py-1 bg-orange-100 dark:bg-orange-900/50 text-orange-600 dark:text-orange-200 text-xs font-bold uppercase rounded border border-orange-200 dark:border-orange-800 flex items-center gap-2">
                 <Tag size={14} />
                 P2: Viktig
               </span>
@@ -132,13 +132,13 @@ const PointDetail: React.FC<PointDetailProps> = ({ point, onUpdate, onEdit, onCl
                   </div>
 
                   {point.phaseAngle !== undefined && (
-                    <div className="pt-6 border-t border-gray-800">
+                    <div className={`pt-6 border-t ${theme === 'dark' ? 'border-gray-800' : 'border-gray-200'}`}>
                       <span className="text-gray-600 text-[10px] font-black uppercase tracking-widest block mb-1">Fasningsvinkel</span>
                       <div className="flex items-center gap-3">
-                        <div className="w-full bg-gray-800 h-2 rounded-full overflow-hidden">
+                        <div className={`w-full ${theme === 'dark' ? 'bg-gray-800' : 'bg-gray-200'} h-2 rounded-full overflow-hidden`}>
                           <div className="bg-cyan-500 h-full" style={{ width: `${(point.phaseAngle / 360) * 100}%` }}></div>
                         </div>
-                        <span className="text-cyan-400 font-mono font-black text-xl">{point.phaseAngle}°</span>
+                        <span className={`text-cyan-600 dark:text-cyan-400 font-mono font-black text-xl`}>{point.phaseAngle}°</span>
                       </div>
                     </div>
                   )}
@@ -146,11 +146,11 @@ const PointDetail: React.FC<PointDetailProps> = ({ point, onUpdate, onEdit, onCl
               </div>
 
               {isP1 && (
-                <div className="bg-red-950/30 border border-red-500/30 p-5 rounded-2xl flex items-start gap-4 shadow-lg shadow-red-900/10">
+                <div className={`bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-500/30 p-5 rounded-2xl flex items-start gap-4 shadow-lg shadow-red-900/10`}>
                   <AlertOctagon className="text-red-500 shrink-0 mt-1" size={28} />
                   <div>
-                    <h4 className="font-black text-red-400 uppercase text-xs tracking-widest mb-1">Hög Risk / Kraschvarning</h4>
-                    <p className="text-red-200/70 text-sm leading-relaxed">
+                    <h4 className="font-black text-red-600 dark:text-red-400 uppercase text-xs tracking-widest mb-1">Hög Risk / Kraschvarning</h4>
+                    <p className="text-red-800 dark:text-red-200/70 text-sm leading-relaxed">
                       Felaktig inställning här kan leda till allvarlig maskinskada i formverktyget. 
                       Säkerställ att maskinen är i nödstopp innan justering.
                     </p>
@@ -161,8 +161,8 @@ const PointDetail: React.FC<PointDetailProps> = ({ point, onUpdate, onEdit, onCl
           </div>
 
           {/* AI Support Placeholder */}
-          <div className="pt-8 border-t border-gray-700">
-            <div className="bg-gray-900/40 border border-dashed border-gray-700 rounded-2xl p-8 text-center">
+          <div className={`pt-8 border-t ${theme === 'dark' ? 'border-gray-700' : 'border-gray-200'}`}>
+            <div className={`${theme === 'dark' ? 'bg-gray-900/40 border-gray-700' : 'bg-gray-50 border-gray-300'} border border-dashed rounded-2xl p-8 text-center`}>
               <div className="flex flex-col items-center gap-3 text-gray-500">
                 <Zap size={32} className="opacity-20" />
                 <p className="font-bold italic">AI-stöd kan läggas till om så önskas</p>
@@ -175,13 +175,13 @@ const PointDetail: React.FC<PointDetailProps> = ({ point, onUpdate, onEdit, onCl
         </div>
 
         {/* Footer - ACTIONS MOVED HERE */}
-        <div className="p-4 border-t border-gray-700 bg-gray-900 flex justify-between items-center gap-4">
+        <div className={`p-4 border-t ${theme === 'dark' ? 'border-gray-700 bg-gray-900' : 'border-gray-200 bg-gray-50'} flex justify-between items-center gap-4`}>
           <button 
              onClick={onEdit} 
-             className="flex items-center gap-2 px-6 py-3 bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-600 rounded-lg transition-colors font-medium text-sm group"
+             className={`flex items-center gap-2 px-6 py-3 ${theme === 'dark' ? 'bg-gray-800 hover:bg-gray-700 text-gray-300 border-gray-600' : 'bg-white hover:bg-gray-100 text-gray-600 border-gray-300'} border rounded-lg transition-colors font-medium text-sm group`}
              title="Redigera värden"
           >
-             <PenBox size={18} className="text-gray-400 group-hover:text-white" />
+             <PenBox size={18} className={`${theme === 'dark' ? 'text-gray-400 group-hover:text-white' : 'text-gray-500 group-hover:text-gray-900'}`} />
              Redigera Punkt
           </button>
 

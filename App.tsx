@@ -201,10 +201,10 @@ const App: React.FC = () => {
         transition-all duration-300 shadow-2xl
       `}>
         <div className="hidden md:block">
-          <div className="h-20 flex items-center px-5 border-b border-gray-900 relative">
+          <div className={`h-20 flex items-center px-5 border-b ${theme === 'dark' ? 'border-gray-900' : 'border-gray-200'} relative`}>
              <div className="flex items-center overflow-hidden">
                <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center font-black text-2xl italic shadow-lg shrink-0 text-white">C</div>
-               {!isSidebarCollapsed && <span className="ml-3 font-black text-xl italic uppercase tracking-tighter text-white">Centerline</span>}
+               {!isSidebarCollapsed && <span className={`ml-3 font-black text-xl italic uppercase tracking-tighter ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Centerline</span>}
              </div>
              
              <button 
@@ -213,7 +213,7 @@ const App: React.FC = () => {
                   e.stopPropagation();
                   setIsSidebarCollapsed(prev => !prev);
                 }} 
-                className={`absolute -right-3 top-7 w-7 h-7 bg-gray-800 text-gray-400 hover:text-white rounded-full border border-gray-700 shadow-xl flex items-center justify-center z-50 transition-transform hover:scale-110 active:scale-95 cursor-pointer`}
+                className={`absolute -right-3 top-7 w-7 h-7 ${theme === 'dark' ? 'bg-gray-800 text-gray-400 hover:text-white border-gray-700' : 'bg-white text-gray-500 hover:text-gray-900 border-gray-200'} rounded-full border shadow-xl flex items-center justify-center z-50 transition-transform hover:scale-110 active:scale-95 cursor-pointer`}
                 title={isSidebarCollapsed ? "Öppna meny" : "Stäng meny"}
               >
                {isSidebarCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
@@ -229,17 +229,17 @@ const App: React.FC = () => {
               <button 
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)} 
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === tab.id ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-500 hover:bg-gray-900'}`}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === tab.id ? 'bg-blue-600 text-white shadow-lg' : (theme === 'dark' ? 'text-gray-500 hover:bg-gray-900' : 'text-gray-600 hover:bg-gray-100')}`}
               >
                 <tab.icon size={20} className="shrink-0" />
                 {!isSidebarCollapsed && <span className="font-bold">{tab.label}</span>}
               </button>
             ))}
             
-            <div className="pt-4 mt-4 border-t border-gray-900 space-y-2">
+            <div className={`pt-4 mt-4 border-t ${theme === 'dark' ? 'border-gray-900' : 'border-gray-200'} space-y-2`}>
               <button 
                 onClick={() => { setIsDesignMode(!isDesignMode); setSelectedPoint(null); }}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${isDesignMode ? 'bg-amber-600 text-black shadow-lg' : 'text-gray-500 hover:bg-gray-900'}`}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${isDesignMode ? 'bg-amber-600 text-black shadow-lg' : (theme === 'dark' ? 'text-gray-500 hover:bg-gray-900' : 'text-gray-600 hover:bg-gray-100')}`}
               >
                 <Edit3 size={20} className="shrink-0" />
                 {!isSidebarCollapsed && <span className="font-bold">{isDesignMode ? 'Lås Layout' : 'Redigera'}</span>}
@@ -247,7 +247,7 @@ const App: React.FC = () => {
               
               <button 
                 onClick={handlePrint} 
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-500 hover:bg-gray-900 hover:text-white transition-all"
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${theme === 'dark' ? 'text-gray-500 hover:bg-gray-900 hover:text-white' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'}`}
               >
                 <Printer size={20} className="shrink-0" />
                 {!isSidebarCollapsed && <span className="font-bold">Skriv ut / PDF</span>}
@@ -285,16 +285,16 @@ const App: React.FC = () => {
              </button>
         </nav>
 
-        <div className="hidden md:block p-3 border-t border-gray-800">
+        <div className={`hidden md:block p-3 border-t ${theme === 'dark' ? 'border-gray-800' : 'border-gray-200'}`}>
            <button 
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} 
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${theme === 'dark' ? 'text-gray-500 hover:text-white' : 'text-gray-500 hover:text-gray-900'}`}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${theme === 'dark' ? 'text-gray-500 hover:text-white hover:bg-gray-900' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'}`}
               title={theme === 'dark' ? "Byt till ljust tema" : "Byt till mörkt tema"}
            >
               {theme === 'dark' ? <Sun size={20} className="shrink-0" /> : <Moon size={20} className="shrink-0" />}
               {!isSidebarCollapsed && <span className="font-bold">{theme === 'dark' ? 'Ljust tema' : 'Mörkt tema'}</span>}
            </button>
-           <button onClick={() => setIsSettingsOpen(true)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${theme === 'dark' ? 'text-gray-500 hover:text-white' : 'text-gray-500 hover:text-gray-900'}`}>
+           <button onClick={() => setIsSettingsOpen(true)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${theme === 'dark' ? 'text-gray-500 hover:text-white hover:bg-gray-900' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'}`}>
               <Settings size={20} className="shrink-0" />
               {!isSidebarCollapsed && <span className="font-bold">Inställningar</span>}
            </button>
@@ -450,6 +450,7 @@ const App: React.FC = () => {
           currentPublicUrl={publicBaseUrl}
           onSave={(s) => { setCustomMapUrl(s.mapUrl); setPublicBaseUrl(s.publicUrl); }} 
           onClose={() => setIsSettingsOpen(false)} 
+          theme={theme}
         />
       )}
       {selectedPoint && !editingPoint && !isDesignMode && (

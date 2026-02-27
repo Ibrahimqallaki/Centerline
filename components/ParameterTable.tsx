@@ -122,21 +122,21 @@ const ParameterTable: React.FC<ParameterTableProps> = ({ points, sections, onPoi
               <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button 
                   onClick={(e) => handleStatusToggle(e, point, PointStatus.OK)}
-                  className="p-1 bg-green-900/40 text-green-400 rounded hover:bg-green-600 hover:text-white transition-colors"
+                  className="p-1 bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-400 rounded hover:bg-green-600 hover:text-white transition-colors"
                   title="Markera som OK"
                 >
                   <CheckCircle2 size={14} />
                 </button>
                 <button 
                   onClick={(e) => handleStatusToggle(e, point, PointStatus.TAGGED_YELLOW)}
-                  className="p-1 bg-orange-900/40 text-orange-400 rounded hover:bg-orange-500 hover:text-white transition-colors"
+                  className="p-1 bg-orange-100 dark:bg-orange-900/40 text-orange-600 dark:text-orange-400 rounded hover:bg-orange-500 hover:text-white transition-colors"
                   title="Sätt Gul Tagg (P2)"
                 >
                   <Tag size={14} />
                 </button>
                 <button 
                   onClick={(e) => handleStatusToggle(e, point, PointStatus.TAGGED_RED)}
-                  className="p-1 bg-red-900/40 text-red-400 rounded hover:bg-red-600 hover:text-white transition-colors"
+                  className="p-1 bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400 rounded hover:bg-red-600 hover:text-white transition-colors"
                   title="Sätt Röd Tagg (P1)"
                 >
                   <AlertTriangle size={14} />
@@ -145,7 +145,7 @@ const ParameterTable: React.FC<ParameterTableProps> = ({ points, sections, onPoi
             </div>
 
             <div className="col-span-2 text-right print:col-span-3">
-              <div className="font-mono text-green-400 font-black text-xl leading-none print:text-black print:text-2xl">{point.targetValue}</div>
+              <div className="font-mono text-green-600 dark:text-green-400 font-black text-xl leading-none print:text-black print:text-2xl">{point.targetValue}</div>
               <div className="text-[10px] text-gray-500 font-bold italic print:text-gray-700">Tol: {point.tolerance}</div>
             </div>
 

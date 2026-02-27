@@ -90,7 +90,7 @@ const ParameterTable: React.FC<ParameterTableProps> = ({ points, sections, onPoi
           <div 
             key={point.id} 
             onClick={() => onPointSelect(point)}
-            className={`grid grid-cols-12 gap-2 px-6 py-4 items-center hover:bg-gray-100 dark:hover:bg-gray-700/50 cursor-pointer group transition-colors print:text-black print:py-5 print:break-inside-avoid ${point.status === PointStatus.TAGGED_RED ? 'bg-red-500/5 dark:bg-red-900/10' : point.status === PointStatus.TAGGED_YELLOW ? 'bg-orange-500/5 dark:bg-orange-900/10' : ''}`}
+            className={`grid grid-cols-12 gap-2 px-6 py-4 items-center hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer group transition-colors print:text-black print:py-5 print:break-inside-avoid ${point.status === PointStatus.TAGGED_RED ? 'bg-red-50 dark:bg-red-900/10' : point.status === PointStatus.TAGGED_YELLOW ? 'bg-orange-50 dark:bg-orange-900/10' : ''}`}
           >
             <div className="col-span-1 font-mono text-gray-400 dark:text-gray-500 group-hover:text-blue-600 dark:group-hover:text-white font-bold print:text-black print:text-xl print:italic">{point.number}</div>
             <div className="col-span-4 print:col-span-5 space-y-2">

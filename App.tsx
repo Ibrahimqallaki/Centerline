@@ -351,7 +351,7 @@ const App: React.FC = () => {
                   </button>
                   <button 
                     onClick={() => setIsSettingsOpen(true)}
-                    className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl font-black text-[10px] uppercase tracking-widest border border-gray-700 transition-all"
+                    className={`flex items-center gap-2 px-4 py-2 ${theme === 'dark' ? 'bg-gray-800 hover:bg-gray-700 text-gray-300 border-gray-700' : 'bg-white hover:bg-gray-100 text-gray-600 border-gray-300'} rounded-xl font-black text-[10px] uppercase tracking-widest border transition-all`}
                   >
                     <ImageIcon size={14} /> Ändra Bakgrundsbild
                   </button>
@@ -385,8 +385,8 @@ const App: React.FC = () => {
 
             {/* Skärm-specifika flikar */}
             <div className="print:hidden">
-              {activeTab === 'phasing' && <PhasingGauge currentDegree={0} points={points} />}
-              {activeTab === 'guide' && <Guide />}
+              {activeTab === 'phasing' && <PhasingGauge currentDegree={0} points={points} theme={theme} />}
+              {activeTab === 'guide' && <Guide theme={theme} />}
             </div>
           </div>
 

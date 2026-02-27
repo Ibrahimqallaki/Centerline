@@ -4,9 +4,10 @@ import { MachinePoint } from '../types';
 interface PhasingGaugeProps {
   currentDegree: number;
   points: MachinePoint[];
+  theme?: 'light' | 'dark';
 }
 
-const PhasingGauge: React.FC<PhasingGaugeProps> = ({ currentDegree, points }) => {
+const PhasingGauge: React.FC<PhasingGaugeProps> = ({ currentDegree, points, theme = 'dark' }) => {
   const [testDegree, setTestDegree] = useState(currentDegree);
 
   // Filter points that have a phaseAngle defined
@@ -48,7 +49,7 @@ const PhasingGauge: React.FC<PhasingGaugeProps> = ({ currentDegree, points }) =>
                 key={i} 
                 x1={p1.x} y1={p1.y} 
                 x2={p2.x} y2={p2.y} 
-                className="stroke-gray-400 dark:stroke-gray-600 transition-colors duration-300"
+                className="stroke-gray-300 dark:stroke-gray-600 transition-colors duration-300"
                 strokeWidth={i % 9 === 0 ? 3 : 1} 
               />
             );
@@ -102,7 +103,7 @@ const PhasingGauge: React.FC<PhasingGaugeProps> = ({ currentDegree, points }) =>
           max="360" 
           value={testDegree} 
           onChange={(e) => setTestDegree(Number(e.target.value))}
-          className="w-full h-3 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-cyan-500"
+          className="w-full h-3 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-cyan-500"
         />
         <div className="flex justify-between text-xs text-gray-500 mt-2 font-mono">
           <span>0°</span>
@@ -114,11 +115,11 @@ const PhasingGauge: React.FC<PhasingGaugeProps> = ({ currentDegree, points }) =>
       </div>
 
       {/* Help Section */}
-      <div className="mt-12 w-full max-w-2xl grid grid-cols-1 md:grid-cols-3 gap-6 border-t border-gray-700 pt-8">
+      <div className="mt-12 w-full max-w-2xl grid grid-cols-1 md:grid-cols-3 gap-6 border-t border-gray-200 dark:border-gray-700 pt-8">
         <div className="space-y-2">
           <div className="flex items-center gap-2 mb-2">
-            <span className="w-5 h-5 rounded-full bg-blue-900/50 text-blue-400 flex items-center justify-center text-[10px] font-bold border border-blue-800">1</span>
-            <h4 className="text-xs font-bold text-white uppercase tracking-wider">Definiera punkten</h4>
+            <span className="w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center text-[10px] font-bold border border-blue-200 dark:border-blue-800">1</span>
+            <h4 className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider">Definiera punkten</h4>
           </div>
           <p className="text-[10px] text-gray-500 leading-relaxed">
             När du skapar eller redigerar en kontrollpunkt, leta efter fältet <strong>"Fasningsvinkel"</strong>. 
@@ -128,8 +129,8 @@ const PhasingGauge: React.FC<PhasingGaugeProps> = ({ currentDegree, points }) =>
 
         <div className="space-y-2">
           <div className="flex items-center gap-2 mb-2">
-            <span className="w-5 h-5 rounded-full bg-cyan-900/50 text-cyan-400 flex items-center justify-center text-[10px] font-bold border border-cyan-800">2</span>
-            <h4 className="text-xs font-bold text-white uppercase tracking-wider">Verifiera i Synk-vyn</h4>
+            <span className="w-5 h-5 rounded-full bg-cyan-100 dark:bg-cyan-900/50 text-cyan-600 dark:text-cyan-400 flex items-center justify-center text-[10px] font-bold border border-cyan-200 dark:border-cyan-800">2</span>
+            <h4 className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider">Verifiera i Synk-vyn</h4>
           </div>
           <p className="text-[10px] text-gray-500 leading-relaxed">
             Använd reglaget ovan ("Master Encoder") för att simulera maskinens rörelse. 
@@ -139,8 +140,8 @@ const PhasingGauge: React.FC<PhasingGaugeProps> = ({ currentDegree, points }) =>
 
         <div className="space-y-2">
           <div className="flex items-center gap-2 mb-2">
-            <span className="w-5 h-5 rounded-full bg-red-900/50 text-red-400 flex items-center justify-center text-[10px] font-bold border border-red-800">3</span>
-            <h4 className="text-xs font-bold text-white uppercase tracking-wider">Undvik krascher</h4>
+            <span className="w-5 h-5 rounded-full bg-red-100 dark:bg-red-900/50 text-red-600 dark:text-red-400 flex items-center justify-center text-[10px] font-bold border border-red-200 dark:border-red-800">3</span>
+            <h4 className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider">Undvik krascher</h4>
           </div>
           <p className="text-[10px] text-gray-500 leading-relaxed">
             Punkter som ligger nära varandra i gradtal men fysiskt långt ifrån varandra kan indikera risk för krockar. 

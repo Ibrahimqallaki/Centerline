@@ -2,7 +2,11 @@
 import React from 'react';
 import { BookOpen, Target, AlertTriangle, Users, GitCommit, ShieldCheck, Zap, Activity, AlertOctagon, PenBox } from 'lucide-react';
 
-const Guide: React.FC = () => {
+interface GuideProps {
+  theme?: 'light' | 'dark';
+}
+
+const Guide: React.FC<GuideProps> = ({ theme = 'dark' }) => {
   return (
     <div className="space-y-8 animate-in fade-in duration-500 pb-20">
       
@@ -26,7 +30,7 @@ const Guide: React.FC = () => {
       </div>
 
       {/* CARD: KULTUR & STRATEGI */}
-      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-8 rounded-3xl shadow-2xl hover:border-gray-300 dark:hover:border-gray-700 transition-colors">
+      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-8 rounded-3xl shadow-xl hover:border-gray-300 dark:hover:border-gray-700 transition-colors">
         <div className="flex items-center gap-3 mb-8 border-b border-gray-200 dark:border-gray-800 pb-4">
           <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-xl text-purple-600 dark:text-purple-400">
             <Zap size={24} />
@@ -85,7 +89,7 @@ const Guide: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         
         {/* CARD 1: DEFINITIONER */}
-        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-6 rounded-2xl shadow-xl hover:border-gray-300 dark:hover:border-gray-700 transition-colors md:col-span-2">
+        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-6 rounded-2xl shadow-lg hover:border-gray-300 dark:hover:border-gray-700 transition-colors md:col-span-2">
           <div className="flex items-center gap-3 mb-6 border-b border-gray-200 dark:border-gray-800 pb-4">
             <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-xl text-blue-600 dark:text-blue-400">
               <GitCommit size={24} />
@@ -119,7 +123,7 @@ const Guide: React.FC = () => {
         </div>
 
         {/* CARD 2: ROLLER & ANSVAR (RACI) - HORIZONTAL */}
-        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-6 rounded-2xl shadow-xl hover:border-gray-300 dark:hover:border-gray-700 transition-colors md:col-span-2">
+        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-6 rounded-2xl shadow-lg hover:border-gray-300 dark:hover:border-gray-700 transition-colors md:col-span-2">
           <div className="flex items-center gap-3 mb-8 border-b border-gray-200 dark:border-gray-800 pb-4">
             <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-xl text-green-600 dark:text-green-400">
               <Users size={24} />
@@ -152,7 +156,7 @@ const Guide: React.FC = () => {
         </div>
 
         {/* CARD 3: ARBETSCYKELN (4 STEG) */}
-        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-6 rounded-2xl shadow-xl hover:border-gray-300 dark:hover:border-gray-700 transition-colors md:col-span-2">
+        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-6 rounded-2xl shadow-lg hover:border-gray-300 dark:hover:border-gray-700 transition-colors md:col-span-2">
           <div className="flex items-center gap-3 mb-8 border-b border-gray-200 dark:border-gray-800 pb-4">
             <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-xl text-purple-600 dark:text-purple-400">
               <Zap size={24} />
@@ -214,7 +218,7 @@ const Guide: React.FC = () => {
         </div>
 
         {/* CARD 4: KRITIKALITET & AVVIKELSER */}
-        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-6 rounded-2xl shadow-xl hover:border-gray-300 dark:hover:border-gray-700 transition-colors md:col-span-2">
+        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-6 rounded-2xl shadow-lg hover:border-gray-300 dark:hover:border-gray-700 transition-colors md:col-span-2">
           <div className="flex items-center gap-3 mb-6 border-b border-gray-200 dark:border-gray-800 pb-4">
             <div className="p-3 bg-red-100 dark:bg-red-900/30 rounded-xl text-red-600 dark:text-red-400">
               <AlertTriangle size={24} />
@@ -281,7 +285,7 @@ const Guide: React.FC = () => {
         </div>
 
         {/* CARD 5: STYRNING (GOVERNANCE) - HORIZONTAL */}
-        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-6 rounded-2xl shadow-xl hover:border-gray-300 dark:hover:border-gray-700 transition-colors md:col-span-2">
+        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-6 rounded-2xl shadow-lg hover:border-gray-300 dark:hover:border-gray-700 transition-colors md:col-span-2">
           <div className="flex items-center gap-3 mb-8 border-b border-gray-200 dark:border-gray-800 pb-4">
             <div className="p-3 bg-cyan-100 dark:bg-cyan-900/30 rounded-xl text-cyan-600 dark:text-cyan-400">
               <Activity size={24} />

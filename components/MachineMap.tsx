@@ -46,7 +46,7 @@ const MachineMap: React.FC<MachineMapProps> = ({
     <div 
       ref={containerRef}
       onClick={handleContainerClick}
-      className={`relative w-full aspect-[2/1] bg-white dark:bg-gray-950 rounded-[2rem] border border-gray-200 dark:border-gray-800 overflow-hidden shadow-2xl print-map-container ${onMapClick ? 'cursor-crosshair' : ''} ${editMode ? 'ring-2 ring-blue-500 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''} transition-colors duration-300`}
+      className={`relative w-full aspect-[2/1] bg-white dark:bg-gray-950 rounded-[2rem] border border-gray-200 dark:border-gray-800 overflow-hidden shadow-xl print-map-container ${onMapClick ? 'cursor-crosshair' : ''} ${editMode ? 'ring-2 ring-blue-500 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''} transition-colors duration-300`}
     >
       {/* Background Image or SVG Grid */}
       <div className="absolute inset-0 z-0">

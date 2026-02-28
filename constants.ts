@@ -81,6 +81,7 @@ export const MACHINE_POINTS: MachinePoint[] = [
     criticality: Criticality.P2,
     imagePlaceholder: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=400',
     coordinates: { x: 10, y: 21 },
+    phaseAngle: 45,
     visibleOnMap: true
   },
   {
@@ -95,6 +96,7 @@ export const MACHINE_POINTS: MachinePoint[] = [
     criticality: Criticality.P1,
     imagePlaceholder: 'https://images.unsplash.com/photo-1565608411386-35f922754972?auto=format&fit=crop&q=80&w=400',
     coordinates: { x: 38, y: 40 },
+    phaseAngle: 90,
     visibleOnMap: true
   },
   {
@@ -109,6 +111,7 @@ export const MACHINE_POINTS: MachinePoint[] = [
     criticality: Criticality.P2,
     imagePlaceholder: 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&q=80&w=400',
     coordinates: { x: 44, y: 40 },
+    phaseAngle: 120,
     visibleOnMap: true
   },
   {
@@ -123,6 +126,7 @@ export const MACHINE_POINTS: MachinePoint[] = [
     criticality: Criticality.P1,
     imagePlaceholder: 'https://images.unsplash.com/photo-1537462715879-360eeb61a0ad?auto=format&fit=crop&q=80&w=400',
     coordinates: { x: 50, y: 16 },
+    phaseAngle: 180,
     visibleOnMap: true
   },
   {

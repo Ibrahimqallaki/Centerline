@@ -77,15 +77,27 @@ const MachineMap: React.FC<MachineMapProps> = ({
         )}
       </div>
 
-      <svg className="absolute inset-0 w-full h-full z-10" viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid meet">
+      <svg 
+        className="absolute inset-0 w-full h-full z-10" 
+        viewBox="0 0 1000 500" 
+        preserveAspectRatio="xMidYMid meet"
+      >
         <g>
-          {/* Main Axis Line - Only show if no custom map */}
-          {!customMapUrl && <line x1="0" y1="200" x2="1000" y2="200" stroke="#1e293b" strokeWidth="2" />}
+          {/* Main Axis Line - Standardized position */}
+          {!customMapUrl && (
+            <line 
+              x1="0" y1="250" x2="1000" y2="250" 
+              stroke={theme === 'dark' ? '#1e293b' : '#e2e8f0'} 
+              strokeWidth="2" 
+              strokeDasharray="10,5"
+              vectorEffect="non-scaling-stroke"
+            />
+          )}
           
           {/* Render Dynamic Modules */}
           {layout.map((mod) => {
               const showFill = mod.hasFill === true;
-              const fillColor = editMode ? `${mod.color}15` : `${mod.color}08`;
+              const fillColor = editMode ? `${mod.color}20` : `${mod.color}10`;
               const fontSize = (mod.fontSize || 2) * 10;
               
               return (
@@ -106,21 +118,19 @@ const MachineMap: React.FC<MachineMapProps> = ({
                     height={mod.height * 5} 
                     fill={showFill ? fillColor : "none"} 
                     stroke={mod.color} 
-                    strokeWidth={editMode ? "8" : "5"} 
-                    rx="5" 
-                    className={`transition-all duration-300 print:fill-transparent print:stroke-black print:stroke-[1px] print:stroke-solid ${editMode ? 'group-hover:stroke-white group-hover:stroke-[2px]' : ''}`}
+                    strokeWidth={editMode ? "4" : "2"} 
+                    rx="4" 
+                    vectorEffect="non-scaling-stroke"
+                    className={`transition-all duration-300 print:fill-transparent print:stroke-black print:stroke-[1px] ${editMode ? 'group-hover:stroke-white group-hover:stroke-[3px]' : ''}`}
                   />
                   <text 
                     x={mod.x * 10 + (mod.width * 10) / 2} 
-                    y={mod.y * 5 + (mod.height * 5) / 2 + fontSize * 0.3} 
+                    y={mod.y * 5 + (mod.height * 5) / 2 + fontSize * 0.35} 
                     textAnchor="middle" 
                     fill={mod.color === '#ffffff' ? (theme === 'dark' ? '#ffffff' : '#111827') : mod.color} 
-                    stroke={theme === 'dark' ? "black" : "none"}
-                    strokeWidth="0.5"
-                    paintOrder="stroke"
-                    fontSize={fontSize} 
+                    style={{ fontSize: `${fontSize}px` }}
                     fontWeight="900"
-                    className="uppercase tracking-wider print:fill-black pointer-events-none italic"
+                    className="uppercase tracking-tighter print:fill-black pointer-events-none italic select-none"
                   >
                     {mod.wrapText ? (
                       mod.label.split(' ').map((line, i, arr) => (
@@ -138,7 +148,7 @@ const MachineMap: React.FC<MachineMapProps> = ({
               );
             })}
 
-          {/* Render Points inside SVG for better print reliability */}
+          {/* Render Points */}
           {visiblePoints.map((point) => {
             const isSelected = point.id === selectedPointId;
             const isCritical = point.criticality === Criticality.P1;
@@ -147,29 +157,43 @@ const MachineMap: React.FC<MachineMapProps> = ({
             return (
               <g 
                 key={point.id}
-                className="cursor-pointer pointer-events-auto"
+                className="cursor-pointer pointer-events-auto group"
                 onClick={(e) => {
                   e.stopPropagation();
                   if (onPointClick) onPointClick(point);
                 }}
               >
+                {/* Outer ring for selected/critical */}
+                {(isSelected || isCritical) && (
+                  <circle 
+                    cx={point.coordinates.x * 10} 
+                    cy={point.coordinates.y * 5} 
+                    r={isSelected ? 22 : 18} 
+                    fill="none"
+                    stroke={color}
+                    strokeWidth="2"
+                    strokeDasharray={isSelected ? "none" : "4,2"}
+                    className={isCritical ? "animate-pulse" : ""}
+                  />
+                )}
+                
                 <circle 
                   cx={point.coordinates.x * 10} 
                   cy={point.coordinates.y * 5} 
-                  r={isSelected ? 18 : 14} 
+                  r={isSelected ? 16 : 12} 
                   fill={color}
                   stroke="white"
-                  strokeWidth="3"
-                  className={`transition-all duration-200 print:stroke-black print:stroke-[0.5px] ${isSelected ? 'filter drop-shadow-lg' : ''}`}
+                  strokeWidth="2"
+                  className="transition-all duration-200 group-hover:scale-110 shadow-xl"
                 />
                 <text 
                   x={point.coordinates.x * 10} 
-                  y={point.coordinates.y * 5 + 6}
+                  y={point.coordinates.y * 5 + 4}
                   textAnchor="middle"
                   fill="white"
-                  fontSize="12"
+                  fontSize="10"
                   fontWeight="900"
-                  className="italic pointer-events-none print:fill-white"
+                  className="italic pointer-events-none select-none"
                 >
                   {point.number}
                 </text>

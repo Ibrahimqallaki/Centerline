@@ -3,6 +3,7 @@ import { createServer as createViteServer } from "vite";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import cors from "cors";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -19,11 +20,22 @@ async function startServer() {
   const app = express();
   const PORT = 3000;
 
+  app.use(cors());
   app.use(express.json({ limit: '50mb' }));
   app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
+  // Request logger for debugging
+  app.use((req, res, next) => {
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+    next();
+  });
+
+  app.get("/api/test", (req, res) => {
+    res.json({ message: "API is working" });
+  });
+
   // API Routes - Points
-  app.get("/api/points", (req, res) => {
+  app.get(["/api/v1/points", "/api/v1/points/"], (req, res) => {
     try {
       if (fs.existsSync(DATA_FILE)) {
         const data = fs.readFileSync(DATA_FILE, "utf-8");
@@ -37,7 +49,7 @@ async function startServer() {
     }
   });
 
-  app.post("/api/points", (req, res) => {
+  app.post(["/api/v1/points", "/api/v1/points/"], (req, res) => {
     try {
       const points = req.body;
       if (!points) {
@@ -53,7 +65,7 @@ async function startServer() {
   });
 
   // API Routes - Layout
-  app.get("/api/layout", (req, res) => {
+  app.get(["/api/v1/layout", "/api/v1/layout/"], (req, res) => {
     try {
       if (fs.existsSync(LAYOUT_FILE)) {
         const data = fs.readFileSync(LAYOUT_FILE, "utf-8");
@@ -67,7 +79,7 @@ async function startServer() {
     }
   });
 
-  app.post("/api/layout", (req, res) => {
+  app.post(["/api/v1/layout", "/api/v1/layout/"], (req, res) => {
     try {
       const layout = req.body;
       if (!layout) {
@@ -82,7 +94,7 @@ async function startServer() {
     }
   });
 
-  app.patch("/api/points/:id", (req, res) => {
+  app.patch(["/api/v1/points/:id", "/api/v1/points/:id/"], (req, res) => {
     try {
       const { id } = req.params;
       const updates = req.body;

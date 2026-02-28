@@ -49,8 +49,8 @@ const App: React.FC = () => {
     const fetchData = async () => {
       try {
         const [pointsRes, layoutRes] = await Promise.all([
-          fetch('/api/points'),
-          fetch('/api/layout')
+          fetch('/api/v1/points', { cache: 'no-cache' }),
+          fetch('/api/v1/layout', { cache: 'no-cache' })
         ]);
         
         if (pointsRes.ok) {
@@ -86,15 +86,24 @@ const App: React.FC = () => {
     setSaveStatus('saving');
     
     try {
-      const response = await fetch('/api/points', {
+      const url = `/api/v1/points`;
+      console.log(`Attempting to save points to: ${url}`);
+      const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newPoints)
+        body: JSON.stringify(newPoints),
+        cache: 'no-cache'
       });
       
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+        const errorText = await response.text().catch(() => "No error body");
+        console.error(`Save points failed: ${response.status} - ${errorText}`);
+        let errorMessage = `HTTP error! status: ${response.status}`;
+        try {
+          const errorData = JSON.parse(errorText);
+          if (errorData.error) errorMessage = errorData.error;
+        } catch (e) {}
+        throw new Error(errorMessage);
       }
       
       setSaveStatus('success');
@@ -117,15 +126,24 @@ const App: React.FC = () => {
     setSaveStatus('saving');
     
     try {
-      const response = await fetch('/api/layout', {
+      const url = `/api/v1/layout`;
+      console.log(`Attempting to save layout to: ${url}`);
+      const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newLayout)
+        body: JSON.stringify(newLayout),
+        cache: 'no-cache'
       });
       
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+        const errorText = await response.text().catch(() => "No error body");
+        console.error(`Save layout failed: ${response.status} - ${errorText}`);
+        let errorMessage = `HTTP error! status: ${response.status}`;
+        try {
+          const errorData = JSON.parse(errorText);
+          if (errorData.error) errorMessage = errorData.error;
+        } catch (e) {}
+        throw new Error(errorMessage);
       }
       
       setSaveStatus('success');

@@ -1,15 +1,228 @@
 
-import React from 'react';
-import { BookOpen, Target, AlertTriangle, Users, GitCommit, ShieldCheck, Zap, Activity, AlertOctagon, PenBox } from 'lucide-react';
+import React, { useState } from 'react';
+import { BookOpen, Target, AlertTriangle, Users, GitCommit, ShieldCheck, Zap, Activity, AlertOctagon, PenBox, X, Info, Eye, ClipboardCheck, Info as InfoIcon, Edit3, Save, Image as ImageIcon } from 'lucide-react';
+import { DefinitionDetail } from '../types';
 
 interface GuideProps {
   theme?: 'light' | 'dark';
+  definitions: Record<string, DefinitionDetail>;
+  onUpdateDefinition?: (type: string, updated: DefinitionDetail) => void;
+  isDesignMode?: boolean;
 }
 
-const Guide: React.FC<GuideProps> = ({ theme = 'dark' }) => {
+const Guide: React.FC<GuideProps> = ({ 
+  theme = 'dark', 
+  definitions, 
+  onUpdateDefinition,
+  isDesignMode = false
+}) => {
+  const [selectedDef, setSelectedDef] = useState<DefinitionDetail | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editForm, setEditForm] = useState<DefinitionDetail | null>(null);
+
+  const handleEditClick = (def: DefinitionDetail) => {
+    setEditForm({ ...def });
+    setIsEditing(true);
+  };
+
+  const handleSave = () => {
+    if (editForm && onUpdateDefinition) {
+      onUpdateDefinition(editForm.type, editForm);
+      setSelectedDef(editForm);
+      setIsEditing(false);
+    }
+  };
+
   return (
     <div className="space-y-8 animate-in fade-in duration-500 pb-20">
       
+      {/* Definition Modal */}
+      {selectedDef && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+          <div 
+            className="absolute inset-0 bg-black/80 backdrop-blur-sm animate-in fade-in duration-300"
+            onClick={() => {
+              setSelectedDef(null);
+              setIsEditing(false);
+            }}
+          />
+          
+          <div className="relative bg-white dark:bg-gray-900 w-full max-w-2xl rounded-[2.5rem] overflow-hidden shadow-2xl border border-gray-200 dark:border-gray-800 animate-in zoom-in-95 duration-300">
+            {/* Modal Header */}
+            <div className="relative h-48 sm:h-64 overflow-hidden">
+              <img 
+                src={isEditing ? editForm?.visual : selectedDef.visual} 
+                alt={selectedDef.label}
+                className="w-full h-full object-cover"
+                referrerPolicy="no-referrer"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-white dark:from-gray-900 via-transparent to-transparent" />
+              
+              <div className="absolute top-6 right-6 flex gap-2">
+                {isDesignMode && !isEditing && (
+                  <button 
+                    onClick={() => handleEditClick(selectedDef)}
+                    className="p-2 bg-blue-600 hover:bg-blue-500 text-white rounded-full transition-all shadow-lg"
+                    title="Redigera definition"
+                  >
+                    <Edit3 size={20} />
+                  </button>
+                )}
+                <button 
+                  onClick={() => {
+                    setSelectedDef(null);
+                    setIsEditing(false);
+                  }}
+                  className="p-2 bg-black/20 hover:bg-black/40 backdrop-blur-md text-white rounded-full transition-all"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+              
+              <div className="absolute bottom-6 left-8 right-8">
+                <div className={`text-[10px] font-black px-2 py-1 rounded bg-white dark:bg-black/40 shadow-sm ${selectedDef.color} w-fit text-center mb-2 tracking-widest uppercase`}>
+                  {selectedDef.type}
+                </div>
+                {isEditing ? (
+                  <input 
+                    type="text"
+                    value={editForm?.label || ''}
+                    onChange={(e) => setEditForm(prev => prev ? { ...prev, label: e.target.value } : null)}
+                    className="w-full bg-white/10 backdrop-blur-md border border-white/20 rounded-xl px-4 py-2 text-2xl font-black text-white uppercase italic tracking-tighter outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                ) : (
+                  <h3 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white uppercase italic tracking-tighter">
+                    {selectedDef.label}
+                  </h3>
+                )}
+              </div>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-8 space-y-8 max-h-[50vh] overflow-y-auto no-scrollbar">
+              {isEditing ? (
+                <div className="space-y-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                      <ImageIcon size={12} /> Bild-URL
+                    </label>
+                    <input 
+                      type="text"
+                      value={editForm?.visual || ''}
+                      onChange={(e) => setEditForm(prev => prev ? { ...prev, visual: e.target.value } : null)}
+                      className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="https://images.unsplash.com/..."
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                      <InfoIcon size={12} /> Kort beskrivning
+                    </label>
+                    <input 
+                      type="text"
+                      value={editForm?.desc || ''}
+                      onChange={(e) => setEditForm(prev => prev ? { ...prev, desc: e.target.value } : null)}
+                      className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                      <InfoIcon size={12} /> Vad det är (Längre förklaring)
+                    </label>
+                    <textarea 
+                      value={editForm?.whatIsIt || ''}
+                      onChange={(e) => setEditForm(prev => prev ? { ...prev, whatIsIt: e.target.value } : null)}
+                      className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500 min-h-[100px]"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                      <ClipboardCheck size={12} /> Ditt ansvar
+                    </label>
+                    <textarea 
+                      value={editForm?.responsibility || ''}
+                      onChange={(e) => setEditForm(prev => prev ? { ...prev, responsibility: e.target.value } : null)}
+                      className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500 min-h-[100px]"
+                    />
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400">
+                        <InfoIcon size={18} />
+                        <h4 className="text-xs font-black uppercase tracking-wider">Vad det är</h4>
+                      </div>
+                      <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed font-medium">
+                        {selectedDef.whatIsIt}
+                      </p>
+                    </div>
+
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-2 text-green-600 dark:text-green-400">
+                        <ClipboardCheck size={18} />
+                        <h4 className="text-xs font-black uppercase tracking-wider">Ditt ansvar</h4>
+                      </div>
+                      <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed font-medium">
+                        {selectedDef.responsibility}
+                      </p>
+                    </div>
+                  </div>
+
+                  {selectedDef.type === 'Setpoint' && (
+                    <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800/50 p-4 rounded-2xl flex items-start gap-4">
+                      <AlertOctagon className="text-purple-600 dark:text-purple-400 shrink-0 mt-1" size={20} />
+                      <p className="text-xs text-purple-900 dark:text-purple-200 font-bold leading-relaxed">
+                        VIKTIGT: Kritiska setpoints får aldrig ändras utan ett formellt godkännande (TDP) från en processingenjör.
+                      </p>
+                    </div>
+                  )}
+
+                  {selectedDef.type === 'Condition' && (
+                    <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/50 p-4 rounded-2xl flex items-start gap-4">
+                      <Zap className="text-green-600 dark:text-green-400 shrink-0 mt-1" size={20} />
+                      <p className="text-xs text-green-900 dark:text-green-200 font-bold leading-relaxed">
+                        LOGIKEN: Om grundkonditionen är dålig kommer maskinen aldrig att kunna hålla sina Centerlines stabilt över tid.
+                      </p>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+
+            <div className="p-6 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-100 dark:border-gray-800 flex justify-end gap-3">
+              {isEditing ? (
+                <>
+                  <button 
+                    onClick={() => setIsEditing(false)}
+                    className="px-6 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-xl font-bold text-sm hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                  >
+                    AVBRYT
+                  </button>
+                  <button 
+                    onClick={handleSave}
+                    className="px-6 py-2 bg-blue-600 text-white rounded-xl font-bold text-sm hover:bg-blue-500 flex items-center gap-2 shadow-lg shadow-blue-500/20"
+                  >
+                    <Save size={16} /> SPARA ÄNDRINGAR
+                  </button>
+                </>
+              ) : (
+                <button 
+                  onClick={() => setSelectedDef(null)}
+                  className="px-6 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-xl font-bold text-sm hover:scale-105 transition-transform"
+                >
+                  FÖRSTÅTT
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Intro Header - Standardiserat Arbetssätt */}
       <div className="relative overflow-hidden p-8 rounded-[2.5rem] border transition-all duration-500
         bg-gradient-to-br from-blue-50 to-white border-blue-100 shadow-md
@@ -128,19 +341,21 @@ const Guide: React.FC<GuideProps> = ({ theme = 'dark' }) => {
 
           <div className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {[
-                { type: 'CL', label: 'Centerline', desc: 'Justerbara processparametrar som övervakas mot standard (Tryck, temp, hastighet).', color: 'text-blue-600 dark:text-blue-300' },
-                { type: 'CPE', label: 'Critical Physical Element', desc: 'Fysiska referenspunkter i utrustningen (Knivavstånd, givarpositioner).', color: 'text-orange-600 dark:text-orange-300' },
-                { type: 'Static', label: 'Static CL', desc: 'Inställningar som görs vid stillastående eller omställning (Mekaniska stopp).', color: 'text-gray-600 dark:text-gray-300' },
-                { type: 'Dynamic', label: 'Dynamic CL', desc: 'Parametrar som kontrolleras och följs upp under drift (Flöden, PLC-värden).', color: 'text-cyan-600 dark:text-cyan-300' },
-                { type: 'Setpoint', label: 'Setpoint (Program)', desc: 'Receptstyrda värden i HMI/PLC. Skall alltid vara uppdaterade och synkade med fysisk miljö.', color: 'text-purple-600 dark:text-purple-300' },
-                { type: 'Condition', label: 'Condition (Skick)', desc: 'Säkerställs under Service Window. CIL-rutiner initierar aktiviteter till renoveringar.', color: 'text-green-600 dark:text-green-300' }
-              ].map((item, i) => (
-                <div key={i} className="bg-gray-50 dark:bg-gray-800/60 p-4 rounded-xl border border-gray-200 dark:border-gray-700 flex flex-col gap-3 h-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300 hover:scale-[1.02]">
-                  <div className={`text-[10px] font-black px-2 py-1 rounded bg-white dark:bg-black/40 shadow-sm ${item.color} w-fit text-center shrink-0 tracking-widest uppercase`}>{item.type}</div>
+              {(Object.values(definitions) as DefinitionDetail[]).map((item, i) => (
+                <div 
+                  key={i} 
+                  onClick={() => setSelectedDef(item)}
+                  className="bg-gray-50 dark:bg-gray-800/60 p-4 rounded-xl border border-gray-200 dark:border-gray-700 flex flex-col gap-3 h-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300 hover:scale-[1.02] cursor-pointer group"
+                >
+                  <div className="flex justify-between items-start">
+                    <div className={`text-[10px] font-black px-2 py-1 rounded bg-white dark:bg-black/40 shadow-sm ${item.color} w-fit text-center shrink-0 tracking-widest uppercase`}>{item.type}</div>
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Eye size={14} className="text-gray-400" />
+                    </div>
+                  </div>
                   <div>
                     <div className="text-xs font-bold text-gray-900 dark:text-white mb-1">{item.label}</div>
-                    <div className="text-[10px] text-gray-600 dark:text-gray-400 leading-relaxed font-medium">{item.desc}</div>
+                    <div className="text-[10px] text-gray-600 dark:text-gray-400 leading-relaxed font-medium line-clamp-2">{item.desc}</div>
                   </div>
                 </div>
               ))}

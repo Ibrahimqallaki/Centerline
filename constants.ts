@@ -1,5 +1,62 @@
 
-import { MachinePoint, Criticality, MachineModule } from './types';
+import { MachinePoint, Criticality, MachineModule, DefinitionDetail } from './types';
+
+export const DEFAULT_DEFINITIONS: Record<string, DefinitionDetail> = {
+  'CL': {
+    type: 'CL',
+    label: 'Centerline (Parametern)',
+    desc: 'Justerbara processparametrar som övervakas mot standard.',
+    color: 'text-blue-600 dark:text-blue-300',
+    visual: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80&w=400',
+    whatIsIt: 'Justerbara värden som tryck, temperatur eller hastighet som direkt påverkar produktens kvalitet.',
+    responsibility: 'Att dagligen kontrollera att värdet matchar "Golden Run"-standarden. Vid avvikelse ska du i första hand försöka återställa till standard.',
+  },
+  'CPE': {
+    type: 'CPE',
+    label: 'Critical Physical Element (Hårdvaran)',
+    desc: 'Fysiska referenspunkter i utrustningen.',
+    color: 'text-orange-600 dark:text-orange-300',
+    visual: 'https://images.unsplash.com/photo-1537462715879-360eeb61a0ad?auto=format&fit=crop&q=80&w=400',
+    whatIsIt: 'Fysiska referenspunkter i maskinen, som knivavstånd, givarpositioner eller mekaniska inställningar som inte ändras via mjukvara.',
+    responsibility: 'Att identifiera tidiga tecken på att delen inte håller sin grundkondition (t.ex. glapp eller slitage). Om ett fysiskt mått är fel sätter du en Röd Tagg.',
+  },
+  'Static': {
+    type: 'Static',
+    label: 'Static CL (När & Hur)',
+    desc: 'Inställningar som görs vid stillastående.',
+    color: 'text-gray-600 dark:text-gray-300',
+    visual: 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&q=80&w=400',
+    whatIsIt: 'Mekaniska inställningar (t.ex. mekaniska stopp) som endast görs vid stillastående eller omställning.',
+    responsibility: 'Säkerställa att dessa låses fast ordentligt och inte kan flytta sig under drift.',
+  },
+  'Dynamic': {
+    type: 'Dynamic',
+    label: 'Dynamic CL (När & Hur)',
+    desc: 'Parametrar som kontrolleras under drift.',
+    color: 'text-cyan-600 dark:text-cyan-300',
+    visual: 'https://images.unsplash.com/photo-1551288049-bbbda546697a?auto=format&fit=crop&q=80&w=400',
+    whatIsIt: 'Värden (t.ex. flöden, vibrationer, strömförbrukning) som kontrolleras och loggas under tiden maskinen producerar.',
+    responsibility: 'Övvervaka trender. Om värdet börjar driva iväg från standard, agera innan det når larmgräns.',
+  },
+  'Setpoint': {
+    type: 'Setpoint',
+    label: 'Setpoint (Receptet)',
+    desc: 'Receptstyrda värden i HMI/PLC.',
+    color: 'text-purple-600 dark:text-purple-300',
+    visual: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=400',
+    whatIsIt: 'De receptstyrda värdena i mjukvaran som laddas in automatiskt vid produktbyte.',
+    responsibility: 'Verifiera att HMI-värdet matchar specifikationen. Kritiska setpoints får aldrig ändras utan ett formellt godkännande (TDP) från en processingenjör.',
+  },
+  'Condition': {
+    type: 'Condition',
+    label: 'Condition (Skick)',
+    desc: 'Maskinens grundkondition (CIL).',
+    color: 'text-green-600 dark:text-green-300',
+    visual: 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?auto=format&fit=crop&q=80&w=400',
+    whatIsIt: 'Maskinens grundkondition som säkras genom CIL (Cleaning, Inspection, Lubrication).',
+    responsibility: 'Om grundkonditionen är dålig kommer maskinen aldrig att kunna hålla sina Centerlines stabilt. CIL är din försäkring mot krascher.',
+  }
+};
 
 export const DEFAULT_MACHINE_LAYOUT: MachineModule[] = [
   { id: 'm1', label: 'Inmatning (1-2)', x: 0, y: 15, width: 20, height: 12, color: '#3b82f6', hasFill: false },

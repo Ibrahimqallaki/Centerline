@@ -45,6 +45,16 @@ export interface MachinePoint {
   tagComment?: string;
 }
 
+export interface DefinitionDetail {
+  type: string;
+  label: string;
+  desc: string;
+  color: string;
+  visual: string;
+  whatIsIt: string;
+  responsibility: string;
+}
+
 export interface GenerationRequest {
   pointName: string;
   currentValue: string;

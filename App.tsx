@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { MACHINE_POINTS, DEFAULT_MACHINE_LAYOUT } from './constants';
-import { MachinePoint, MachineModule } from './types';
+import { MACHINE_POINTS, DEFAULT_MACHINE_LAYOUT, DEFAULT_DEFINITIONS } from './constants';
+import { MachinePoint, MachineModule, DefinitionDetail } from './types';
 import MachineMap from './components/MachineMap';
 import ParameterTable from './components/ParameterTable';
 import PointDetail from './components/PointDetail';
@@ -44,6 +44,7 @@ const App: React.FC = () => {
   
   const [points, setPoints] = useState<MachinePoint[]>([]);
   const [layout, setLayout] = useState<MachineModule[]>([]);
+  const [definitions, setDefinitions] = useState<Record<string, DefinitionDetail>>(DEFAULT_DEFINITIONS);
 
   // Fetch initial data
   useEffect(() => {
@@ -52,6 +53,7 @@ const App: React.FC = () => {
         console.warn("Supabase client not initialized. Using local defaults.");
         setPoints(MACHINE_POINTS);
         setLayout(DEFAULT_MACHINE_LAYOUT);
+        setDefinitions(DEFAULT_DEFINITIONS);
         setIsLoading(false);
         return;
       }
@@ -65,6 +67,7 @@ const App: React.FC = () => {
 
         const pointsData = data?.find(item => item.key === 'points')?.value;
         const layoutData = data?.find(item => item.key === 'layout')?.value;
+        const definitionsData = data?.find(item => item.key === 'definitions')?.value;
         
         if (pointsData) {
           setPoints(pointsData);
@@ -77,11 +80,18 @@ const App: React.FC = () => {
         } else {
           setLayout(DEFAULT_MACHINE_LAYOUT);
         }
+
+        if (definitionsData) {
+          setDefinitions(definitionsData);
+        } else {
+          setDefinitions(DEFAULT_DEFINITIONS);
+        }
       } catch (error) {
         console.error("Failed to fetch data from Supabase:", error);
         // Fallback to constants if fetch fails
         setPoints(MACHINE_POINTS);
         setLayout(DEFAULT_MACHINE_LAYOUT);
+        setDefinitions(DEFAULT_DEFINITIONS);
       } finally {
         setIsLoading(false);
       }
@@ -150,6 +160,37 @@ const App: React.FC = () => {
       setLayout(previousLayout); // Rollback
       setSaveStatus('error');
       alert(`Kunde inte spara layout: ${error.message || 'Okänt fel'}`);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // Save definitions to Supabase
+  const saveDefinitions = async (newDefs: Record<string, DefinitionDetail>) => {
+    if (!supabase) {
+      alert("Supabase är inte konfigurerat. Kan inte spara.");
+      return;
+    }
+    
+    const previousDefs = { ...definitions };
+    setDefinitions(newDefs);
+    setIsSaving(true);
+    setSaveStatus('saving');
+    
+    try {
+      const { error } = await supabase
+        .from('app_state')
+        .upsert({ key: 'definitions', value: newDefs });
+      
+      if (error) throw error;
+      
+      setSaveStatus('success');
+      setTimeout(() => setSaveStatus('idle'), 2000);
+    } catch (error: any) {
+      console.error("Failed to save definitions to Supabase:", error);
+      setDefinitions(previousDefs); // Rollback
+      setSaveStatus('error');
+      alert(`Kunde inte spara definitioner: ${error.message || 'Okänt fel'}`);
     } finally {
       setIsSaving(false);
     }
@@ -473,7 +514,17 @@ const App: React.FC = () => {
             {/* Skärm-specifika flikar */}
             <div className="print:hidden">
               {activeTab === 'phasing' && <PhasingGauge currentDegree={0} points={points} theme={theme} />}
-              {activeTab === 'guide' && <Guide theme={theme} />}
+              {activeTab === 'guide' && (
+                <Guide 
+                  theme={theme} 
+                  definitions={definitions} 
+                  onUpdateDefinition={(type, updated) => {
+                    const newDefs = { ...definitions, [type]: updated };
+                    saveDefinitions(newDefs);
+                  }}
+                  isDesignMode={isDesignMode}
+                />
+              )}
             </div>
           </div>
 

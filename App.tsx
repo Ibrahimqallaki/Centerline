@@ -38,6 +38,8 @@ const App: React.FC = () => {
   const [selectedPoint, setSelectedPoint] = useState<MachinePoint | null>(null);
   const [editingModule, setEditingModule] = useState<MachineModule | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'success' | 'error'>('idle');
   
   const [points, setPoints] = useState<MachinePoint[]>([]);
   const [layout, setLayout] = useState<MachineModule[]>([]);
@@ -78,37 +80,61 @@ const App: React.FC = () => {
 
   // Save points to API
   const savePoints = async (newPoints: MachinePoint[]) => {
+    const previousPoints = [...points];
     setPoints(newPoints);
+    setIsSaving(true);
+    setSaveStatus('saving');
+    
     try {
       const response = await fetch('/api/points', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newPoints)
       });
+      
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+      
+      setSaveStatus('success');
+      setTimeout(() => setSaveStatus('idle'), 2000);
     } catch (error) {
       console.error("Failed to save points:", error);
-      alert("Kunde inte spara data till servern. Kontrollera att uppladdade bilder inte är för stora.");
+      setPoints(previousPoints); // Rollback
+      setSaveStatus('error');
+      alert("Kunde inte spara data till servern. Kontrollera din anslutning eller om bilden är för stor.");
+    } finally {
+      setIsSaving(false);
     }
   };
 
   // Save layout to API
   const saveLayout = async (newLayout: MachineModule[]) => {
+    const previousLayout = [...layout];
     setLayout(newLayout);
+    setIsSaving(true);
+    setSaveStatus('saving');
+    
     try {
       const response = await fetch('/api/layout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newLayout)
       });
+      
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+      
+      setSaveStatus('success');
+      setTimeout(() => setSaveStatus('idle'), 2000);
     } catch (error) {
       console.error("Failed to save layout:", error);
+      setLayout(previousLayout); // Rollback
+      setSaveStatus('error');
       alert("Kunde inte spara layout till servern.");
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -341,6 +367,23 @@ const App: React.FC = () => {
             <div className="hidden print:block text-right">
               <p className="text-sm font-black text-black uppercase tracking-widest">{currentPrintDate}</p>
             </div>
+
+            {/* Save Status Indicator */}
+            {!isLoading && saveStatus !== 'idle' && (
+              <div className="fixed top-6 right-6 z-[100] animate-in fade-in slide-in-from-top-4 duration-300">
+                <div className={`px-4 py-2 rounded-full shadow-2xl border flex items-center gap-3 ${
+                  saveStatus === 'saving' ? 'bg-blue-600 border-blue-500 text-white' :
+                  saveStatus === 'success' ? 'bg-emerald-600 border-emerald-500 text-white' :
+                  'bg-red-600 border-red-500 text-white'
+                }`}>
+                  {saveStatus === 'saving' && <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />}
+                  {saveStatus === 'success' && <div className="w-2 h-2 bg-white rounded-full animate-pulse" />}
+                  <span className="text-[10px] font-black uppercase tracking-widest">
+                    {saveStatus === 'saving' ? 'Sparar...' : saveStatus === 'success' ? 'Sparat!' : 'Fel vid sparning'}
+                  </span>
+                </div>
+              </div>
+            )}
           </header>
 
           <div className="space-y-12 print:space-y-10">

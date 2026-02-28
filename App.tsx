@@ -11,6 +11,7 @@ import SettingsModal from './components/SettingsModal';
 import ModuleEditor from './components/ModuleEditor';
 import Guide from './components/Guide';
 import { Map, List, Settings, Activity, Printer, ChevronLeft, ChevronRight, Plus, Edit3, BookOpen, Square, Crosshair, Image as ImageIcon, Sun, Moon } from 'lucide-react';
+import { supabase } from './supabase';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'table' | 'phasing' | 'guide'>('overview');
@@ -48,22 +49,28 @@ const App: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [pointsRes, layoutRes] = await Promise.all([
-          fetch('/api/v1/points', { cache: 'no-cache' }),
-          fetch('/api/v1/layout', { cache: 'no-cache' })
-        ]);
+        const { data, error } = await supabase
+          .from('app_state')
+          .select('*');
         
-        if (pointsRes.ok) {
-          const pointsData = await pointsRes.json();
-          setPoints(pointsData.length > 0 ? pointsData : MACHINE_POINTS);
+        if (error) throw error;
+
+        const pointsData = data?.find(item => item.key === 'points')?.value;
+        const layoutData = data?.find(item => item.key === 'layout')?.value;
+        
+        if (pointsData) {
+          setPoints(pointsData);
+        } else {
+          setPoints(MACHINE_POINTS);
         }
         
-        if (layoutRes.ok) {
-          const layoutData = await layoutRes.json();
-          setLayout(layoutData.length > 0 ? layoutData : DEFAULT_MACHINE_LAYOUT);
+        if (layoutData) {
+          setLayout(layoutData);
+        } else {
+          setLayout(DEFAULT_MACHINE_LAYOUT);
         }
       } catch (error) {
-        console.error("Failed to fetch data:", error);
+        console.error("Failed to fetch data from Supabase:", error);
         // Fallback to constants if fetch fails
         setPoints(MACHINE_POINTS);
         setLayout(DEFAULT_MACHINE_LAYOUT);
@@ -78,7 +85,7 @@ const App: React.FC = () => {
   const [customMapUrl, setCustomMapUrl] = useState<string | null>(() => localStorage.getItem('centerline_map_url'));
   const [publicBaseUrl, setPublicBaseUrl] = useState<string>(() => localStorage.getItem('centerline_public_url') || '');
 
-  // Save points to API
+  // Save points to Supabase
   const savePoints = async (newPoints: MachinePoint[]) => {
     const previousPoints = [...points];
     setPoints(newPoints);
@@ -86,30 +93,16 @@ const App: React.FC = () => {
     setSaveStatus('saving');
     
     try {
-      const url = `/api/v1/points`;
-      console.log(`Attempting to save points to: ${url}`);
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newPoints),
-        cache: 'no-cache'
-      });
+      const { error } = await supabase
+        .from('app_state')
+        .upsert({ key: 'points', value: newPoints });
       
-      if (!response.ok) {
-        const errorText = await response.text().catch(() => "No error body");
-        console.error(`Save points failed: ${response.status} - ${errorText}`);
-        let errorMessage = `HTTP error! status: ${response.status}`;
-        try {
-          const errorData = JSON.parse(errorText);
-          if (errorData.error) errorMessage = errorData.error;
-        } catch (e) {}
-        throw new Error(errorMessage);
-      }
+      if (error) throw error;
       
       setSaveStatus('success');
       setTimeout(() => setSaveStatus('idle'), 2000);
     } catch (error: any) {
-      console.error("Failed to save points:", error);
+      console.error("Failed to save points to Supabase:", error);
       setPoints(previousPoints); // Rollback
       setSaveStatus('error');
       alert(`Kunde inte spara punkter: ${error.message || 'Okänt fel'}`);
@@ -118,7 +111,7 @@ const App: React.FC = () => {
     }
   };
 
-  // Save layout to API
+  // Save layout to Supabase
   const saveLayout = async (newLayout: MachineModule[]) => {
     const previousLayout = [...layout];
     setLayout(newLayout);
@@ -126,30 +119,16 @@ const App: React.FC = () => {
     setSaveStatus('saving');
     
     try {
-      const url = `/api/v1/layout`;
-      console.log(`Attempting to save layout to: ${url}`);
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newLayout),
-        cache: 'no-cache'
-      });
+      const { error } = await supabase
+        .from('app_state')
+        .upsert({ key: 'layout', value: newLayout });
       
-      if (!response.ok) {
-        const errorText = await response.text().catch(() => "No error body");
-        console.error(`Save layout failed: ${response.status} - ${errorText}`);
-        let errorMessage = `HTTP error! status: ${response.status}`;
-        try {
-          const errorData = JSON.parse(errorText);
-          if (errorData.error) errorMessage = errorData.error;
-        } catch (e) {}
-        throw new Error(errorMessage);
-      }
+      if (error) throw error;
       
       setSaveStatus('success');
       setTimeout(() => setSaveStatus('idle'), 2000);
     } catch (error: any) {
-      console.error("Failed to save layout:", error);
+      console.error("Failed to save layout to Supabase:", error);
       setLayout(previousLayout); // Rollback
       setSaveStatus('error');
       alert(`Kunde inte spara layout: ${error.message || 'Okänt fel'}`);

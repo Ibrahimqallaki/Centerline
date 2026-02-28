@@ -40,11 +40,15 @@ async function startServer() {
   app.post("/api/points", (req, res) => {
     try {
       const points = req.body;
+      if (!points) {
+        return res.status(400).json({ error: "No points data provided" });
+      }
       fs.writeFileSync(DATA_FILE, JSON.stringify(points, null, 2));
+      console.log(`Successfully saved ${points.length} points to ${DATA_FILE}`);
       res.json({ success: true });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error saving points:", error);
-      res.status(500).json({ error: "Failed to save points" });
+      res.status(500).json({ error: `Failed to save points: ${error.message}` });
     }
   });
 
@@ -57,20 +61,24 @@ async function startServer() {
       } else {
         res.json([]);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error reading layout:", error);
-      res.status(500).json({ error: "Failed to read layout" });
+      res.status(500).json({ error: `Failed to read layout: ${error.message}` });
     }
   });
 
   app.post("/api/layout", (req, res) => {
     try {
       const layout = req.body;
+      if (!layout) {
+        return res.status(400).json({ error: "No layout data provided" });
+      }
       fs.writeFileSync(LAYOUT_FILE, JSON.stringify(layout, null, 2));
+      console.log(`Successfully saved layout with ${layout.length} modules to ${LAYOUT_FILE}`);
       res.json({ success: true });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error saving layout:", error);
-      res.status(500).json({ error: "Failed to save layout" });
+      res.status(500).json({ error: `Failed to save layout: ${error.message}` });
     }
   });
 

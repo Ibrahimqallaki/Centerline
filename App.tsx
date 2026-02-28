@@ -93,16 +93,17 @@ const App: React.FC = () => {
       });
       
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
       }
       
       setSaveStatus('success');
       setTimeout(() => setSaveStatus('idle'), 2000);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to save points:", error);
       setPoints(previousPoints); // Rollback
       setSaveStatus('error');
-      alert("Kunde inte spara data till servern. Kontrollera din anslutning eller om bilden är för stor.");
+      alert(`Kunde inte spara punkter: ${error.message || 'Okänt fel'}`);
     } finally {
       setIsSaving(false);
     }
@@ -123,16 +124,17 @@ const App: React.FC = () => {
       });
       
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
       }
       
       setSaveStatus('success');
       setTimeout(() => setSaveStatus('idle'), 2000);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to save layout:", error);
       setLayout(previousLayout); // Rollback
       setSaveStatus('error');
-      alert("Kunde inte spara layout till servern.");
+      alert(`Kunde inte spara layout: ${error.message || 'Okänt fel'}`);
     } finally {
       setIsSaving(false);
     }

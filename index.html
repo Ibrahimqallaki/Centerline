@@ -5,6 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Centerline Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
       // Initialize theme immediately to prevent flashing
       (function() {
@@ -19,16 +20,13 @@
       })();
 
       // Tailwind configuration
-      window.tailwind = {
-        config: {
-          darkMode: 'class',
-          theme: {
-            extend: {}
-          }
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {}
         }
       }
     </script>
-    <script src="https://cdn.tailwindcss.com"></script>
     <style>
       /* Industriell scrollbar för skärm */
       ::-webkit-scrollbar { width: 6px; height: 6px; }

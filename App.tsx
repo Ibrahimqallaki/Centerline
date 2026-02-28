@@ -289,6 +289,14 @@ const App: React.FC = () => {
                 <Printer size={20} />
                 <span className="text-[9px] font-bold mt-1">Print</span>
              </button>
+             <button 
+                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} 
+                className="flex flex-col items-center justify-center min-w-[50px] p-1 rounded-lg text-gray-500"
+                title={theme === 'dark' ? "Byt till ljust tema" : "Byt till mörkt tema"}
+              >
+                {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+                <span className="text-[9px] font-bold mt-1">{theme === 'dark' ? 'Ljust' : 'Mörkt'}</span>
+             </button>
              <button onClick={() => setIsSettingsOpen(true)} className="flex flex-col items-center justify-center min-w-[50px] p-1 rounded-lg text-gray-500">
                 <Settings size={20} />
                 <span className="text-[9px] font-bold mt-1">Inställn.</span>

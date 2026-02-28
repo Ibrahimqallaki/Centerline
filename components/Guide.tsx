@@ -19,10 +19,41 @@ const Guide: React.FC<GuideProps> = ({
   const [selectedDef, setSelectedDef] = useState<DefinitionDetail | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState<DefinitionDetail | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleEditClick = (def: DefinitionDetail) => {
     setEditForm({ ...def });
     setIsEditing(true);
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Check file size (max 1MB for Base64 storage in DB)
+    if (file.size > 1024 * 1024) {
+      alert("Bilden är för stor. Max 1MB tillåtet för uppladdning.");
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        setEditForm(prev => prev ? { ...prev, visual: base64String } : null);
+        setIsUploading(false);
+      };
+      reader.onerror = () => {
+        alert("Kunde inte läsa filen.");
+        setIsUploading(false);
+      };
+      reader.readAsDataURL(file);
+    } catch (error) {
+      console.error("Upload error:", error);
+      alert("Ett fel uppstod vid uppladdning.");
+      setIsUploading(false);
+    }
   };
 
   const handleSave = () => {
@@ -104,15 +135,28 @@ const Guide: React.FC<GuideProps> = ({
                 <div className="space-y-6">
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                      <ImageIcon size={12} /> Bild-URL
+                      <ImageIcon size={12} /> Bild
                     </label>
-                    <input 
-                      type="text"
-                      value={editForm?.visual || ''}
-                      onChange={(e) => setEditForm(prev => prev ? { ...prev, visual: e.target.value } : null)}
-                      className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="https://images.unsplash.com/..."
-                    />
+                    <div className="flex gap-2">
+                      <input 
+                        type="text"
+                        value={editForm?.visual || ''}
+                        onChange={(e) => setEditForm(prev => prev ? { ...prev, visual: e.target.value } : null)}
+                        className="flex-1 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="Bild-URL eller ladda upp..."
+                      />
+                      <label className="cursor-pointer px-4 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold text-xs flex items-center gap-2 transition-colors whitespace-nowrap">
+                        <ImageIcon size={16} />
+                        {isUploading ? 'LADDAR...' : 'LADDA UPP'}
+                        <input 
+                          type="file" 
+                          className="hidden" 
+                          accept="image/*"
+                          onChange={handleFileChange}
+                          disabled={isUploading}
+                        />
+                      </label>
+                    </div>
                   </div>
 
                   <div className="space-y-2">

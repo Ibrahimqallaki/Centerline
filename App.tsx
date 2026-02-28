@@ -14,7 +14,14 @@ import { Map, List, Settings, Activity, Printer, ChevronLeft, ChevronRight, Plus
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'table' | 'phasing' | 'guide'>('overview');
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('sidebar_collapsed');
+      // Default to collapsed on mobile/small screens, but respect preference on desktop
+      return saved === 'false' ? false : true;
+    }
+    return true;
+  });
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('theme');
@@ -221,12 +228,14 @@ const App: React.FC = () => {
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  setIsSidebarCollapsed(prev => !prev);
+                  setIsSidebarCollapsed(!isSidebarCollapsed);
                 }} 
-                className={`absolute -right-3 top-7 w-7 h-7 ${theme === 'dark' ? 'bg-gray-800 text-gray-400 hover:text-white border-gray-700' : 'bg-white text-gray-500 hover:text-gray-900 border-gray-200'} rounded-full border shadow-xl flex items-center justify-center z-50 transition-transform hover:scale-110 active:scale-95 cursor-pointer`}
+                className={`absolute -right-3.5 top-7 w-7 h-7 ${theme === 'dark' ? 'bg-gray-800 text-gray-400 hover:text-white border-gray-700' : 'bg-white text-gray-500 hover:text-gray-900 border-gray-200'} rounded-full border shadow-xl flex items-center justify-center z-[60] transition-all hover:scale-110 active:scale-90 cursor-pointer group`}
                 title={isSidebarCollapsed ? "Öppna meny" : "Stäng meny"}
               >
-               {isSidebarCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+               <div className="transition-transform duration-300 group-hover:scale-110">
+                 {isSidebarCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+               </div>
              </button>
           </div>
           

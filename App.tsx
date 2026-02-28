@@ -48,6 +48,14 @@ const App: React.FC = () => {
   // Fetch initial data
   useEffect(() => {
     const fetchData = async () => {
+      if (!supabase) {
+        console.warn("Supabase client not initialized. Using local defaults.");
+        setPoints(MACHINE_POINTS);
+        setLayout(DEFAULT_MACHINE_LAYOUT);
+        setIsLoading(false);
+        return;
+      }
+      
       try {
         const { data, error } = await supabase
           .from('app_state')
@@ -87,6 +95,11 @@ const App: React.FC = () => {
 
   // Save points to Supabase
   const savePoints = async (newPoints: MachinePoint[]) => {
+    if (!supabase) {
+      alert("Supabase är inte konfigurerat. Kan inte spara.");
+      return;
+    }
+    
     const previousPoints = [...points];
     setPoints(newPoints);
     setIsSaving(true);
@@ -113,6 +126,11 @@ const App: React.FC = () => {
 
   // Save layout to Supabase
   const saveLayout = async (newLayout: MachineModule[]) => {
+    if (!supabase) {
+      alert("Supabase är inte konfigurerat. Kan inte spara.");
+      return;
+    }
+    
     const previousLayout = [...layout];
     setLayout(newLayout);
     setIsSaving(true);

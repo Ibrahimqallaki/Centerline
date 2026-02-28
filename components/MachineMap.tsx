@@ -163,6 +163,14 @@ const MachineMap: React.FC<MachineMapProps> = ({
                   if (onPointClick) onPointClick(point);
                 }}
               >
+                {/* Invisible larger hit area to make it easier to click */}
+                <circle 
+                  cx={point.coordinates.x * 10} 
+                  cy={point.coordinates.y * 5} 
+                  r="25" 
+                  fill="transparent" 
+                />
+
                 {/* Outer ring for selected/critical */}
                 {(isSelected || isCritical) && (
                   <circle 
@@ -173,6 +181,7 @@ const MachineMap: React.FC<MachineMapProps> = ({
                     stroke={color}
                     strokeWidth="2"
                     strokeDasharray={isSelected ? "none" : "4,2"}
+                    style={{ transformOrigin: 'center', transformBox: 'fill-box' }}
                     className={isCritical ? "animate-pulse" : ""}
                   />
                 )}
@@ -184,7 +193,8 @@ const MachineMap: React.FC<MachineMapProps> = ({
                   fill={color}
                   stroke="white"
                   strokeWidth="2"
-                  className="transition-all duration-200 group-hover:scale-110 shadow-xl"
+                  style={{ transformOrigin: 'center', transformBox: 'fill-box' }}
+                  className="transition-all duration-200 group-hover:scale-125"
                 />
                 <text 
                   x={point.coordinates.x * 10} 

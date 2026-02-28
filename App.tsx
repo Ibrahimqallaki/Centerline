@@ -282,7 +282,7 @@ const App: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className={`flex items-center justify-center w-full h-full ${theme === 'dark' ? 'bg-gray-950' : 'bg-gray-50'}`}>
+      <div className={`flex items-center justify-center w-full h-full ${theme === 'dark' ? 'bg-gray-950' : 'bg-[#F8FAFC]'}`}>
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
           <p className="text-gray-400 font-black uppercase tracking-widest text-xs">Laddar Systemdata...</p>
@@ -292,20 +292,20 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className={`flex flex-row w-full h-full ${theme === 'dark' ? 'bg-gray-950 text-gray-100' : 'bg-gray-50 text-gray-900'} overflow-hidden font-sans print:bg-white print:text-black print:overflow-visible transition-colors duration-300`}>
+    <div className={`flex flex-row w-full h-full ${theme === 'dark' ? 'bg-gray-950 text-gray-100' : 'bg-[#F8FAFC] text-[#0F172A]'} overflow-hidden font-sans print:bg-white print:text-black print:overflow-visible transition-colors duration-300`}>
       
       {/* Sidebar / Mobile Nav */}
       <aside className={`
-        fixed bottom-0 left-0 right-0 h-16 ${theme === 'dark' ? 'bg-black border-gray-900' : 'bg-white border-gray-200'} border-t flex flex-row justify-around items-center z-40 print:hidden
+        fixed bottom-0 left-0 right-0 h-16 ${theme === 'dark' ? 'bg-black border-gray-900' : 'bg-white border-[#E2E8F0]'} border-t flex flex-row justify-around items-center z-40 print:hidden
         md:relative md:h-auto md:w-64 md:border-r md:border-t-0 md:flex-col md:justify-between md:items-stretch
         ${isSidebarCollapsed ? 'md:w-20' : 'md:w-64'}
         transition-all duration-300 shadow-2xl
       `}>
         <div className="hidden md:block">
-          <div className={`h-20 flex items-center px-5 border-b ${theme === 'dark' ? 'border-gray-900' : 'border-gray-200'} relative`}>
+          <div className={`h-20 flex items-center px-5 border-b ${theme === 'dark' ? 'border-gray-900' : 'border-[#E2E8F0]'} relative`}>
              <div className="flex items-center overflow-hidden">
                <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center font-black text-2xl italic shadow-lg shrink-0 text-white">C</div>
-               {!isSidebarCollapsed && <span className={`ml-3 font-black text-xl italic uppercase tracking-tighter ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Centerline</span>}
+               {!isSidebarCollapsed && <span className={`ml-3 font-black text-xl italic uppercase tracking-tighter ${theme === 'dark' ? 'text-white' : 'text-[#0F172A]'}`}>Centerline</span>}
              </div>
              
              <button 
@@ -314,7 +314,7 @@ const App: React.FC = () => {
                   e.stopPropagation();
                   setIsSidebarCollapsed(!isSidebarCollapsed);
                 }} 
-                className={`absolute -right-3.5 top-7 w-7 h-7 ${theme === 'dark' ? 'bg-gray-800 text-gray-400 hover:text-white border-gray-700' : 'bg-white text-gray-500 hover:text-gray-900 border-gray-200'} rounded-full border shadow-xl flex items-center justify-center z-[60] transition-all hover:scale-110 active:scale-90 cursor-pointer group`}
+                className={`absolute -right-3.5 top-7 w-7 h-7 ${theme === 'dark' ? 'bg-gray-800 text-gray-400 hover:text-white border-gray-700' : 'bg-white text-gray-500 hover:text-[#0F172A] border-[#E2E8F0]'} rounded-full border shadow-xl flex items-center justify-center z-[60] transition-all hover:scale-110 active:scale-90 cursor-pointer group`}
                 title={isSidebarCollapsed ? "Öppna meny" : "Stäng meny"}
               >
                <div className="transition-transform duration-300 group-hover:scale-110">
@@ -332,17 +332,17 @@ const App: React.FC = () => {
               <button 
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)} 
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === tab.id ? 'bg-blue-600 text-white shadow-lg' : (theme === 'dark' ? 'text-gray-500 hover:bg-gray-900' : 'text-gray-600 hover:bg-gray-100')}`}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === tab.id ? 'bg-blue-600 text-white shadow-lg' : (theme === 'dark' ? 'text-gray-500 hover:bg-gray-900' : 'text-slate-500 hover:bg-slate-100')}`}
               >
                 <tab.icon size={20} className="shrink-0" />
                 {!isSidebarCollapsed && <span className="font-bold">{tab.label}</span>}
               </button>
             ))}
             
-            <div className={`pt-4 mt-4 border-t ${theme === 'dark' ? 'border-gray-900' : 'border-gray-200'} space-y-2`}>
+            <div className={`pt-4 mt-4 border-t ${theme === 'dark' ? 'border-gray-900' : 'border-[#E2E8F0]'} space-y-2`}>
               <button 
                 onClick={() => { setIsDesignMode(!isDesignMode); setSelectedPoint(null); }}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${isDesignMode ? 'bg-amber-600 text-black shadow-lg' : (theme === 'dark' ? 'text-gray-500 hover:bg-gray-900' : 'text-gray-600 hover:bg-gray-100')}`}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${isDesignMode ? 'bg-amber-600 text-black shadow-lg' : (theme === 'dark' ? 'text-gray-500 hover:bg-gray-900' : 'text-slate-500 hover:bg-slate-100')}`}
               >
                 <Edit3 size={20} className="shrink-0" />
                 {!isSidebarCollapsed && <span className="font-bold">{isDesignMode ? 'Lås Layout' : 'Redigera'}</span>}
@@ -350,7 +350,7 @@ const App: React.FC = () => {
               
               <button 
                 onClick={handlePrint} 
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${theme === 'dark' ? 'text-gray-500 hover:bg-gray-900 hover:text-white' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'}`}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${theme === 'dark' ? 'text-gray-500 hover:bg-gray-900 hover:text-white' : 'text-slate-500 hover:bg-slate-100 hover:text-[#0F172A]'}`}
               >
                 <Printer size={20} className="shrink-0" />
                 {!isSidebarCollapsed && <span className="font-bold">Skriv ut / PDF</span>}
@@ -396,16 +396,16 @@ const App: React.FC = () => {
              </button>
         </nav>
 
-        <div className={`hidden md:block p-3 border-t ${theme === 'dark' ? 'border-gray-800' : 'border-gray-200'}`}>
+        <div className={`hidden md:block p-3 border-t ${theme === 'dark' ? 'border-gray-800' : 'border-[#E2E8F0]'}`}>
            <button 
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} 
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${theme === 'dark' ? 'text-gray-500 hover:text-white hover:bg-gray-900' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'}`}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${theme === 'dark' ? 'text-gray-500 hover:text-white hover:bg-gray-900' : 'text-slate-500 hover:text-[#0F172A] hover:bg-slate-100'}`}
               title={theme === 'dark' ? "Byt till ljust tema" : "Byt till mörkt tema"}
            >
               {theme === 'dark' ? <Sun size={20} className="shrink-0" /> : <Moon size={20} className="shrink-0" />}
               {!isSidebarCollapsed && <span className="font-bold">{theme === 'dark' ? 'Ljust tema' : 'Mörkt tema'}</span>}
            </button>
-           <button onClick={() => setIsSettingsOpen(true)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${theme === 'dark' ? 'text-gray-500 hover:text-white hover:bg-gray-900' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'}`}>
+           <button onClick={() => setIsSettingsOpen(true)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${theme === 'dark' ? 'text-gray-500 hover:text-white hover:bg-gray-900' : 'text-slate-500 hover:text-[#0F172A] hover:bg-slate-100'}`}>
               <Settings size={20} className="shrink-0" />
               {!isSidebarCollapsed && <span className="font-bold">Inställningar</span>}
            </button>
@@ -413,12 +413,12 @@ const App: React.FC = () => {
       </aside>
 
       {/* Main Content */}
-      <main className={`flex-1 flex flex-col min-w-0 ${theme === 'dark' ? 'bg-gray-950' : 'bg-gray-50'} overflow-y-auto relative print:bg-white print:overflow-visible pb-20 md:pb-0 transition-colors duration-300`}>
+      <main className={`flex-1 flex flex-col min-w-0 ${theme === 'dark' ? 'bg-gray-950' : 'bg-[#F8FAFC]'} overflow-y-auto relative print:bg-white print:overflow-visible pb-20 md:pb-0 transition-colors duration-300`}>
         <div className="max-w-6xl mx-auto w-full p-6 lg:p-10 space-y-8 print:max-w-none print:p-0">
           
-          <header className={`flex justify-between items-end border-b ${theme === 'dark' ? 'border-gray-800' : 'border-gray-200'} pb-6 print:border-black print:mb-10`}>
+          <header className={`flex justify-between items-end border-b ${theme === 'dark' ? 'border-gray-800' : 'border-[#E2E8F0]'} pb-6 print:border-black print:mb-10`}>
             <div>
-              <h1 className={`text-3xl font-black uppercase italic tracking-tighter ${theme === 'dark' ? 'text-white' : 'text-gray-900'} print:text-black print:text-4xl`}>CENTERLINE: TP-24</h1>
+              <h1 className={`text-3xl font-black uppercase italic tracking-tighter ${theme === 'dark' ? 'text-white' : 'text-[#0F172A]'} print:text-black print:text-4xl`}>CENTERLINE: TP-24</h1>
               <p className="text-gray-500 text-[10px] font-black uppercase tracking-[0.3em] mt-1 print:text-black print:text-xs italic">Systemdokumentation för optimerad produktion</p>
             </div>
             
@@ -479,13 +479,13 @@ const App: React.FC = () => {
                   </button>
                   <button 
                     onClick={() => setIsSettingsOpen(true)}
-                    className={`flex items-center gap-2 px-4 py-2 ${theme === 'dark' ? 'bg-gray-800 hover:bg-gray-700 text-gray-300 border-gray-700' : 'bg-white hover:bg-gray-100 text-gray-600 border-gray-300'} rounded-xl font-black text-[10px] uppercase tracking-widest border transition-all`}
+                    className={`flex items-center gap-2 px-4 py-2 ${theme === 'dark' ? 'bg-gray-800 hover:bg-gray-700 text-gray-300 border-gray-700' : 'bg-white hover:bg-slate-50 text-slate-600 border-[#E2E8F0]'} rounded-xl font-black text-[10px] uppercase tracking-widest border transition-all`}
                   >
                     <ImageIcon size={14} /> Ändra Bakgrundsbild
                   </button>
                 </div>
               )}
-              <div className={`${theme === 'dark' ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-200'} rounded-[2.5rem] p-2 border shadow-2xl print:border-2 print:border-black print:p-0 print:rounded-none relative overflow-hidden print:bg-white transition-colors duration-300`}>
+              <div className={`${theme === 'dark' ? 'bg-gray-900 border-gray-800' : 'bg-white border-[#E2E8F0]'} rounded-[2.5rem] p-2 border shadow-2xl print:border-2 print:border-black print:p-0 print:rounded-none relative overflow-hidden print:bg-white transition-colors duration-300`}>
                 <MachineMap 
                   points={points} 
                   layout={layout}

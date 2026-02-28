@@ -20,36 +20,36 @@ const PointDetail: React.FC<PointDetailProps> = ({ point, onUpdate, onEdit, onCl
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 print:hidden">
-      <div className={`${theme === 'dark' ? 'bg-gray-800 border-gray-600' : 'bg-white border-gray-200'} w-full max-w-5xl max-h-[95vh] rounded-2xl border shadow-xl overflow-hidden flex flex-col transition-colors duration-300`}>
+      <div className={`${theme === 'dark' ? 'bg-gray-800 border-gray-600' : 'bg-white border-[#E2E8F0]'} w-full max-w-5xl max-h-[95vh] rounded-2xl border shadow-xl overflow-hidden flex flex-col transition-colors duration-300`}>
         
         {/* Header - CLEANED UP */}
-        <div className={`flex justify-between items-center p-6 border-b ${theme === 'dark' ? 'border-gray-700 bg-gray-900' : 'border-gray-200 bg-gray-50'}`}>
+        <div className={`flex justify-between items-center p-6 border-b ${theme === 'dark' ? 'border-gray-700 bg-gray-900' : 'border-[#E2E8F0] bg-slate-50'}`}>
           <div>
             <div className="flex items-center gap-3">
-               <span className={`${theme === 'dark' ? 'bg-gray-700 text-gray-300' : 'bg-gray-200 text-gray-600'} px-2 py-1 rounded text-sm font-mono`}>{point.id}</span>
-               <h2 className={`text-2xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>{point.name}</h2>
+               <span className={`${theme === 'dark' ? 'bg-gray-700 text-gray-300' : 'bg-slate-200 text-slate-600'} px-2 py-1 rounded text-sm font-mono`}>{point.id}</span>
+               <h2 className={`text-2xl font-bold ${theme === 'dark' ? 'text-white' : 'text-[#0F172A]'}`}>{point.name}</h2>
             </div>
             <p className="text-gray-400 mt-1">{point.section} &bull; Punkt #{point.number}</p>
           </div>
           
           <div className="flex items-center gap-3">
             {/* Status Selector */}
-            <div className={`flex ${theme === 'dark' ? 'bg-gray-950 border-gray-700' : 'bg-gray-100 border-gray-200'} p-1 rounded-xl border`}>
+            <div className={`flex ${theme === 'dark' ? 'bg-gray-950 border-gray-700' : 'bg-slate-100 border-[#E2E8F0]'} p-1 rounded-xl border`}>
               <button 
                 onClick={() => handleStatusChange(PointStatus.OK)}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all ${point.status === PointStatus.OK || !point.status ? 'bg-green-600 text-white' : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'}`}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all ${point.status === PointStatus.OK || !point.status ? 'bg-green-600 text-white' : 'text-slate-500 hover:text-slate-700 dark:hover:text-gray-300'}`}
               >
                 <CheckCircle2 size={14} /> OK
               </button>
               <button 
                 onClick={() => handleStatusChange(PointStatus.TAGGED_YELLOW)}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all ${point.status === PointStatus.TAGGED_YELLOW ? 'bg-orange-500 text-white' : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'}`}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all ${point.status === PointStatus.TAGGED_YELLOW ? 'bg-[#D97706] text-white' : 'text-slate-500 hover:text-slate-700 dark:hover:text-gray-300'}`}
               >
                 <Tag size={14} /> Gul Tagg (P2)
               </button>
               <button 
                 onClick={() => handleStatusChange(PointStatus.TAGGED_RED)}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all ${point.status === PointStatus.TAGGED_RED ? 'bg-red-600 text-white' : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'}`}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all ${point.status === PointStatus.TAGGED_RED ? 'bg-[#DC2626] text-white' : 'text-slate-500 hover:text-slate-700 dark:hover:text-gray-300'}`}
               >
                 <AlertTriangle size={14} /> Röd Tagg (P1)
               </button>
@@ -58,13 +58,13 @@ const PointDetail: React.FC<PointDetailProps> = ({ point, onUpdate, onEdit, onCl
             <div className="h-8 w-px bg-gray-300 dark:bg-gray-700 mx-2"></div>
 
             {isP1 && (
-              <span className="px-3 py-1 bg-red-100 dark:bg-red-900/50 text-red-600 dark:text-red-200 text-xs font-bold uppercase rounded border border-red-200 dark:border-red-800 flex items-center gap-2">
+              <span className="px-3 py-1 bg-red-100 dark:bg-red-900/50 text-[#DC2626] dark:text-red-200 text-xs font-bold uppercase rounded border border-red-200 dark:border-red-800 flex items-center gap-2">
                 <AlertOctagon size={14} />
                 P1: Kritisk
               </span>
             )}
             {isP2 && (
-              <span className="px-3 py-1 bg-orange-100 dark:bg-orange-900/50 text-orange-600 dark:text-orange-200 text-xs font-bold uppercase rounded border border-orange-200 dark:border-orange-800 flex items-center gap-2">
+              <span className="px-3 py-1 bg-amber-100 dark:bg-orange-900/50 text-[#D97706] dark:text-orange-200 text-xs font-bold uppercase rounded border border-amber-200 dark:border-orange-800 flex items-center gap-2">
                 <Tag size={14} />
                 P2: Viktig
               </span>
@@ -83,51 +83,51 @@ const PointDetail: React.FC<PointDetailProps> = ({ point, onUpdate, onEdit, onCl
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Image 1 */}
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">1. Översikt</label>
-                  <div className={`relative aspect-[4/3] ${theme === 'dark' ? 'bg-black border-gray-600' : 'bg-gray-200 border-gray-300'} rounded-2xl overflow-hidden border group shadow-xl transition-colors duration-300`}>
+                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">1. Översikt</label>
+                  <div className={`relative aspect-[4/3] ${theme === 'dark' ? 'bg-black border-gray-600' : 'bg-slate-200 border-slate-300'} rounded-2xl overflow-hidden border group shadow-xl transition-colors duration-300`}>
                     <img src={point.imagePlaceholder} alt="Overview" className="w-full h-full object-cover" />
                   </div>
                 </div>
 
                 {/* Image 2 */}
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">2. Detalj / Inställning</label>
-                  <div className={`relative aspect-[4/3] ${theme === 'dark' ? 'bg-black border-gray-600' : 'bg-gray-200 border-gray-300'} rounded-2xl overflow-hidden border group shadow-xl transition-colors duration-300`}>
+                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">2. Detalj / Inställning</label>
+                  <div className={`relative aspect-[4/3] ${theme === 'dark' ? 'bg-black border-gray-600' : 'bg-slate-200 border-slate-300'} rounded-2xl overflow-hidden border group shadow-xl transition-colors duration-300`}>
                     {point.imagePlaceholder2 ? (
                       <img src={point.imagePlaceholder2} alt="Detail" className="w-full h-full object-cover" />
                     ) : (
-                      <div className={`w-full h-full flex items-center justify-center ${theme === 'dark' ? 'bg-gray-900 text-gray-700' : 'bg-gray-100 text-gray-400'} italic text-sm`}>Ingen detaljbild</div>
+                      <div className={`w-full h-full flex items-center justify-center ${theme === 'dark' ? 'bg-gray-900 text-gray-700' : 'bg-slate-100 text-slate-400'} italic text-sm`}>Ingen detaljbild</div>
                     )}
                   </div>
                 </div>
               </div>
 
-              <button className={`w-full py-4 ${theme === 'dark' ? 'bg-gray-900/50 hover:bg-gray-700 border-gray-700' : 'bg-gray-100 hover:bg-gray-200 border-gray-200'} rounded-xl flex items-center justify-center gap-3 transition-all border group`}>
+              <button className={`w-full py-4 ${theme === 'dark' ? 'bg-gray-900/50 hover:bg-gray-700 border-gray-700' : 'bg-slate-100 hover:bg-slate-200 border-[#E2E8F0]'} rounded-xl flex items-center justify-center gap-3 transition-all border group`}>
                 <Video size={24} className="text-blue-500 group-hover:scale-110 transition-transform" />
-                <span className={`font-bold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>Spela upp instruktionsfilm (Kommer snart)</span>
+                <span className={`font-bold ${theme === 'dark' ? 'text-gray-300' : 'text-slate-600'}`}>Spela upp instruktionsfilm (Kommer snart)</span>
               </button>
             </div>
 
             {/* Data & Risk - REARRANGED */}
             <div className="lg:col-span-4 space-y-6">
-              <div className={`${theme === 'dark' ? 'bg-gray-900/80 border-gray-700' : 'bg-gray-50 border-gray-200'} p-6 rounded-2xl border shadow-inner`}>
+              <div className={`${theme === 'dark' ? 'bg-gray-900/80 border-gray-700' : 'bg-white border-[#E2E8F0]'} p-6 rounded-2xl border shadow-inner`}>
                 <div className="space-y-6">
                   <div>
-                    <span className="text-gray-500 text-[10px] font-black uppercase tracking-[0.2em] block mb-2">Målvärde (Centerline)</span>
+                    <span className="text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] block mb-2">Målvärde (Centerline)</span>
                     <div className="flex items-baseline gap-2">
                       <span className={`text-5xl font-black ${theme === 'dark' ? 'text-green-400' : 'text-green-600'} font-mono tracking-tighter`}>{point.targetValue}</span>
-                      <span className="text-gray-600 font-bold italic text-sm">Target</span>
+                      <span className="text-slate-600 font-bold italic text-sm">Target</span>
                     </div>
                   </div>
 
-                  <div className={`grid grid-cols-2 gap-6 pt-6 border-t ${theme === 'dark' ? 'border-gray-800' : 'border-gray-200'}`}>
+                  <div className={`grid grid-cols-2 gap-6 pt-6 border-t ${theme === 'dark' ? 'border-gray-800' : 'border-[#E2E8F0]'}`}>
                     <div>
-                      <span className="text-gray-600 text-[10px] font-black uppercase tracking-widest block mb-1">Tolerans</span>
-                      <span className={`font-bold text-lg ${theme === 'dark' ? 'text-gray-200' : 'text-gray-800'}`}>{point.tolerance || 'N/A'}</span>
+                      <span className="text-slate-600 text-[10px] font-black uppercase tracking-widest block mb-1">Tolerans</span>
+                      <span className={`font-bold text-lg ${theme === 'dark' ? 'text-gray-200' : 'text-[#0F172A]'}`}>{point.tolerance || 'N/A'}</span>
                     </div>
                     <div>
-                      <span className="text-gray-600 text-[10px] font-black uppercase tracking-widest block mb-1">Mätmetod</span>
-                      <span className={`font-bold text-lg ${theme === 'dark' ? 'text-gray-200' : 'text-gray-800'}`}>{point.measureMethod}</span>
+                      <span className="text-slate-600 text-[10px] font-black uppercase tracking-widest block mb-1">Mätmetod</span>
+                      <span className={`font-bold text-lg ${theme === 'dark' ? 'text-gray-200' : 'text-[#0F172A]'}`}>{point.measureMethod}</span>
                     </div>
                   </div>
 
@@ -161,9 +161,9 @@ const PointDetail: React.FC<PointDetailProps> = ({ point, onUpdate, onEdit, onCl
           </div>
 
           {/* AI Support Placeholder */}
-          <div className={`pt-8 border-t ${theme === 'dark' ? 'border-gray-700' : 'border-gray-200'}`}>
-            <div className={`${theme === 'dark' ? 'bg-gray-900/40 border-gray-700' : 'bg-gray-50 border-gray-300'} border border-dashed rounded-2xl p-8 text-center`}>
-              <div className="flex flex-col items-center gap-3 text-gray-500">
+          <div className={`pt-8 border-t ${theme === 'dark' ? 'border-gray-700' : 'border-[#E2E8F0]'}`}>
+            <div className={`${theme === 'dark' ? 'bg-gray-900/40 border-gray-700' : 'bg-slate-50 border-slate-300'} border border-dashed rounded-2xl p-8 text-center`}>
+              <div className="flex flex-col items-center gap-3 text-slate-500">
                 <Zap size={32} className="opacity-20" />
                 <p className="font-bold italic">AI-stöd kan läggas till om så önskas</p>
                 <p className="text-xs max-w-md mx-auto opacity-60">
@@ -175,13 +175,13 @@ const PointDetail: React.FC<PointDetailProps> = ({ point, onUpdate, onEdit, onCl
         </div>
 
         {/* Footer - ACTIONS MOVED HERE */}
-        <div className={`p-4 border-t ${theme === 'dark' ? 'border-gray-700 bg-gray-900' : 'border-gray-200 bg-gray-50'} flex justify-between items-center gap-4`}>
+        <div className={`p-4 border-t ${theme === 'dark' ? 'border-gray-700 bg-gray-900' : 'border-[#E2E8F0] bg-slate-50'} flex justify-between items-center gap-4`}>
           <button 
              onClick={onEdit} 
-             className={`flex items-center gap-2 px-6 py-3 ${theme === 'dark' ? 'bg-gray-800 hover:bg-gray-700 text-gray-300 border-gray-600' : 'bg-white hover:bg-gray-100 text-gray-600 border-gray-300'} border rounded-lg transition-colors font-medium text-sm group`}
+             className={`flex items-center gap-2 px-6 py-3 ${theme === 'dark' ? 'bg-gray-800 hover:bg-gray-700 text-gray-300 border-gray-600' : 'bg-white hover:bg-slate-100 text-slate-600 border-[#E2E8F0]'} border rounded-lg transition-colors font-medium text-sm group`}
              title="Redigera värden"
           >
-             <PenBox size={18} className={`${theme === 'dark' ? 'text-gray-400 group-hover:text-white' : 'text-gray-500 group-hover:text-gray-900'}`} />
+             <PenBox size={18} className={`${theme === 'dark' ? 'text-gray-400 group-hover:text-white' : 'text-slate-500 group-hover:text-[#0F172A]'}`} />
              Redigera Punkt
           </button>
 

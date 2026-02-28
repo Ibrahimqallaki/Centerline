@@ -15,7 +15,14 @@ import { Map, List, Settings, Activity, Printer, ChevronLeft, ChevronRight, Plus
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'table' | 'phasing' | 'guide'>('overview');
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
-  const [theme, setTheme] = useState<'dark' | 'light'>(() => (localStorage.getItem('theme') as 'dark' | 'light') || 'dark');
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('theme');
+      if (saved === 'light' || saved === 'dark') return saved;
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    return 'dark';
+  });
   const [isDesignMode, setIsDesignMode] = useState(false);
   
   const [isAddingPoint, setIsAddingPoint] = useState(false);
@@ -114,6 +121,8 @@ const App: React.FC = () => {
 
   useEffect(() => {
     localStorage.setItem('sidebar_collapsed', isSidebarCollapsed.toString());
+    
+    // Theme handling
     localStorage.setItem('theme', theme);
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
@@ -121,6 +130,7 @@ const App: React.FC = () => {
       document.documentElement.classList.remove('dark');
     }
     
+    // Map URL handling
     try {
       if (customMapUrl) {
         localStorage.setItem('centerline_map_url', customMapUrl);

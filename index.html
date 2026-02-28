@@ -6,8 +6,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Centerline Pro</title>
     <script>
-      tailwind.config = {
-        darkMode: 'class',
+      // Initialize theme immediately to prevent flashing
+      (function() {
+        try {
+          const theme = localStorage.getItem('theme') || 'dark';
+          if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        } catch (e) {}
+      })();
+
+      // Tailwind configuration
+      window.tailwind = {
+        config: {
+          darkMode: 'class',
+          theme: {
+            extend: {}
+          }
+        }
       }
     </script>
     <script src="https://cdn.tailwindcss.com"></script>

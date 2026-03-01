@@ -105,9 +105,17 @@ const AddPointForm: React.FC<AddPointFormProps> = ({ existingPoints, initialData
                 </div>
                 <div>
                    <label className="block text-[10px] font-black text-gray-500 mb-1 uppercase">Sektion (Maskindel)</label>
-                   <select value={formData.section} onChange={(e) => handleChange('section', e.target.value)} className={`w-full ${theme === 'dark' ? 'bg-gray-900 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'} rounded p-2`}>
-                     <option value="">Välj sektion...</option>
-                     {layout?.map(m => <option key={m.id} value={m.label}>{m.label}</option>)}
+                   <select 
+                     value={formData.section} 
+                     onChange={(e) => handleChange('section', e.target.value)} 
+                     className={`w-full ${theme === 'dark' ? 'bg-gray-900 border-gray-600 text-white' : 'bg-white border-gray-300 text-[#0F172A]'} rounded p-2 focus:ring-2 focus:ring-blue-500 outline-none transition-colors`}
+                   >
+                     <option value="" className={theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-white text-[#0F172A]'}>Välj sektion...</option>
+                     {layout?.map(m => (
+                       <option key={m.id} value={m.label} className={theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-white text-[#0F172A]'}>
+                         {m.label}
+                       </option>
+                     ))}
                    </select>
                 </div>
               </div>
@@ -130,8 +138,16 @@ const AddPointForm: React.FC<AddPointFormProps> = ({ existingPoints, initialData
                 </div>
                  <div>
                    <label className="block text-[10px] font-black text-gray-500 mb-1 uppercase">Kritikalitet</label>
-                   <select value={formData.criticality} onChange={(e) => handleChange('criticality', e.target.value)} className={`w-full ${theme === 'dark' ? 'bg-gray-900 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'} rounded p-2`}>
-                     {Object.values(Criticality).map(c => <option key={c} value={c}>{c}</option>)}
+                   <select 
+                     value={formData.criticality} 
+                     onChange={(e) => handleChange('criticality', e.target.value)} 
+                     className={`w-full ${theme === 'dark' ? 'bg-gray-900 border-gray-600 text-white' : 'bg-white border-gray-300 text-[#0F172A]'} rounded p-2 focus:ring-2 focus:ring-blue-500 outline-none transition-colors`}
+                   >
+                     {Object.values(Criticality).map(c => (
+                       <option key={c} value={c} className={theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-white text-[#0F172A]'}>
+                         {c}
+                       </option>
+                     ))}
                    </select>
                 </div>
                 <div>

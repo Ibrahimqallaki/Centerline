@@ -48,7 +48,7 @@ const ParameterTable: React.FC<ParameterTableProps> = ({ points, sections, onPoi
             <div className="flex items-center gap-2 bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 px-3 py-2 rounded-lg hover:border-slate-300 dark:hover:border-gray-500 transition-colors">
               <Filter size={14} className="text-slate-500 dark:text-gray-400" />
               <select 
-                className="bg-transparent text-[#0F172A] dark:text-white text-xs focus:outline-none appearance-none pr-6 cursor-pointer font-bold"
+                className="bg-white dark:bg-gray-800 text-[#0F172A] dark:text-white text-xs focus:outline-none appearance-none pr-6 cursor-pointer font-bold"
                 value={sectionFilter}
                 onChange={(e) => setSectionFilter(e.target.value)}
               >
@@ -63,7 +63,7 @@ const ParameterTable: React.FC<ParameterTableProps> = ({ points, sections, onPoi
             <div className="flex items-center gap-2 bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 px-3 py-2 rounded-lg hover:border-slate-300 dark:hover:border-gray-500 transition-colors">
               <Tag size={14} className="text-slate-500 dark:text-gray-400" />
               <select 
-                className="bg-transparent text-[#0F172A] dark:text-white text-xs focus:outline-none appearance-none pr-6 cursor-pointer font-bold"
+                className="bg-white dark:bg-gray-800 text-[#0F172A] dark:text-white text-xs focus:outline-none appearance-none pr-6 cursor-pointer font-bold"
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value as any)}
               >

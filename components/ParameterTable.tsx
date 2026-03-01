@@ -10,9 +10,10 @@ interface ParameterTableProps {
   onPointSelect: (point: MachinePoint) => void;
   onUpdatePoint: (point: MachinePoint) => void;
   getQrUrl: (id: string, size?: number) => string;
+  theme?: 'light' | 'dark';
 }
 
-const ParameterTable: React.FC<ParameterTableProps> = ({ points, sections, onPointSelect, onUpdatePoint, getQrUrl }) => {
+const ParameterTable: React.FC<ParameterTableProps> = ({ points, sections, onPointSelect, onUpdatePoint, getQrUrl, theme = 'dark' }) => {
   const [filter, setFilter] = React.useState('');
   const [sectionFilter, setSectionFilter] = React.useState<string | 'All'>('All');
   const [statusFilter, setStatusFilter] = React.useState<PointStatus | 'All'>('All');
@@ -48,12 +49,17 @@ const ParameterTable: React.FC<ParameterTableProps> = ({ points, sections, onPoi
             <div className="flex items-center gap-2 bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 px-3 py-2 rounded-lg hover:border-slate-300 dark:hover:border-gray-500 transition-colors">
               <Filter size={14} className="text-slate-500 dark:text-gray-400" />
               <select 
-                className="bg-white dark:bg-gray-800 text-[#0F172A] dark:text-white text-xs focus:outline-none appearance-none pr-6 cursor-pointer font-bold"
+                className="bg-transparent text-gray-900 dark:text-white text-xs focus:outline-none appearance-none pr-6 cursor-pointer font-bold"
+                style={{ colorScheme: theme }}
                 value={sectionFilter}
                 onChange={(e) => setSectionFilter(e.target.value)}
               >
-                <option value="All" className="bg-white dark:bg-gray-800 text-[#0F172A] dark:text-white">Alla Sektioner</option>
-                {sections.map(s => <option key={s} value={s} className="bg-white dark:bg-gray-800 text-[#0F172A] dark:text-white">{s}</option>)}
+                <option value="All" className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white">Alla Sektioner</option>
+                {sections.map(s => (
+                  <option key={s} value={s} className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                    {s}
+                  </option>
+                ))}
               </select>
               <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 dark:text-gray-500 pointer-events-none" />
             </div>
@@ -63,12 +69,17 @@ const ParameterTable: React.FC<ParameterTableProps> = ({ points, sections, onPoi
             <div className="flex items-center gap-2 bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 px-3 py-2 rounded-lg hover:border-slate-300 dark:hover:border-gray-500 transition-colors">
               <Tag size={14} className="text-slate-500 dark:text-gray-400" />
               <select 
-                className="bg-white dark:bg-gray-800 text-[#0F172A] dark:text-white text-xs focus:outline-none appearance-none pr-6 cursor-pointer font-bold"
+                className="bg-transparent text-gray-900 dark:text-white text-xs focus:outline-none appearance-none pr-6 cursor-pointer font-bold"
+                style={{ colorScheme: theme }}
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value as any)}
               >
-                <option value="All" className="bg-white dark:bg-gray-800 text-[#0F172A] dark:text-white">Alla Status</option>
-                {Object.values(PointStatus).map(s => <option key={s} value={s} className="bg-white dark:bg-gray-800 text-[#0F172A] dark:text-white">{s}</option>)}
+                <option value="All" className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white">Alla Status</option>
+                {Object.values(PointStatus).map(s => (
+                  <option key={s} value={s} className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                    {s}
+                  </option>
+                ))}
               </select>
               <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 dark:text-gray-500 pointer-events-none" />
             </div>

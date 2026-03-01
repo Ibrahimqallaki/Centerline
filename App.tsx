@@ -217,10 +217,10 @@ const App: React.FC = () => {
     localStorage.setItem('theme', theme);
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
-      document.documentElement.style.colorScheme = 'dark';
+      document.documentElement.style.setProperty('color-scheme', 'dark');
     } else {
       document.documentElement.classList.remove('dark');
-      document.documentElement.style.colorScheme = 'light';
+      document.documentElement.style.setProperty('color-scheme', 'light');
     }
     
     // Map URL handling
@@ -510,6 +510,7 @@ const App: React.FC = () => {
                 onPointSelect={setSelectedPoint} 
                 onUpdatePoint={(p) => savePoints(points.map(x => x.id === p.id ? p : x))}
                 getQrUrl={getQrCodeUrl} 
+                theme={theme}
               />
             </section>
 

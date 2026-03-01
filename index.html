@@ -30,6 +30,29 @@
       }
     </script>
     <style>
+      /* Force select and option backgrounds for cross-browser consistency */
+      html:not(.dark) select,
+      html:not(.dark) option {
+        background-color: #ffffff !important;
+        color: #0F172A !important;
+      }
+      html.dark select,
+      html.dark option {
+        background-color: #1f2937 !important; /* gray-800 */
+        color: #ffffff !important;
+      }
+      /* Ensure the dropdown picker itself respects the theme */
+      select {
+        color-scheme: light dark;
+      }
+      html:not(.dark) select {
+        color-scheme: light !important;
+      }
+      html.dark select {
+        color-scheme: dark !important;
+      }
+    </style>
+    <style>
       /* Industriell scrollbar för skärm */
       ::-webkit-scrollbar { width: 6px; height: 6px; }
       ::-webkit-scrollbar-track { background: #f9fafb; }

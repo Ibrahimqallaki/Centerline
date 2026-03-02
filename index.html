@@ -4,8 +4,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="color-scheme" content="light dark" />
     <title>Centerline Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      // Configure Tailwind to use class-based dark mode
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {}
+        }
+      }
+    </script>
     <script>
       // Initialize theme immediately to prevent flashing
       (function() {
@@ -20,20 +30,9 @@
           }
         } catch (e) {}
       })();
-
-      // Tailwind configuration
-      tailwind.config = {
-        darkMode: 'class',
-        theme: {
-          extend: {}
-        }
-      }
     </script>
     <style>
-      /* Force color-scheme at the root level for native UI elements */
-      :root {
-        color-scheme: light dark;
-      }
+      /* Force color-scheme based on class */
       html {
         color-scheme: light;
       }
@@ -41,23 +40,52 @@
         color-scheme: dark;
       }
 
-      /* Force select and option backgrounds for cross-browser consistency */
-      select, option {
-        background-color: #ffffff;
-        color: #0F172A;
-      }
+      /* AGGRESSIVE THEME ENFORCEMENT */
       
-      html.dark select, 
-      html.dark option {
-        background-color: #1f2937;
-        color: #ffffff;
+      /* Light Mode: Force everything to be light */
+      html:not(.dark),
+      html:not(.dark) body,
+      html:not(.dark) select,
+      html:not(.dark) option,
+      html:not(.dark) input,
+      html:not(.dark) textarea,
+      html:not(.dark) ::placeholder {
+        color-scheme: light !important;
+        color: #0F172A;
       }
 
-      /* Override for specific states if needed */
+      /* Specific overrides for Select/Option in Light Mode */
+      html:not(.dark) select,
+      html:not(.dark) option {
+        background-color: #ffffff !important;
+        color: #0F172A !important;
+      }
+
+      /* Dark Mode: Force everything to be dark */
+      html.dark select, 
+      html.dark option {
+        color-scheme: dark !important;
+        background-color: #1f2937 !important;
+        color: #ffffff !important;
+      }
+
+      /* Force Light Dropdown Class - used by React components */
+      .force-light-dropdown {
+        color-scheme: light !important;
+        background-color: #ffffff !important;
+        color: #0F172A !important;
+        border-color: #e2e8f0 !important;
+      }
+      .force-light-dropdown option {
+        background-color: #ffffff !important;
+        color: #0F172A !important;
+      }
+
+      /* Override for specific states */
       html:not(.dark) select:focus,
       html:not(.dark) option:checked {
-        background-color: #e2e8f0; /* slate-200 */
-        color: #0F172A;
+        background-color: #e2e8f0 !important;
+        color: #0F172A !important;
       }
     </style>
     <style>

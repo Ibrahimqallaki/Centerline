@@ -4,6 +4,8 @@ import { MachinePoint, PointStatus, Criticality } from '../types';
 import { Search, AlertTriangle, CheckCircle2, Tag, Filter, ChevronDown } from 'lucide-react';
 import { CRITICALITY_COLORS } from '../constants';
 
+import CustomSelect from './CustomSelect';
+
 interface ParameterTableProps {
   points: MachinePoint[];
   sections: string[];
@@ -45,43 +47,31 @@ const ParameterTable: React.FC<ParameterTableProps> = ({ points, sections, onPoi
           />
         </div>
         <div className="flex flex-wrap gap-2">
-          <div className="relative group">
-            <div className="flex items-center gap-2 bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 px-3 py-2 rounded-lg hover:border-slate-300 dark:hover:border-gray-500 transition-colors">
-              <Filter size={14} className="text-slate-500 dark:text-gray-400" />
-              <select 
-                className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-xs focus:outline-none appearance-none pr-6 cursor-pointer font-bold border-none"
-                value={sectionFilter}
-                onChange={(e) => setSectionFilter(e.target.value)}
-              >
-                <option value="All" className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white">Alla Sektioner</option>
-                {sections.map(s => (
-                  <option key={s} value={s} className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
-                    {s}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-600 dark:text-gray-500 pointer-events-none" />
-            </div>
-          </div>
+          <CustomSelect
+            value={sectionFilter}
+            onChange={(val) => setSectionFilter(val)}
+            options={[
+              { value: 'All', label: 'Alla Sektioner' },
+              ...sections.map(s => ({ value: s, label: s }))
+            ]}
+            placeholder="Alla Sektioner"
+            icon={<Filter size={14} className="text-slate-500 dark:text-gray-400" />}
+            variant="filter"
+            className="min-w-[160px]"
+          />
 
-          <div className="relative group">
-            <div className="flex items-center gap-2 bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 px-3 py-2 rounded-lg hover:border-slate-300 dark:hover:border-gray-500 transition-colors">
-              <Tag size={14} className="text-slate-500 dark:text-gray-400" />
-              <select 
-                className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-xs focus:outline-none appearance-none pr-6 cursor-pointer font-bold border-none"
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value as any)}
-              >
-                <option value="All" className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white">Alla Status</option>
-                {Object.values(PointStatus).map(s => (
-                  <option key={s} value={s} className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
-                    {s}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-600 dark:text-gray-500 pointer-events-none" />
-            </div>
-          </div>
+          <CustomSelect
+            value={statusFilter}
+            onChange={(val) => setStatusFilter(val as any)}
+            options={[
+              { value: 'All', label: 'Alla Status' },
+              ...Object.values(PointStatus).map(s => ({ value: s, label: s }))
+            ]}
+            placeholder="Alla Status"
+            icon={<Tag size={14} className="text-slate-500 dark:text-gray-400" />}
+            variant="filter"
+            className="min-w-[160px]"
+          />
         </div>
       </div>
 

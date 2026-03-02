@@ -1,8 +1,9 @@
 
 import React, { useState } from 'react';
 import { MachinePoint, Criticality, MachineModule } from '../types';
-import { X, Save, MapPin, Eye, EyeOff, MousePointer2, Upload } from 'lucide-react';
+import { X, Save, MapPin, Eye, EyeOff, MousePointer2, Upload, ChevronDown } from 'lucide-react';
 import MachineMap from './MachineMap';
+import CustomSelect from './CustomSelect';
 
 interface AddPointFormProps {
   existingPoints: MachinePoint[];
@@ -105,18 +106,16 @@ const AddPointForm: React.FC<AddPointFormProps> = ({ existingPoints, initialData
                 </div>
                 <div>
                    <label className="block text-[10px] font-black text-gray-500 mb-1 uppercase">Sektion (Maskindel)</label>
-                   <select 
-                     value={formData.section} 
-                     onChange={(e) => handleChange('section', e.target.value)} 
-                     className={`w-full ${theme === 'dark' ? 'bg-gray-900 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'} rounded p-2 focus:ring-2 focus:ring-blue-500 outline-none transition-colors`}
-                   >
-                     <option value="" className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white">Välj sektion...</option>
-                     {layout?.map(m => (
-                       <option key={m.id} value={m.label} className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
-                         {m.label}
-                       </option>
-                     ))}
-                   </select>
+                   <CustomSelect
+                     value={formData.section || ''}
+                     onChange={(val) => handleChange('section', val)}
+                     options={[
+                       { value: '', label: 'Välj sektion...' },
+                       ...(layout?.map(m => ({ value: m.label, label: m.label })) || [])
+                     ]}
+                     placeholder="Välj sektion..."
+                     variant="form"
+                   />
                 </div>
               </div>
 
@@ -138,17 +137,13 @@ const AddPointForm: React.FC<AddPointFormProps> = ({ existingPoints, initialData
                 </div>
                  <div>
                    <label className="block text-[10px] font-black text-gray-500 mb-1 uppercase">Kritikalitet</label>
-                   <select 
-                     value={formData.criticality} 
-                     onChange={(e) => handleChange('criticality', e.target.value)} 
-                     className={`w-full ${theme === 'dark' ? 'bg-gray-900 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'} rounded p-2 focus:ring-2 focus:ring-blue-500 outline-none transition-colors`}
-                   >
-                     {Object.values(Criticality).map(c => (
-                       <option key={c} value={c} className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
-                         {c}
-                       </option>
-                     ))}
-                   </select>
+                   <CustomSelect
+                     value={formData.criticality || ''}
+                     onChange={(val) => handleChange('criticality', val)}
+                     options={Object.values(Criticality).map(c => ({ value: c, label: c }))}
+                     placeholder="Välj kritikalitet..."
+                     variant="form"
+                   />
                 </div>
                 <div>
                    <label className="block text-[10px] font-black text-cyan-400 mb-1 uppercase">Fasningsvinkel (0-360°)</label>

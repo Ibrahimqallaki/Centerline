@@ -50,13 +50,12 @@ const ParameterTable: React.FC<ParameterTableProps> = ({ points, sections, onPoi
               <Filter size={14} className="text-slate-500 dark:text-gray-400" />
               <select 
                 className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-xs focus:outline-none appearance-none pr-6 cursor-pointer font-bold border-none"
-                style={{ colorScheme: theme }}
                 value={sectionFilter}
                 onChange={(e) => setSectionFilter(e.target.value)}
               >
-                <option value="All">Alla Sektioner</option>
+                <option value="All" className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white">Alla Sektioner</option>
                 {sections.map(s => (
-                  <option key={s} value={s}>
+                  <option key={s} value={s} className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
                     {s}
                   </option>
                 ))}
@@ -70,13 +69,12 @@ const ParameterTable: React.FC<ParameterTableProps> = ({ points, sections, onPoi
               <Tag size={14} className="text-slate-500 dark:text-gray-400" />
               <select 
                 className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-xs focus:outline-none appearance-none pr-6 cursor-pointer font-bold border-none"
-                style={{ colorScheme: theme }}
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value as any)}
               >
-                <option value="All">Alla Status</option>
+                <option value="All" className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white">Alla Status</option>
                 {Object.values(PointStatus).map(s => (
-                  <option key={s} value={s}>
+                  <option key={s} value={s} className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
                     {s}
                   </option>
                 ))}

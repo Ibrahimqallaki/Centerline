@@ -34,23 +34,30 @@
       :root {
         color-scheme: light dark;
       }
-      html:not(.dark) {
-        color-scheme: light !important;
+      html {
+        color-scheme: light;
       }
       html.dark {
-        color-scheme: dark !important;
+        color-scheme: dark;
       }
 
       /* Force select and option backgrounds for cross-browser consistency */
-      html:not(.dark) select,
-      html:not(.dark) option {
-        background-color: #ffffff !important;
-        color: #0F172A !important;
+      select, option {
+        background-color: #ffffff;
+        color: #0F172A;
       }
-      html.dark select,
+      
+      html.dark select, 
       html.dark option {
-        background-color: #1f2937 !important; /* gray-800 */
-        color: #ffffff !important;
+        background-color: #1f2937;
+        color: #ffffff;
+      }
+
+      /* Override for specific states if needed */
+      html:not(.dark) select:focus,
+      html:not(.dark) option:checked {
+        background-color: #e2e8f0; /* slate-200 */
+        color: #0F172A;
       }
     </style>
     <style>

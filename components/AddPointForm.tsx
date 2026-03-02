@@ -109,11 +109,10 @@ const AddPointForm: React.FC<AddPointFormProps> = ({ existingPoints, initialData
                      value={formData.section} 
                      onChange={(e) => handleChange('section', e.target.value)} 
                      className={`w-full ${theme === 'dark' ? 'bg-gray-900 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'} rounded p-2 focus:ring-2 focus:ring-blue-500 outline-none transition-colors`}
-                     style={{ colorScheme: theme }}
                    >
-                     <option value="">Välj sektion...</option>
+                     <option value="" className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white">Välj sektion...</option>
                      {layout?.map(m => (
-                       <option key={m.id} value={m.label}>
+                       <option key={m.id} value={m.label} className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
                          {m.label}
                        </option>
                      ))}
@@ -143,10 +142,9 @@ const AddPointForm: React.FC<AddPointFormProps> = ({ existingPoints, initialData
                      value={formData.criticality} 
                      onChange={(e) => handleChange('criticality', e.target.value)} 
                      className={`w-full ${theme === 'dark' ? 'bg-gray-900 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'} rounded p-2 focus:ring-2 focus:ring-blue-500 outline-none transition-colors`}
-                     style={{ colorScheme: theme }}
                    >
                      {Object.values(Criticality).map(c => (
-                       <option key={c} value={c}>
+                       <option key={c} value={c} className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
                          {c}
                        </option>
                      ))}

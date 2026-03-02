@@ -30,6 +30,17 @@
       }
     </script>
     <style>
+      /* Force color-scheme at the root level for native UI elements */
+      :root {
+        color-scheme: light dark;
+      }
+      html:not(.dark) {
+        color-scheme: light !important;
+      }
+      html.dark {
+        color-scheme: dark !important;
+      }
+
       /* Force select and option backgrounds for cross-browser consistency */
       html:not(.dark) select,
       html:not(.dark) option {
@@ -40,16 +51,6 @@
       html.dark option {
         background-color: #1f2937 !important; /* gray-800 */
         color: #ffffff !important;
-      }
-      /* Ensure the dropdown picker itself respects the theme */
-      select {
-        color-scheme: light dark;
-      }
-      html:not(.dark) select {
-        color-scheme: light !important;
-      }
-      html.dark select {
-        color-scheme: dark !important;
       }
     </style>
     <style>

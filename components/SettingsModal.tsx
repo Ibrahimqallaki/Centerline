@@ -158,10 +158,10 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ currentMapUrl, currentPub
         </div>
 
         {/* Footer */}
-        <div className={`p-8 ${theme === 'dark' ? 'bg-black/40 border-gray-800' : 'bg-gray-50 border-gray-200'} border-t flex justify-end gap-4`}>
-          <button onClick={onClose} className={`px-8 py-4 ${theme === 'dark' ? 'text-gray-500 hover:text-white' : 'text-gray-500 hover:text-gray-900'} font-bold transition-colors`}>Avbryt</button>
-          <button onClick={handleSave} className="px-16 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black uppercase tracking-widest text-sm shadow-xl shadow-blue-900/40 transition-all active:scale-95">
-            Spara inställningar
+        <div className={`p-6 md:p-8 ${theme === 'dark' ? 'bg-black/40 border-gray-800' : 'bg-gray-50 border-gray-200'} border-t grid grid-cols-2 gap-4 md:flex md:justify-end`}>
+          <button onClick={onClose} className={`w-full md:w-auto px-2 md:px-8 py-4 ${theme === 'dark' ? 'text-gray-500 hover:text-white' : 'text-gray-500 hover:text-gray-900'} font-bold transition-colors`}>Avbryt</button>
+          <button onClick={handleSave} className="w-full md:w-auto px-2 md:px-16 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black uppercase tracking-widest text-[10px] md:text-sm shadow-xl shadow-blue-900/40 transition-all active:scale-95 whitespace-nowrap">
+            Spara
           </button>
         </div>
       </div>

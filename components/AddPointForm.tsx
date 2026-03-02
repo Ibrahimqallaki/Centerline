@@ -230,9 +230,9 @@ const AddPointForm: React.FC<AddPointFormProps> = ({ existingPoints, initialData
                )}
             </div>
 
-            <div className={`flex justify-end gap-4 pt-6 border-t ${theme === 'dark' ? 'border-gray-700' : 'border-gray-200'}`}>
-              <button type="button" onClick={onCancel} className="px-6 py-3 text-gray-400 hover:text-gray-600 dark:hover:text-white font-bold">Avbryt</button>
-              <button type="submit" className="px-8 py-3 bg-green-600 hover:bg-green-500 text-white rounded-xl font-bold flex items-center gap-2 shadow-lg shadow-green-900/40">
+            <div className={`grid grid-cols-2 gap-4 md:flex md:justify-end pt-6 border-t ${theme === 'dark' ? 'border-gray-700' : 'border-gray-200'}`}>
+              <button type="button" onClick={onCancel} className="w-full md:w-auto px-2 md:px-6 py-3 text-gray-400 hover:text-gray-600 dark:hover:text-white font-bold">Avbryt</button>
+              <button type="submit" className="w-full md:w-auto px-4 md:px-8 py-3 bg-green-600 hover:bg-green-500 text-white rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-green-900/40">
                 <Save size={20} /> {isEditing ? 'Uppdatera' : 'Spara'}
               </button>
             </div>

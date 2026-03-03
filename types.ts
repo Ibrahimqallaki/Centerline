@@ -60,3 +60,11 @@ export interface GenerationRequest {
   currentValue: string;
   riskContext: string;
 }
+
+export interface DocumentMetadata {
+  id: string;
+  version: string;
+  validFrom: string;
+  issuedBy: string;
+  approvedBy: string;
+}

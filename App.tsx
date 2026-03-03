@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { MACHINE_POINTS, DEFAULT_MACHINE_LAYOUT, DEFAULT_DEFINITIONS } from './constants';
-import { MachinePoint, MachineModule, DefinitionDetail } from './types';
+import { MachinePoint, MachineModule, DefinitionDetail, DocumentMetadata } from './types';
 import MachineMap from './components/MachineMap';
 import ParameterTable from './components/ParameterTable';
 import PointDetail from './components/PointDetail';
@@ -103,6 +103,22 @@ const App: React.FC = () => {
   const [customMapUrl, setCustomMapUrl] = useState<string | null>(() => localStorage.getItem('centerline_map_url'));
   const [logoUrl, setLogoUrl] = useState<string | null>(() => localStorage.getItem('centerline_logo_url'));
   const [publicBaseUrl, setPublicBaseUrl] = useState<string>(() => localStorage.getItem('centerline_public_url') || '');
+
+  // ISO Document Metadata State
+  const [docMetadata, setDocMetadata] = useState<DocumentMetadata>(() => {
+    const saved = localStorage.getItem('centerline_doc_metadata');
+    return saved ? JSON.parse(saved) : {
+      id: 'CL-STD-001',
+      version: '1.0',
+      validFrom: new Date().toISOString().split('T')[0],
+      issuedBy: '',
+      approvedBy: ''
+    };
+  });
+
+  useEffect(() => {
+    localStorage.setItem('centerline_doc_metadata', JSON.stringify(docMetadata));
+  }, [docMetadata]);
 
   // Save points to Supabase
   const savePoints = async (newPoints: MachinePoint[]) => {
@@ -433,6 +449,22 @@ const App: React.FC = () => {
         {/* DEN FASTA RAMEN (Visas på varje sida vid utskrift) */}
         <div className="print-frame-fixed"></div>
 
+        {/* ISO PRINT FOOTER (Visas på varje sida längst ner) */}
+        <div className="hidden print:flex fixed bottom-0 left-0 right-0 h-[12mm] bg-white z-[10000] border-t-2 border-black items-center justify-between px-10 text-[10px] font-mono uppercase tracking-wider">
+          <div className="flex gap-4">
+            <span className="font-bold">Dokument-ID:</span> {docMetadata.id}
+            <span className="text-gray-400">|</span>
+            <span className="font-bold">Utgåva:</span> {docMetadata.version}
+            <span className="text-gray-400">|</span>
+            <span className="font-bold">Datum:</span> {docMetadata.validFrom}
+          </div>
+          <div className="flex gap-4">
+            <span className="font-bold">Utfärdad:</span> {docMetadata.issuedBy || '___________'}
+            <span className="text-gray-400">|</span>
+            <span className="font-bold">Godkänd:</span> {docMetadata.approvedBy || '___________'}
+          </div>
+        </div>
+
         <div className="max-w-6xl mx-auto w-full p-6 lg:p-10 space-y-8 print:max-w-none print:p-0 print:block">
           
           {/* NY PRINT-HEADER (Endast sida 1, fungerar som "topp-kant" för ramen) */}
@@ -620,10 +652,15 @@ const App: React.FC = () => {
           currentMapUrl={customMapUrl} 
           currentLogoUrl={logoUrl}
           currentPublicUrl={publicBaseUrl}
+          currentMetadata={docMetadata}
           onSave={(s) => { 
             setCustomMapUrl(s.mapUrl); 
             setLogoUrl(s.logoUrl);
             setPublicBaseUrl(s.publicUrl); 
+            setDocMetadata(s.metadata);
+            localStorage.setItem('centerline_map_url', s.mapUrl || '');
+            localStorage.setItem('centerline_logo_url', s.logoUrl || '');
+            localStorage.setItem('centerline_public_url', s.publicUrl || '');
           }} 
           onClose={() => setIsSettingsOpen(false)} 
           theme={theme}

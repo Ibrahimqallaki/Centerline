@@ -430,19 +430,19 @@ const App: React.FC = () => {
       {/* Main Content */}
       <main className={`flex-1 flex flex-col min-w-0 ${theme === 'dark' ? 'bg-gray-950' : 'bg-[#F8FAFC]'} overflow-y-auto relative print:overflow-visible pb-20 md:pb-0 transition-colors duration-300`}>
         
-        <div className="max-w-6xl mx-auto w-full p-6 lg:p-10 space-y-8 print:max-w-none print:p-0 print:block relative">
-          
-          {/* NY PRINT-RAM (Endast sida 1, absolut i förhållande till första containern) */}
-          <div className="hidden print:block absolute -top-4 -left-4 -right-4 h-[380mm] border-[8mm] border-[#0070C0] pointer-events-none z-0"></div>
+        {/* DEN FASTA RAMEN (Visas på varje sida vid utskrift) */}
+        <div className="print-frame-fixed"></div>
 
-          {/* NY PRINT-HEADER (Endast sida 1, hamnar i flödet) */}
-          <div className="hidden print:flex bg-[#0070C0] text-white p-10 justify-between items-center mb-10 rounded-none relative z-10">
+        <div className="max-w-6xl mx-auto w-full p-6 lg:p-10 space-y-8 print:max-w-none print:p-0 print:block">
+          
+          {/* NY PRINT-HEADER (Endast sida 1, fungerar som "topp-kant" för ramen) */}
+          <div className="hidden print:flex bg-[#0070C0] text-white p-8 justify-between items-center mb-6 rounded-none -mx-[12mm]">
             <div className="flex flex-col">
               <span className="text-4xl font-black uppercase italic tracking-tighter print-header-text">Centerline Pro</span>
               <span className="text-xs font-black uppercase tracking-[0.3em] opacity-80 print-header-text">Systemdokumentation</span>
             </div>
             {logoUrl && (
-              <div className="h-20 w-64 flex items-center justify-end">
+              <div className="h-16 w-56 flex items-center justify-end">
                 <img src={logoUrl} className="max-h-full max-w-full object-contain" alt="Logo" />
               </div>
             )}

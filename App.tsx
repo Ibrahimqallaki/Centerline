@@ -594,25 +594,6 @@ const App: React.FC = () => {
               )}
             </div>
           </div>
-
-          {/* SIGNATURFÄLT - Hamnar alltid i slutet av dokumentet vid utskrift */}
-          <footer className="print-only mt-20 pt-10 border-t-2 border-black">
-            <div className="grid grid-cols-2 gap-20">
-              <div>
-                <p className="text-sm font-bold uppercase mb-12">Utförd av (Operatör):</p>
-                <div className="border-b-2 border-black w-full h-px"></div>
-                <p className="mt-2 text-[8pt] italic text-gray-500">Namnförtydligande & Datum</p>
-              </div>
-              <div>
-                <p className="text-sm font-bold uppercase mb-12">Godkänd av (Team Leader):</p>
-                <div className="border-b-2 border-black w-full h-px"></div>
-                <p className="mt-2 text-[8pt] italic text-gray-500">Namnförtydligande & Datum</p>
-              </div>
-            </div>
-            <p className="mt-16 text-center text-[7pt] text-gray-400 uppercase tracking-widest">
-              Centerline Pro System - Sida 1 av 1
-            </p>
-          </footer>
         </div>
       </main>
 

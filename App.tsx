@@ -444,9 +444,9 @@ const App: React.FC = () => {
           )}
         </div>
 
-        <div className="max-w-6xl mx-auto w-full p-6 lg:p-10 space-y-8 print:max-w-none print:p-0">
+        <div className="max-w-6xl mx-auto w-full p-6 lg:p-10 space-y-8 print:max-w-none print:p-0 print:block">
           
-          <header className={`flex justify-between items-end border-b ${theme === 'dark' ? 'border-gray-800' : 'border-[#E2E8F0]'} pb-6 print:mb-10`}>
+          <header className={`flex justify-between items-end border-b ${theme === 'dark' ? 'border-gray-800' : 'border-[#E2E8F0]'} pb-6 print:hidden`}>
             <div>
               <h1 className={`text-3xl font-black uppercase italic tracking-tighter ${theme === 'dark' ? 'text-white' : 'text-[#0F172A]'} print:text-4xl`}>CENTERLINE: TP-24</h1>
               <p className="text-gray-500 text-[10px] font-black uppercase tracking-[0.3em] mt-1 italic">Systemdokumentation för optimerad produktion</p>
@@ -476,7 +476,7 @@ const App: React.FC = () => {
 
           <div className="space-y-12 print:space-y-10">
             {/* MASKINSKISS */}
-            <section className={`${activeTab === 'overview' ? 'block' : 'print:block hidden'} print:break-inside-avoid`}>
+            <section className={`${activeTab === 'overview' ? 'block' : 'print:block hidden'} print:break-inside-avoid print:mb-10`}>
               {isDesignMode && (
                 <div className="flex flex-wrap gap-3 mb-4 animate-in slide-in-from-top duration-300">
                   <button 

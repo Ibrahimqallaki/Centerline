@@ -533,7 +533,7 @@ const App: React.FC = () => {
             {/* UNIFIERAD PARAMETERTABELL (Ersätter Checklistan) */}
             <section className={`${activeTab === 'overview' ? 'block' : 'print:block hidden'} print:mt-10`}>
               <ParameterTable 
-                points={points} 
+                points={[...points].sort((a, b) => a.number - b.number)} 
                 sections={layout.map(m => m.label)}
                 onPointSelect={setSelectedPoint} 
                 onUpdatePoint={(p) => savePoints(points.map(x => x.id === p.id ? p : x))}

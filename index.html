@@ -116,148 +116,83 @@
       @media print {
         @page {
           size: A3 portrait;
-          margin: 5mm;
+          margin: 15mm; /* Ge plats för ramen */
         }
 
-        /* Tvinga färger och text-synlighet */
+        /* Tvinga färger */
         * {
           -webkit-print-color-adjust: exact !important;
           print-color-adjust: exact !important;
-          color: black !important;
-          text-shadow: none !important;
         }
 
-        /* Behåll bakgrundsfärger för specifika element (som den blå ramen) */
-        .print-bg-blue {
+        body, #root, main, section, div:not(.print-header), p, span:not(.print-header *), h1, h2, h3, h4, h5, h6, td, th {
+           color: black !important;
+        }
+
+        .print-header, .print-header * {
+           color: white !important;
+        }
+
+        /* Skapa ramen med en fast positionerad div som täcker hela sidan */
+        .print-border {
+          display: block !important;
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          border: 12mm solid #0070C0;
+          z-index: 9999;
+          pointer-events: none;
+        }
+
+        /* Topp-listen som täcker loggan */
+        .print-header {
+          display: flex !important;
+          position: fixed;
+          top: 12mm;
+          left: 12mm;
+          right: 12mm;
+          height: 25mm;
           background-color: #0070C0 !important;
+          z-index: 10000;
+          align-items: center;
+          padding: 0 10mm;
+          justify-content: space-between;
           color: white !important;
         }
 
         html, body {
           background-color: white !important;
-          height: auto !important;
-          overflow: visible !important;
           margin: 0 !important;
           padding: 0 !important;
         }
 
-        /* Undantag för kartan - vi vill behålla dess struktur */
-        .print-map-container {
-          border: 1pt solid black !important;
-          background-color: #f9fafb !important; /* Ljusgrå istället för svart för att spara bläck och öka kompatibilitet */
-          page-break-inside: avoid;
-          position: relative !important;
+        #root {
           display: block !important;
-          aspect-ratio: 2/1 !important;
-          width: 100% !important;
-        }
-
-        .print-map-container * {
-          background-color: transparent !important;
-        }
-
-        .print-map-container img {
-          display: block !important;
-          opacity: 1 !important;
-          position: relative !important;
-        }
-
-        html, body {
-          background-color: white !important;
           height: auto !important;
-          overflow: visible !important;
         }
 
-        #root, main, div, section {
-          background-color: white !important;
-          height: auto !important;
-          min-height: 0 !important;
-          overflow: visible !important;
-        }
-
-        /* Göm navigerings-element */
-        .print-hidden, 
-        aside, 
-        nav, 
-        button, 
-        .fixed:not(.print-visible), 
-        .absolute.top-6.left-8 span,
-        [role="slider"],
-        .z-50,
-        .z-40 {
-          display: none !important;
-        }
-
-        /* Layout-fix för flöde */
         main {
-          padding: 0 !important;
+          display: block !important;
+          padding: 50mm 15mm 15mm 15mm !important; /* Plats för header och ram */
           margin: 0 !important;
           width: 100% !important;
+          overflow: visible !important;
         }
 
         .max-w-6xl {
           max-width: 100% !important;
         }
 
-        /* Rubriker */
-        header {
-          display: flex !important;
-          justify-content: space-between !important;
-          align-items: center !important;
-          border-bottom: 3pt solid black !important;
-          margin-bottom: 8mm !important;
-          padding-bottom: 4mm !important;
+        /* Göm navigerings-element */
+        aside, nav, button, .print-hidden {
+          display: none !important;
         }
 
-        header h1 {
-          font-size: 28pt !important;
-          margin: 0 !important;
-        }
-
-        /* Tabeller / Punktlistor */
-        .grid {
-          display: grid !important;
-        }
-
-        .divide-y > * {
-          border-bottom: 1.5pt solid #000 !important;
-          page-break-inside: avoid !important;
-        }
-
-        /* Tvinga innehåll att hålla sig inom sidbredden */
-        .grid-cols-12 {
-          grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
-        }
-
-        /* Textstorlekar för läsbarhet på A3 */
-        .text-2xl { font-size: 22pt !important; }
-        .text-lg { font-size: 18pt !important; }
-        .text-sm { font-size: 14pt !important; }
-        .text-xs { font-size: 12pt !important; }
-        .font-mono { font-size: 16pt !important; }
-
-        /* Tvinga vita sidor */
-        .bg-gray-900, .bg-gray-950, .bg-black, .bg-black\/40 {
-          background-color: white !important;
-        }
-
-        /* Checklist header fix */
-        .grid.grid-cols-12.px-8.py-5 {
-          background-color: #f3f4f6 !important;
-          border-bottom: 3pt solid black !important;
-          padding: 4mm 8mm !important;
-        }
-
-        /* Signature field fix */
-        footer.print-only {
-          margin-top: 15mm !important;
-          padding-top: 8mm !important;
-          border-top: 3pt solid black !important;
-          page-break-inside: avoid !important;
-        }
-
-      .print-only { display: none; }
-      @media print { .print-only { display: block !important; } }
+        .print-only { display: block !important; }
+      }
+      .print-border, .print-header, .print-only { display: none; }
     </style>
   <script type="importmap">
 {

@@ -8,6 +8,7 @@ import PointDetail from './components/PointDetail';
 import PhasingGauge from './components/PhasingGauge';
 import AddPointForm from './components/AddPointForm';
 import SettingsModal from './components/SettingsModal';
+import PrintModal from './components/PrintModal';
 import ModuleEditor from './components/ModuleEditor';
 import Guide from './components/Guide';
 import { Map, List, Settings, Activity, Printer, ChevronLeft, ChevronRight, Plus, Edit3, BookOpen, Square, Crosshair, Image as ImageIcon, Sun, Moon } from 'lucide-react';
@@ -35,6 +36,7 @@ const App: React.FC = () => {
   
   const [isAddingPoint, setIsAddingPoint] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
   const [editingPoint, setEditingPoint] = useState<MachinePoint | null>(null);
   const [selectedPoint, setSelectedPoint] = useState<MachinePoint | null>(null);
   const [editingModule, setEditingModule] = useState<MachineModule | null>(null);
@@ -276,7 +278,7 @@ const App: React.FC = () => {
   }, [publicBaseUrl]);
 
   const handlePrint = () => {
-    window.print();
+    setIsPrintModalOpen(true);
   };
 
   const handleModuleUpdate = (updatedMod: MachineModule) => {
@@ -644,6 +646,19 @@ const App: React.FC = () => {
           onSave={handleModuleUpdate}
           onDelete={handleModuleDelete}
           onClose={() => setEditingModule(null)}
+          theme={theme}
+        />
+      )}
+      {isPrintModalOpen && (
+        <PrintModal
+          metadata={docMetadata}
+          onPrint={(updatedMetadata) => {
+            setDocMetadata(updatedMetadata);
+            setIsPrintModalOpen(false);
+            // Wait for state update and modal close before printing
+            setTimeout(() => window.print(), 100);
+          }}
+          onClose={() => setIsPrintModalOpen(false)}
           theme={theme}
         />
       )}

@@ -430,20 +430,23 @@ const App: React.FC = () => {
       {/* Main Content */}
       <main className={`flex-1 flex flex-col min-w-0 ${theme === 'dark' ? 'bg-gray-950' : 'bg-[#F8FAFC]'} overflow-y-auto relative print:bg-white print:overflow-visible pb-20 md:pb-0 transition-colors duration-300`}>
         
-        {/* PRINT ONLY BORDER & HEADER */}
-        <div className="hidden print:block fixed inset-0 border-[12px] border-[#0070C0] z-[1000] pointer-events-none"></div>
+        {/* PRINT ONLY BORDER - Using absolute to avoid covering content and ensure it's on every page if possible */}
+        <div className="hidden print:block fixed inset-0 border-[12px] border-[#0070C0] z-[1000] pointer-events-none print-visible"></div>
         
-        <div className="hidden print:flex fixed top-0 left-0 right-0 h-10 bg-[#0070C0] z-[1001] items-center px-6 justify-between text-white">
-          <div className="flex items-center gap-3 h-full py-1">
-            {logoUrl && <img src={logoUrl} className="h-full object-contain brightness-0 invert" alt="Logo" />}
-            <span className="text-[8px] font-black uppercase tracking-widest opacity-80">Centerline Pro</span>
+        {/* PRINT ONLY HEADER - White background to match user image, logo on the right as requested in text */}
+        <div className="hidden print:flex fixed top-3 left-3 right-3 h-16 bg-white z-[1001] items-center px-8 justify-between border-b border-gray-100 print-visible">
+          <div className="flex flex-col">
+            <span className="text-xl font-black uppercase italic tracking-tighter text-[#0070C0]">Centerline Pro</span>
+            <span className="text-[8px] font-black uppercase tracking-[0.3em] text-gray-400">Systemdokumentation</span>
           </div>
-          <div className="text-[8px] font-black uppercase tracking-widest opacity-80">
-            Systemdokumentation
-          </div>
+          {logoUrl && (
+            <div className="h-12 w-32 flex items-center justify-end">
+              <img src={logoUrl} className="max-h-full max-w-full object-contain" alt="Företagslogotyp" />
+            </div>
+          )}
         </div>
 
-        <div className="max-w-6xl mx-auto w-full p-6 lg:p-10 space-y-8 print:max-w-none print:p-8 print:pt-16">
+        <div className="max-w-6xl mx-auto w-full p-6 lg:p-10 space-y-8 print:max-w-none print:p-12 print:pt-24 print:relative print:z-10">
           
           <header className={`flex justify-between items-end border-b ${theme === 'dark' ? 'border-gray-800' : 'border-[#E2E8F0]'} pb-6 print:border-black print:mb-10`}>
             <div>

@@ -116,13 +116,29 @@
       @media print {
         @page {
           size: A3 portrait;
-          margin: 0;
+          margin: 5mm;
         }
 
-        /* Tvinga vit bakgrund på de flesta element men tillåt undantag */
+        /* Tvinga färger och text-synlighet */
         * {
           -webkit-print-color-adjust: exact !important;
           print-color-adjust: exact !important;
+          color: black !important;
+          text-shadow: none !important;
+        }
+
+        /* Behåll bakgrundsfärger för specifika element (som den blå ramen) */
+        .print-bg-blue {
+          background-color: #0070C0 !important;
+          color: white !important;
+        }
+
+        html, body {
+          background-color: white !important;
+          height: auto !important;
+          overflow: visible !important;
+          margin: 0 !important;
+          padding: 0 !important;
         }
 
         /* Undantag för kartan - vi vill behålla dess struktur */
@@ -164,7 +180,7 @@
         aside, 
         nav, 
         button, 
-        .fixed:not(.print\:block):not(.print\:flex), 
+        .fixed:not(.print-visible), 
         .absolute.top-6.left-8 span,
         [role="slider"],
         .z-50,

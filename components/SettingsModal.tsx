@@ -3,18 +3,21 @@ import { X, Upload, Save, Image as ImageIcon, Link, Globe, CheckCircle2, Copy, W
 
 interface SettingsModalProps {
   currentMapUrl: string | null;
+  currentLogoUrl: string | null;
   currentPublicUrl: string;
-  onSave: (settings: { mapUrl: string | null; publicUrl: string }) => void;
+  onSave: (settings: { mapUrl: string | null; logoUrl: string | null; publicUrl: string }) => void;
   onClose: () => void;
   theme?: 'dark' | 'light';
 }
 
-const SettingsModal: React.FC<SettingsModalProps> = ({ currentMapUrl, currentPublicUrl, onSave, onClose, theme = 'dark' }) => {
+const SettingsModal: React.FC<SettingsModalProps> = ({ currentMapUrl, currentLogoUrl, currentPublicUrl, onSave, onClose, theme = 'dark' }) => {
   const [mapUrl, setMapUrl] = useState<string | null>(currentMapUrl);
+  const [logoUrl, setLogoUrl] = useState<string | null>(currentLogoUrl);
   const [publicUrl, setPublicUrl] = useState<string>(currentPublicUrl);
   const [urlPreview, setUrlPreview] = useState('');
   const [copyFeedback, setCopyFeedback] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const logoInputRef = useRef<HTMLInputElement>(null);
 
   const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
@@ -40,7 +43,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ currentMapUrl, currentPub
   const handleSave = () => {
     let finalUrl = publicUrl.trim().replace(/\/$/, "");
     if (finalUrl && !finalUrl.startsWith('http')) finalUrl = 'http://' + finalUrl;
-    onSave({ mapUrl, publicUrl: finalUrl });
+    onSave({ mapUrl, logoUrl, publicUrl: finalUrl });
     onClose();
   };
 
@@ -130,28 +133,55 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ currentMapUrl, currentPub
           </div>
 
           {/* LAYOUT SETTINGS */}
-          <div className={`pt-8 border-t ${theme === 'dark' ? 'border-gray-800' : 'border-gray-200'} space-y-4`}>
-            <h3 className={`text-lg font-black ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} uppercase tracking-widest flex items-center gap-2 italic`}>
-              <ImageIcon size={20} /> Maskinritning (Layout)
-            </h3>
-            <div className={`flex gap-8 items-center ${theme === 'dark' ? 'bg-black/40 border-gray-800' : 'bg-gray-50 border-gray-200'} p-8 rounded-[2rem] border`}>
-               <div className={`w-56 aspect-video ${theme === 'dark' ? 'bg-gray-950 border-gray-800' : 'bg-gray-200 border-gray-300'} rounded-2xl overflow-hidden border flex items-center justify-center`}>
-                  {mapUrl ? <img src={mapUrl} className="w-full h-full object-cover" /> : <ImageIcon className="opacity-10" size={48} />}
-               </div>
-               <div className="flex-1 space-y-4">
-                 <input type="file" ref={fileInputRef} className="hidden" onChange={(e) => {
-                   const f = e.target.files?.[0];
-                   if (f) {
-                     const r = new FileReader();
-                     r.onload = () => setMapUrl(r.result as string);
-                     r.readAsDataURL(f);
-                   }
-                 }} />
-                 <button onClick={() => fileInputRef.current?.click()} className={`w-full py-4 ${theme === 'dark' ? 'bg-gray-800 hover:bg-gray-700 text-white border-gray-700' : 'bg-white hover:bg-gray-100 text-gray-900 border-gray-300'} rounded-2xl font-bold flex items-center justify-center gap-3 border transition-all`}>
-                   <Upload size={20} /> Ladda upp ny layout-bild
-                 </button>
-                 {mapUrl && <button onClick={() => setMapUrl(null)} className="w-full text-xs text-red-500 font-bold uppercase tracking-widest hover:underline">Återställ till standard</button>}
-               </div>
+          <div className={`pt-8 border-t ${theme === 'dark' ? 'border-gray-800' : 'border-gray-200'} space-y-8`}>
+            <div className="space-y-4">
+              <h3 className={`text-lg font-black ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} uppercase tracking-widest flex items-center gap-2 italic`}>
+                <ImageIcon size={20} /> Maskinritning (Layout)
+              </h3>
+              <div className={`flex flex-col md:flex-row gap-8 items-center ${theme === 'dark' ? 'bg-black/40 border-gray-800' : 'bg-gray-50 border-gray-200'} p-8 rounded-[2rem] border`}>
+                 <div className={`w-full md:w-56 aspect-video ${theme === 'dark' ? 'bg-gray-950 border-gray-800' : 'bg-gray-200 border-gray-300'} rounded-2xl overflow-hidden border flex items-center justify-center`}>
+                    {mapUrl ? <img src={mapUrl} className="w-full h-full object-cover" /> : <ImageIcon className="opacity-10" size={48} />}
+                 </div>
+                 <div className="flex-1 space-y-4 w-full">
+                   <input type="file" ref={fileInputRef} className="hidden" onChange={(e) => {
+                     const f = e.target.files?.[0];
+                     if (f) {
+                       const r = new FileReader();
+                       r.onload = () => setMapUrl(r.result as string);
+                       r.readAsDataURL(f);
+                     }
+                   }} />
+                   <button onClick={() => fileInputRef.current?.click()} className={`w-full py-4 ${theme === 'dark' ? 'bg-gray-800 hover:bg-gray-700 text-white border-gray-700' : 'bg-white hover:bg-gray-100 text-gray-900 border-gray-300'} rounded-2xl font-bold flex items-center justify-center gap-3 border transition-all`}>
+                     <Upload size={20} /> Ladda upp ny layout-bild
+                   </button>
+                   {mapUrl && <button onClick={() => setMapUrl(null)} className="w-full text-xs text-red-500 font-bold uppercase tracking-widest hover:underline">Återställ till standard</button>}
+                 </div>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <h3 className={`text-lg font-black ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} uppercase tracking-widest flex items-center gap-2 italic`}>
+                <ShieldCheck size={20} className="text-blue-500" /> Företagslogotyp (för utskrift)
+              </h3>
+              <div className={`flex flex-col md:flex-row gap-8 items-center ${theme === 'dark' ? 'bg-black/40 border-gray-800' : 'bg-gray-50 border-gray-200'} p-8 rounded-[2rem] border`}>
+                 <div className={`w-full md:w-56 h-24 ${theme === 'dark' ? 'bg-gray-950 border-gray-800' : 'bg-gray-200 border-gray-300'} rounded-2xl overflow-hidden border flex items-center justify-center p-4`}>
+                    {logoUrl ? <img src={logoUrl} className="max-w-full max-h-full object-contain" /> : <Globe className="opacity-10" size={40} />}
+                 </div>
+                 <div className="flex-1 space-y-4 w-full">
+                   <input type="file" ref={logoInputRef} className="hidden" onChange={(e) => {
+                     const f = e.target.files?.[0];
+                     if (f) {
+                       const r = new FileReader();
+                       r.onload = () => setLogoUrl(r.result as string);
+                       r.readAsDataURL(f);
+                     }
+                   }} />
+                   <button onClick={() => logoInputRef.current?.click()} className={`w-full py-4 ${theme === 'dark' ? 'bg-gray-800 hover:bg-gray-700 text-white border-gray-700' : 'bg-white hover:bg-gray-100 text-gray-900 border-gray-300'} rounded-2xl font-bold flex items-center justify-center gap-3 border transition-all`}>
+                     <Upload size={20} /> Ladda upp logotyp
+                   </button>
+                   {logoUrl && <button onClick={() => setLogoUrl(null)} className="w-full text-xs text-red-500 font-bold uppercase tracking-widest hover:underline">Ta bort logotyp</button>}
+                 </div>
+              </div>
             </div>
           </div>
 

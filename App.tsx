@@ -101,6 +101,7 @@ const App: React.FC = () => {
   }, []);
 
   const [customMapUrl, setCustomMapUrl] = useState<string | null>(() => localStorage.getItem('centerline_map_url'));
+  const [logoUrl, setLogoUrl] = useState<string | null>(() => localStorage.getItem('centerline_logo_url'));
   const [publicBaseUrl, setPublicBaseUrl] = useState<string>(() => localStorage.getItem('centerline_public_url') || '');
 
   // Save points to Supabase
@@ -236,8 +237,20 @@ const App: React.FC = () => {
       setCustomMapUrl(null);
     }
     
+    // Logo URL handling
+    try {
+      if (logoUrl) {
+        localStorage.setItem('centerline_logo_url', logoUrl);
+      } else {
+        localStorage.removeItem('centerline_logo_url');
+      }
+    } catch (e) {
+      console.error("Failed to save logo url to local storage:", e);
+      setLogoUrl(null);
+    }
+    
     localStorage.setItem('centerline_public_url', publicBaseUrl);
-  }, [isSidebarCollapsed, customMapUrl, publicBaseUrl, theme]);
+  }, [isSidebarCollapsed, customMapUrl, logoUrl, publicBaseUrl, theme]);
 
   const getQrCodeUrl = useCallback((pointId: string, size: number = 200) => {
     const isCloud = window.location.hostname !== 'localhost';
@@ -416,7 +429,21 @@ const App: React.FC = () => {
 
       {/* Main Content */}
       <main className={`flex-1 flex flex-col min-w-0 ${theme === 'dark' ? 'bg-gray-950' : 'bg-[#F8FAFC]'} overflow-y-auto relative print:bg-white print:overflow-visible pb-20 md:pb-0 transition-colors duration-300`}>
-        <div className="max-w-6xl mx-auto w-full p-6 lg:p-10 space-y-8 print:max-w-none print:p-0">
+        
+        {/* PRINT ONLY BORDER & HEADER */}
+        <div className="hidden print:block fixed inset-0 border-[12px] border-[#0070C0] z-[1000] pointer-events-none"></div>
+        
+        <div className="hidden print:flex fixed top-0 left-0 right-0 h-10 bg-[#0070C0] z-[1001] items-center px-6 justify-between text-white">
+          <div className="flex items-center gap-3 h-full py-1">
+            {logoUrl && <img src={logoUrl} className="h-full object-contain brightness-0 invert" alt="Logo" />}
+            <span className="text-[8px] font-black uppercase tracking-widest opacity-80">Centerline Pro</span>
+          </div>
+          <div className="text-[8px] font-black uppercase tracking-widest opacity-80">
+            Systemdokumentation
+          </div>
+        </div>
+
+        <div className="max-w-6xl mx-auto w-full p-6 lg:p-10 space-y-8 print:max-w-none print:p-8 print:pt-16">
           
           <header className={`flex justify-between items-end border-b ${theme === 'dark' ? 'border-gray-800' : 'border-[#E2E8F0]'} pb-6 print:border-black print:mb-10`}>
             <div>
@@ -588,8 +615,13 @@ const App: React.FC = () => {
       {isSettingsOpen && (
         <SettingsModal 
           currentMapUrl={customMapUrl} 
+          currentLogoUrl={logoUrl}
           currentPublicUrl={publicBaseUrl}
-          onSave={(s) => { setCustomMapUrl(s.mapUrl); setPublicBaseUrl(s.publicUrl); }} 
+          onSave={(s) => { 
+            setCustomMapUrl(s.mapUrl); 
+            setLogoUrl(s.logoUrl);
+            setPublicBaseUrl(s.publicUrl); 
+          }} 
           onClose={() => setIsSettingsOpen(false)} 
           theme={theme}
         />

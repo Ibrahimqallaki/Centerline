@@ -324,9 +324,9 @@ const App: React.FC = () => {
       {/* Sidebar / Mobile Nav */}
       <aside className={`
         fixed bottom-0 left-0 right-0 h-16 ${theme === 'dark' ? 'bg-black border-gray-900' : 'bg-white border-[#E2E8F0]'} border-t flex flex-row justify-around items-center z-40 print:hidden
-        md:relative md:h-auto md:w-64 md:border-r md:border-t-0 md:flex-col md:justify-between md:items-stretch
+        md:relative md:h-auto md:border-r md:border-t-0 md:flex-col md:justify-between md:items-stretch
         ${isSidebarCollapsed ? 'md:w-20' : 'md:w-64'}
-        transition-all duration-300 shadow-2xl
+        transition-[width] duration-300 shadow-2xl
       `}>
         <div className="hidden md:block">
           <div className={`h-20 flex items-center px-5 border-b ${theme === 'dark' ? 'border-gray-900' : 'border-[#E2E8F0]'} relative`}>
@@ -341,7 +341,7 @@ const App: React.FC = () => {
                   e.stopPropagation();
                   setIsSidebarCollapsed(!isSidebarCollapsed);
                 }} 
-                className={`absolute -right-4 top-7 w-8 h-8 ${theme === 'dark' ? 'bg-gray-800 text-gray-400 hover:text-white border-gray-700' : 'bg-white text-gray-500 hover:text-[#0F172A] border-[#E2E8F0]'} rounded-full border-2 shadow-2xl flex items-center justify-center z-[100] transition-all hover:scale-110 active:scale-95 cursor-pointer group`}
+                className={`absolute -right-3.5 top-7 w-7 h-7 ${theme === 'dark' ? 'bg-gray-800 text-gray-400 hover:text-white border-gray-700' : 'bg-white text-gray-500 hover:text-[#0F172A] border-[#E2E8F0]'} rounded-full border shadow-lg flex items-center justify-center z-[100] transition-all hover:scale-110 active:scale-95 cursor-pointer group`}
                 title={isSidebarCollapsed ? "Öppna meny" : "Stäng meny"}
               >
                <div className="transition-transform duration-300 group-hover:scale-110">

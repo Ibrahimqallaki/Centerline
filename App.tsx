@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { MACHINE_POINTS, DEFAULT_MACHINE_LAYOUT, DEFAULT_DEFINITIONS } from './constants';
 import { MachinePoint, MachineModule, DefinitionDetail, DocumentMetadata } from './types';
+import { translations } from './translations';
 import MachineMap from './components/MachineMap';
 import ParameterTable from './components/ParameterTable';
 import PointDetail from './components/PointDetail';
@@ -16,14 +17,7 @@ import { supabase } from './supabase';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'table' | 'phasing' | 'guide'>('overview');
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('sidebar_collapsed');
-      // Default to collapsed on mobile/small screens, but respect preference on desktop
-      return saved === 'false' ? false : true;
-    }
-    return true;
-  });
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('theme');
@@ -347,7 +341,7 @@ const App: React.FC = () => {
                   e.stopPropagation();
                   setIsSidebarCollapsed(!isSidebarCollapsed);
                 }} 
-                className={`absolute -right-3.5 top-7 w-7 h-7 ${theme === 'dark' ? 'bg-gray-800 text-gray-400 hover:text-white border-gray-700' : 'bg-white text-gray-500 hover:text-[#0F172A] border-[#E2E8F0]'} rounded-full border shadow-xl flex items-center justify-center z-[60] transition-all hover:scale-110 active:scale-90 cursor-pointer group`}
+                className={`absolute -right-4 top-7 w-8 h-8 ${theme === 'dark' ? 'bg-gray-800 text-gray-400 hover:text-white border-gray-700' : 'bg-white text-gray-500 hover:text-[#0F172A] border-[#E2E8F0]'} rounded-full border-2 shadow-2xl flex items-center justify-center z-[100] transition-all hover:scale-110 active:scale-95 cursor-pointer group`}
                 title={isSidebarCollapsed ? "Öppna meny" : "Stäng meny"}
               >
                <div className="transition-transform duration-300 group-hover:scale-110">
@@ -454,16 +448,16 @@ const App: React.FC = () => {
         {/* ISO PRINT FOOTER (Visas på varje sida längst ner) */}
         <div className="hidden print:flex fixed bottom-0 left-0 right-0 h-[12mm] bg-white z-[10000] border-t-2 border-black items-center justify-between px-10 text-[10px] font-mono uppercase tracking-wider">
           <div className="flex gap-4">
-            <span className="font-bold">Dokument-ID:</span> {docMetadata.id}
+            <span className="font-bold">{translations.sv.documentId}:</span> {docMetadata.id}
             <span className="text-gray-400">|</span>
-            <span className="font-bold">Utgåva:</span> {docMetadata.version}
+            <span className="font-bold">{translations.sv.version}:</span> {docMetadata.version}
             <span className="text-gray-400">|</span>
-            <span className="font-bold">Datum:</span> {docMetadata.validFrom}
+            <span className="font-bold">{translations.sv.date}:</span> {docMetadata.validFrom}
           </div>
           <div className="flex gap-4">
-            <span className="font-bold">Utfärdad:</span> {docMetadata.issuedBy || '___________'}
+            <span className="font-bold">{translations.sv.issued}:</span> {docMetadata.issuedBy || '___________'}
             <span className="text-gray-400">|</span>
-            <span className="font-bold">Godkänd:</span> {docMetadata.approvedBy || '___________'}
+            <span className="font-bold">{translations.sv.approved}:</span> {docMetadata.approvedBy || '___________'}
           </div>
         </div>
 
@@ -472,8 +466,8 @@ const App: React.FC = () => {
           {/* NY PRINT-HEADER (Endast sida 1, fungerar som "topp-kant" för ramen) */}
           <div className="hidden print:flex bg-[#0070C0] text-white p-8 justify-between items-center mb-6 rounded-none -mx-[12mm]">
             <div className="flex flex-col">
-              <span className="text-4xl font-black uppercase italic tracking-tighter print-header-text">Centerline Pro</span>
-              <span className="text-xs font-black uppercase tracking-[0.3em] opacity-80 print-header-text">Systemdokumentation</span>
+              <span className="text-4xl font-black uppercase italic tracking-tighter print-header-text">{translations.sv.printHeaderTitle}</span>
+              <span className="text-xs font-black uppercase tracking-[0.3em] opacity-80 print-header-text">{translations.sv.printHeaderSubtitle}</span>
             </div>
             {logoUrl && (
               <div className="h-16 w-56 flex items-center justify-end">
@@ -484,8 +478,8 @@ const App: React.FC = () => {
 
           <header className={`flex justify-between items-end border-b ${theme === 'dark' ? 'border-gray-800' : 'border-[#E2E8F0]'} pb-6 print:hidden`}>
             <div>
-              <h1 className={`text-3xl font-black uppercase italic tracking-tighter ${theme === 'dark' ? 'text-white' : 'text-[#0F172A]'} print:text-4xl`}>CENTERLINE: TP-24</h1>
-              <p className="text-gray-500 text-[10px] font-black uppercase tracking-[0.3em] mt-1 italic">Systemdokumentation för optimerad produktion</p>
+              <h1 className={`text-3xl font-black uppercase italic tracking-tighter ${theme === 'dark' ? 'text-white' : 'text-[#0F172A]'} print:text-4xl`}>{translations.sv.headerTitle}</h1>
+              <p className="text-gray-500 text-[10px] font-black uppercase tracking-[0.3em] mt-1 italic">{translations.sv.headerSubtitle}</p>
             </div>
             
             <div className="hidden print:block text-right">
@@ -503,7 +497,7 @@ const App: React.FC = () => {
                   {saveStatus === 'saving' && <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />}
                   {saveStatus === 'success' && <div className="w-2 h-2 bg-white rounded-full animate-pulse" />}
                   <span className="text-[10px] font-black uppercase tracking-widest">
-                    {saveStatus === 'saving' ? 'Sparar...' : saveStatus === 'success' ? 'Sparat!' : 'Fel vid sparning'}
+                    {saveStatus === 'saving' ? translations.sv.saving : saveStatus === 'success' ? translations.sv.saved : translations.sv.saveError}
                   </span>
                 </div>
               </div>
@@ -535,19 +529,19 @@ const App: React.FC = () => {
                     }}
                     className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-black text-[10px] uppercase tracking-widest shadow-lg transition-all"
                   >
-                    <Square size={14} /> Lägg till Maskindel
+                    <Square size={14} /> {translations.sv.addMachinePart}
                   </button>
                   <button 
                     onClick={() => setIsAddingPoint(true)}
                     className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-black text-[10px] uppercase tracking-widest shadow-lg transition-all"
                   >
-                    <Crosshair size={14} /> Lägg till Punkt
+                    <Crosshair size={14} /> {translations.sv.addPoint}
                   </button>
                   <button 
                     onClick={() => setIsSettingsOpen(true)}
                     className={`flex items-center gap-2 px-4 py-2 ${theme === 'dark' ? 'bg-gray-800 hover:bg-gray-700 text-gray-300 border-gray-700' : 'bg-white hover:bg-slate-50 text-slate-600 border-[#E2E8F0]'} rounded-xl font-black text-[10px] uppercase tracking-widest border transition-all`}
                   >
-                    <ImageIcon size={14} /> Ändra Bakgrundsbild
+                    <ImageIcon size={14} /> {translations.sv.changeBackground}
                   </button>
                 </div>
               )}

@@ -3,6 +3,7 @@ import React from 'react';
 import { MachinePoint, PointStatus, Criticality } from '../types';
 import { Search, AlertTriangle, CheckCircle2, Tag, Filter, ChevronDown } from 'lucide-react';
 import { CRITICALITY_COLORS } from '../constants';
+import { translations } from '../translations';
 
 import CustomSelect from './CustomSelect';
 
@@ -19,6 +20,7 @@ const ParameterTable: React.FC<ParameterTableProps> = ({ points, sections, onPoi
   const [filter, setFilter] = React.useState('');
   const [sectionFilter, setSectionFilter] = React.useState<string | 'All'>('All');
   const [statusFilter, setStatusFilter] = React.useState<PointStatus | 'All'>('All');
+  const t = translations.sv;
 
   const filteredPoints = points.filter(p => {
     const matchesText = p.name.toLowerCase().includes(filter.toLowerCase()) || p.id.toLowerCase().includes(filter.toLowerCase());
@@ -40,7 +42,7 @@ const ParameterTable: React.FC<ParameterTableProps> = ({ points, sections, onPoi
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 dark:text-gray-500" size={18} />
           <input 
             type="text" 
-            placeholder="Sök parameter..." 
+            placeholder={t.searchPlaceholder}
             className="w-full bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 text-[#0F172A] dark:text-white pl-10 pr-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
@@ -51,10 +53,10 @@ const ParameterTable: React.FC<ParameterTableProps> = ({ points, sections, onPoi
             value={sectionFilter}
             onChange={(val) => setSectionFilter(val)}
             options={[
-              { value: 'All', label: 'Alla Sektioner' },
+              { value: 'All', label: t.allSections },
               ...sections.map(s => ({ value: s, label: s }))
             ]}
-            placeholder="Alla Sektioner"
+            placeholder={t.allSections}
             icon={<Filter size={14} className="text-slate-500 dark:text-gray-400" />}
             variant="filter"
             className="min-w-[160px]"
@@ -64,10 +66,10 @@ const ParameterTable: React.FC<ParameterTableProps> = ({ points, sections, onPoi
             value={statusFilter}
             onChange={(val) => setStatusFilter(val as any)}
             options={[
-              { value: 'All', label: 'Alla Status' },
+              { value: 'All', label: t.allStatus },
               ...Object.values(PointStatus).map(s => ({ value: s, label: s }))
             ]}
-            placeholder="Alla Status"
+            placeholder={t.allStatus}
             icon={<Tag size={14} className="text-slate-500 dark:text-gray-400" />}
             variant="filter"
             className="min-w-[160px]"
@@ -76,12 +78,12 @@ const ParameterTable: React.FC<ParameterTableProps> = ({ points, sections, onPoi
       </div>
 
       <div className="grid grid-cols-12 gap-2 px-6 py-3 bg-slate-50 dark:bg-gray-900 text-[10px] uppercase font-black text-slate-500 tracking-widest border-b border-[#E2E8F0] dark:border-gray-700 print:bg-gray-100 print:text-black print:border-black">
-        <div className="col-span-1">Nr</div>
-        <div className="col-span-4 print:col-span-5">Parameter & Kritikalitet</div>
-        <div className="col-span-3 text-center print:hidden">Status / Åtgärd</div>
-        <div className="col-span-2 text-right print:col-span-3 print:text-right">Värde</div>
+        <div className="col-span-1">{t.number}</div>
+        <div className="col-span-4 print:col-span-5">{t.parameterAndCriticality}</div>
+        <div className="col-span-3 text-center print:hidden">{t.statusAction}</div>
+        <div className="col-span-2 text-right print:col-span-3 print:text-right">{t.value}</div>
         <div className="col-span-2 text-right pr-4">QR</div>
-        <div className="hidden print:block col-span-1 text-right italic font-normal">Sign.</div>
+        <div className="hidden print:block col-span-1 text-right italic font-normal">{t.sign}</div>
       </div>
 
       <div className="overflow-y-auto flex-1 divide-y divide-[#E2E8F0] dark:divide-gray-700 print:divide-black print:overflow-visible">
@@ -122,21 +124,21 @@ const ParameterTable: React.FC<ParameterTableProps> = ({ points, sections, onPoi
                 <button 
                   onClick={(e) => handleStatusToggle(e, point, PointStatus.OK)}
                   className="p-1 bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-400 rounded hover:bg-green-600 hover:text-white transition-colors"
-                  title="Markera som OK"
+                  title={t.markAsOk}
                 >
                   <CheckCircle2 size={14} />
                 </button>
                 <button 
                   onClick={(e) => handleStatusToggle(e, point, PointStatus.TAGGED_YELLOW)}
                   className="p-1 bg-amber-100 dark:bg-orange-900/40 text-amber-600 dark:text-orange-400 rounded hover:bg-[#D97706] hover:text-white transition-colors"
-                  title="Sätt Gul Tagg (P2)"
+                  title={t.tagYellow}
                 >
                   <Tag size={14} />
                 </button>
                 <button 
                   onClick={(e) => handleStatusToggle(e, point, PointStatus.TAGGED_RED)}
                   className="p-1 bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400 rounded hover:bg-[#DC2626] hover:text-white transition-colors"
-                  title="Sätt Röd Tagg (P1)"
+                  title={t.tagRed}
                 >
                   <AlertTriangle size={14} />
                 </button>
@@ -145,7 +147,7 @@ const ParameterTable: React.FC<ParameterTableProps> = ({ points, sections, onPoi
 
             <div className="col-span-2 text-right print:col-span-3">
               <div className="font-mono text-green-600 dark:text-green-400 font-black text-xl leading-none print:text-black print:text-2xl">{point.targetValue}</div>
-              <div className="text-[10px] text-slate-500 font-bold italic print:text-gray-700">Tol: {point.tolerance}</div>
+              <div className="text-[10px] text-slate-500 font-bold italic print:text-gray-700">{t.tolerance} {point.tolerance}</div>
             </div>
 
             <div className="col-span-2 flex justify-end pr-2">

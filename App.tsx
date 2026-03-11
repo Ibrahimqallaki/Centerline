@@ -35,12 +35,18 @@ const App: React.FC = () => {
   const [selectedPoint, setSelectedPoint] = useState<MachinePoint | null>(null);
   const [editingModule, setEditingModule] = useState<MachineModule | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isSaving, setIsSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'success' | 'error'>('idle');
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   
   const [points, setPoints] = useState<MachinePoint[]>([]);
   const [layout, setLayout] = useState<MachineModule[]>([]);
   const [definitions, setDefinitions] = useState<Record<string, DefinitionDetail>>(DEFAULT_DEFINITIONS);
+
+  // Refs to track initial load and prevent immediate re-save
+  const isInitialLoad = React.useRef(true);
+  const lastSyncedPoints = React.useRef<string>('');
+  const lastSyncedLayout = React.useRef<string>('');
+  const lastSyncedDefinitions = React.useRef<string>('');
 
   // Fetch initial data
   useEffect(() => {
@@ -67,20 +73,26 @@ const App: React.FC = () => {
         
         if (pointsData) {
           setPoints(pointsData);
+          lastSyncedPoints.current = JSON.stringify(pointsData);
         } else {
           setPoints(MACHINE_POINTS);
+          lastSyncedPoints.current = JSON.stringify(MACHINE_POINTS);
         }
         
         if (layoutData) {
           setLayout(layoutData);
+          lastSyncedLayout.current = JSON.stringify(layoutData);
         } else {
           setLayout(DEFAULT_MACHINE_LAYOUT);
+          lastSyncedLayout.current = JSON.stringify(DEFAULT_MACHINE_LAYOUT);
         }
 
         if (definitionsData) {
           setDefinitions(definitionsData);
+          lastSyncedDefinitions.current = JSON.stringify(definitionsData);
         } else {
           setDefinitions(DEFAULT_DEFINITIONS);
+          lastSyncedDefinitions.current = JSON.stringify(DEFAULT_DEFINITIONS);
         }
       } catch (error) {
         console.error("Failed to fetch data from Supabase:", error);
@@ -90,6 +102,10 @@ const App: React.FC = () => {
         setDefinitions(DEFAULT_DEFINITIONS);
       } finally {
         setIsLoading(false);
+        // Short delay to ensure effects don't trigger on the very first render after load
+        setTimeout(() => {
+          isInitialLoad.current = false;
+        }, 500);
       }
     };
     
@@ -116,97 +132,72 @@ const App: React.FC = () => {
     localStorage.setItem('centerline_doc_metadata', JSON.stringify(docMetadata));
   }, [docMetadata]);
 
-  // Save points to Supabase
-  const savePoints = async (newPoints: MachinePoint[]) => {
-    if (!supabase) {
-      alert("Supabase är inte konfigurerat. Kan inte spara.");
-      return;
+  // Generic sync function
+  const performSync = async (key: 'points' | 'layout' | 'definitions', value: any) => {
+    if (!supabase || isInitialLoad.current) return;
+
+    // Check if data actually changed since last sync to avoid redundant calls
+    const currentJson = JSON.stringify(value);
+    if (key === 'points' && currentJson === lastSyncedPoints.current) return;
+    if (key === 'layout' && currentJson === lastSyncedLayout.current) return;
+    if (key === 'definitions' && currentJson === lastSyncedDefinitions.current) return;
+
+    setSaveStatus('saving');
+    try {
+      const { error } = await supabase
+        .from('app_state')
+        .upsert({ key, value });
+      
+      if (error) throw error;
+      
+      // Update last synced refs
+      if (key === 'points') lastSyncedPoints.current = currentJson;
+      if (key === 'layout') lastSyncedLayout.current = currentJson;
+      if (key === 'definitions') lastSyncedDefinitions.current = currentJson;
+
+      setSaveStatus('success');
+      setHasUnsavedChanges(false);
+      setTimeout(() => setSaveStatus('idle'), 2000);
+    } catch (error: any) {
+      console.error(`Failed to sync ${key} to Supabase:`, error);
+      setSaveStatus('error');
+      // We don't alert here to avoid interrupting the user, but the status shows 'error'
     }
-    
-    const previousPoints = [...points];
+  };
+
+  // Debounced Effects for Saving
+  useEffect(() => {
+    if (isInitialLoad.current) return;
+    setHasUnsavedChanges(true);
+    const timer = setTimeout(() => performSync('points', points), 2000);
+    return () => clearTimeout(timer);
+  }, [points]);
+
+  useEffect(() => {
+    if (isInitialLoad.current) return;
+    setHasUnsavedChanges(true);
+    const timer = setTimeout(() => performSync('layout', layout), 2000);
+    return () => clearTimeout(timer);
+  }, [layout]);
+
+  useEffect(() => {
+    if (isInitialLoad.current) return;
+    setHasUnsavedChanges(true);
+    const timer = setTimeout(() => performSync('definitions', definitions), 2000);
+    return () => clearTimeout(timer);
+  }, [definitions]);
+
+  // Local update functions (no longer direct DB calls)
+  const savePoints = (newPoints: MachinePoint[]) => {
     setPoints(newPoints);
-    setIsSaving(true);
-    setSaveStatus('saving');
-    
-    try {
-      const { error } = await supabase
-        .from('app_state')
-        .upsert({ key: 'points', value: newPoints });
-      
-      if (error) throw error;
-      
-      setSaveStatus('success');
-      setTimeout(() => setSaveStatus('idle'), 2000);
-    } catch (error: any) {
-      console.error("Failed to save points to Supabase:", error);
-      setPoints(previousPoints); // Rollback
-      setSaveStatus('error');
-      alert(`Kunde inte spara punkter: ${error.message || 'Okänt fel'}`);
-    } finally {
-      setIsSaving(false);
-    }
   };
 
-  // Save layout to Supabase
-  const saveLayout = async (newLayout: MachineModule[]) => {
-    if (!supabase) {
-      alert("Supabase är inte konfigurerat. Kan inte spara.");
-      return;
-    }
-    
-    const previousLayout = [...layout];
+  const saveLayout = (newLayout: MachineModule[]) => {
     setLayout(newLayout);
-    setIsSaving(true);
-    setSaveStatus('saving');
-    
-    try {
-      const { error } = await supabase
-        .from('app_state')
-        .upsert({ key: 'layout', value: newLayout });
-      
-      if (error) throw error;
-      
-      setSaveStatus('success');
-      setTimeout(() => setSaveStatus('idle'), 2000);
-    } catch (error: any) {
-      console.error("Failed to save layout to Supabase:", error);
-      setLayout(previousLayout); // Rollback
-      setSaveStatus('error');
-      alert(`Kunde inte spara layout: ${error.message || 'Okänt fel'}`);
-    } finally {
-      setIsSaving(false);
-    }
   };
 
-  // Save definitions to Supabase
-  const saveDefinitions = async (newDefs: Record<string, DefinitionDetail>) => {
-    if (!supabase) {
-      alert("Supabase är inte konfigurerat. Kan inte spara.");
-      return;
-    }
-    
-    const previousDefs = { ...definitions };
+  const saveDefinitions = (newDefs: Record<string, DefinitionDetail>) => {
     setDefinitions(newDefs);
-    setIsSaving(true);
-    setSaveStatus('saving');
-    
-    try {
-      const { error } = await supabase
-        .from('app_state')
-        .upsert({ key: 'definitions', value: newDefs });
-      
-      if (error) throw error;
-      
-      setSaveStatus('success');
-      setTimeout(() => setSaveStatus('idle'), 2000);
-    } catch (error: any) {
-      console.error("Failed to save definitions to Supabase:", error);
-      setDefinitions(previousDefs); // Rollback
-      setSaveStatus('error');
-      alert(`Kunde inte spara definitioner: ${error.message || 'Okänt fel'}`);
-    } finally {
-      setIsSaving(false);
-    }
   };
 
   // Handle deep-linking via QR codes (?p=ID)
@@ -487,17 +478,22 @@ const App: React.FC = () => {
             </div>
 
             {/* Save Status Indicator */}
-            {!isLoading && saveStatus !== 'idle' && (
+            {!isLoading && (saveStatus !== 'idle' || hasUnsavedChanges) && (
               <div className="fixed top-6 right-6 z-[100] animate-in fade-in slide-in-from-top-4 duration-300">
                 <div className={`px-4 py-2 rounded-full shadow-2xl border flex items-center gap-3 ${
                   saveStatus === 'saving' ? 'bg-blue-600 border-blue-500 text-white' :
                   saveStatus === 'success' ? 'bg-emerald-600 border-emerald-500 text-white' :
-                  'bg-red-600 border-red-500 text-white'
+                  saveStatus === 'error' ? 'bg-red-600 border-red-500 text-white' :
+                  'bg-amber-600 border-amber-500 text-white'
                 }`}>
                   {saveStatus === 'saving' && <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />}
                   {saveStatus === 'success' && <div className="w-2 h-2 bg-white rounded-full animate-pulse" />}
+                  {hasUnsavedChanges && saveStatus === 'idle' && <div className="w-2 h-2 bg-white rounded-full animate-bounce" />}
                   <span className="text-[10px] font-black uppercase tracking-widest">
-                    {saveStatus === 'saving' ? translations.sv.saving : saveStatus === 'success' ? translations.sv.saved : translations.sv.saveError}
+                    {saveStatus === 'saving' ? translations.sv.saving : 
+                     saveStatus === 'success' ? translations.sv.saved : 
+                     saveStatus === 'error' ? translations.sv.saveError : 
+                     'Väntar på att spara...'}
                   </span>
                 </div>
               </div>
